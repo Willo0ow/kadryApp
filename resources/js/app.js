@@ -5,6 +5,9 @@
  */
 
 require('./bootstrap');
+import store from './libs/vuex/store'
+import vuetify from './libs/vuetify'
+import router from './libs/router'
 
 window.Vue = require('vue');
 
@@ -19,7 +22,9 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+Vue.component('app', require('./components/App.vue').default);
+Vue.component('welcome', require('./components/Welcome').default);
+Vue.component('mainnav', require('./components/MainNav').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -28,5 +33,8 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
  */
 
 const app = new Vue({
+    store,
+    vuetify,
+    router,
     el: '#app',
 });
