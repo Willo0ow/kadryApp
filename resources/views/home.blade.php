@@ -68,9 +68,9 @@
     </head>
     <body>
         <div id="app">
-            <v-app>
+            <v-app class="full-height">
                 <mainnav></mainnav>
-                <v-main>
+                <v-main class="teal-bg">
                     <router-view></router-view>
                 </v-main>
             </v-app>

@@ -3,6 +3,11 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons');
 @import url('https://fonts.googleapis.com/css?family=Nunito:200,600');
 
+
+
+.col{
+    padding: 7px 15px !important;
+}
 // Variables
 @import 'variables';
 
@@ -15,3 +20,18 @@
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+
+.gradient {
+    background-image: radial-gradient(#2C9C9C, #005555);
+  }
+.teal-bg{
+    background-color: rgba(82, 144, 144, 1) ;
+}
+.theme--light.v-list-item--active:before, .theme--light.v-list-item--active:hover:before, .theme--light.v-list-item:focus:before{
+    opacity:1;
+    color: rgb(82,144,144);
+}
+.logout{
+    color: #005555!important;
+    background-color: rgba(82, 144, 144, 0.3)!important;
+}

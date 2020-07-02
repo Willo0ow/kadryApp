@@ -1,20 +1,44 @@
 <template>
-    <v-navigation-drawer v-model="drawer" :mini-variant.sync="mini" permanent app light width="300px" src="../images/background.jpg" v-if="user">
-        <v-list-item class="blue-grey darken-1" dark>
-            <v-list-item-icon v-if="!mini"><v-icon>mdi-account</v-icon></v-list-item-icon>
-            <v-list-item-content v-if="!mini">
-                <v-list-item-title>{{user.name}}</v-list-item-title>
-                <v-list-item-subtitle><a href="/" @click="logout">Logout</a></v-list-item-subtitle>
-            </v-list-item-content>
-            <v-btn icon @click.stop="mini = !mini">
-                <v-icon>{{icon}}</v-icon>
-            </v-btn>
-        </v-list-item>
-        <v-list-item v-for="el of list" :key="el.title" @click="mini = true" :to="link(el.link)" link>
-            <v-list-item-icon><v-icon>{{el.icon}}</v-icon></v-list-item-icon>
-            <v-list-item-title :to="el.link" link>{{el.title}}</v-list-item-title>
-        </v-list-item>
+<div>
+    <v-app-bar app class="gradient" dark elevation="0">
+                <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+                <v-spacer></v-spacer>
+                <v-menu open-on-hover bottom offset-y v-if="user" content-class="transparent">
+                    <template v-slot:activator="{ on, attrs }">
+                       <v-chip v-if="user" class="transparent pr-10" v-bind="attrs" v-on="on">
+                            <v-icon class="mr-2" >mdi-account</v-icon>
+                            {{user.name}}
+                        </v-chip>
+                    </template>
+                    <v-btn @click="logout" width="100%" class="logout"><a href="/">Wyloguj</a></v-btn>
+                </v-menu>
+    </v-app-bar>
+    <v-navigation-drawer 
+        v-model="drawer" 
+        app
+        floating
+        :permanent="drawer"
+        mini-variant
+        >
+        <v-list dense dark>
+            <v-list-item>
+                <v-list-item-action>
+                    <v-icon @click.stop="drawer = !drawer" :color="teal">mdi-arrow-left-drop-circle</v-icon>
+                </v-list-item-action>
+            </v-list-item>
+        </v-list>
+        <v-list>
+            <v-list-item v-for="el in list" :key="el.title" link :to="el.link">
+                <v-tooltip right>
+                    <template v-slot:activator="{on,attrs}">
+                            <v-icon :color="teal" v-bind="attrs" v-on="on">{{ el.icon }}</v-icon>
+                    </template>
+                    <span class="white--text">{{ el.title }}</span>
+                </v-tooltip>
+            </v-list-item>
+        </v-list>
     </v-navigation-drawer>
+    </div>
 </template>
 
 <script>
@@ -23,7 +47,9 @@
             return {
                 drawer:true,
                 mini:true,
-                user:null
+                user:null,
+                teal:'#005555',
+                out:false
             }
         },
         computed:{
