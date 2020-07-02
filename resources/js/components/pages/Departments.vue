@@ -1,5 +1,5 @@
 <template>
-
+    <div>Depts</div>
 </template>
 
 <script>

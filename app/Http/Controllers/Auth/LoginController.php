@@ -30,7 +30,7 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user){
         if(Auth::user()){
-            return redirect('/home');
+            return redirect('/main/home');
         }
         return redirect('/');
     }

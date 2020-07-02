@@ -1,5 +1,5 @@
 <template>
-
+    <div>Holidays</div>
 </template>
 
 <script>

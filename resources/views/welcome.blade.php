@@ -130,14 +130,14 @@
                         </form>
                     </template>
                     <template v-slot:form-register>
-                        <form method="POST" action="{{ route('register') }}">
+                        <form method="POST" action="{{ route('register') }}" autocomplete="off">
                             @csrf
 
                             <div class="form-group row">
                                 <label for="name" class="col-md-4 col-form-label text-md-right">Nazwa</label>
 
                                 <div class="col-md-6">
-                                    <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
+                                    <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required  autofocus>
 
                                     @error('name')
                                         <span class="invalid-feedback" role="alert">
@@ -151,7 +151,7 @@
                                 <label for="email" class="col-md-4 col-form-label text-md-right">Adres e-mail</label>
 
                                 <div class="col-md-6">
-                                    <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
+                                    <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required >
 
                                     @error('email')
                                         <span class="invalid-feedback" role="alert">
@@ -164,7 +164,7 @@
                             <div class="form-group row">
                                 <label for="password" class="col-md-4 col-form-label text-md-right">Hasło</label>
                                 <div class="col-md-6">
-                                    <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
+                                    <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required>
                                     @error('password')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -176,7 +176,7 @@
                             <div class="form-group row">
                                 <label for="password-confirm" class="col-md-4 col-form-label text-md-right">Powtórz hasło</label>
                                 <div class="col-md-6">
-                                    <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
+                                    <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -185,8 +185,9 @@
                                     <select class="form-control @error('role') is-invalid @enderror" id="role" name="role" required>
                                         <option value="1">Administrator</option>
                                         <option value="2">Pracownik HR</option>
-                                        <option value="3">Kierownik Działu</option>
-                                        <option value="3">Pracownik</option>
+                                        <option value="3">Kierownik HR</option>
+                                        <option value="4">Kierownik Działu</option>
+                                        <option value="5" selected='selected'>Pracownik</option>
                                     </select>
                                     <!-- <input id="role" type="text" class="form-control @error('role') is-invalid @enderror" name="role" required > -->
                                     @error('role')
