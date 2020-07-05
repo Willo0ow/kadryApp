@@ -4,7 +4,8 @@ export default{
     state:{
         empls:null,
         supervisors:null,
-        depts:null
+        depts:null,
+        holidays: null
     },
     mutations:{
         assignEmpls(state, payload){
@@ -15,6 +16,9 @@ export default{
         assignDepts(state, payload){
             state.depts = payload
         },
+        assignHolidays(state, payload){
+            state.holidays = payload
+        }
     },
     actions:{
         async getEmplsAll({commit}){
@@ -24,6 +28,10 @@ export default{
         async getDepts({commit}){
             let res = await Axios.get('/depts')
             commit('assignDepts', res.data)
+        },
+        async getHolidays({commit}){
+            let res = await Axios.get('/holis')
+            commit('assignHolidays', res.data)
         }
 
     }

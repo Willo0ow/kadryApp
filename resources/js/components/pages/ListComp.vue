@@ -8,7 +8,7 @@
                             <v-select :items="depts" calss="shrink" item-text="label" placeholder="Filtruj po dziale" item-value="id" v-if="depts" clearable v-model="filterDept" single-line dense autocomplete="off" dark filled rounded hide-details></v-select>
                         </v-col>
                         <v-col v-if="search">
-                            <v-text-field type="search" v-model="search" placeholder="Szukaj Pracownika" single-line dense autocomplete="off" dark filled rounded hide-details></v-text-field>
+                            <v-text-field type="search" v-model="searched" placeholder="Szukaj Pracownika" single-line dense autocomplete="off" dark filled rounded hide-details></v-text-field>
                         </v-col>
                         <v-col>
                             <v-btn text @click="dialog = !dialog">
@@ -49,35 +49,54 @@
     </v-container>
 </template>
 <script>
+import formdialog from './FormDialog'
+import holidaydialog from './HolidayDialog'
+import employeedialog from './EmployeeDialog'
+import deptdialog from './DepartmentDialog'
 import {mapState} from 'vuex'
 import EventBus from '../../libs/bus';
 export default {
+    components:{
+        formdialog,holidaydialog,employeedialog,deptdialog
+    },
     props:{info:Object, name:String},
     data(){
         return {...this.info}
+/*         info:{
+                pageTitle://title of the main card
+                plusTitle://name of plus button to add a new record
+                searched://searched phrase, if enabled, set ''
+                search:// true - enables search input in the header
+                filter:// true - enables filter-select
+                filterDept:null,
+                dialog: //false - dialog to add a new record hidden at mount
+                headers: //headers for the list [{title:'Imię i Nazwisko', cols:4}],
+                keys: //keys for the values of the list [{title:'name', cols:4}],
+                component: //name of the component that renders in dialog
+            } */
     },
     computed:{
+        ...mapState({
+            depts: state => state.hr.depts,
+            empls: state => state.hr.empls,
+            holidays: state => state.hr.holidays
+        }),
         items(){
-            if(this.name == 'depts'&& this.$store.state.hr.depts){
-                return this.$store.state.hr.depts
-            } else if(this.name == 'empls' && this.$store.state.hr.empls){
-                let res = this.filterDept? this.$store.state.hr.empls.filter((el)=>el.dept == this.filterDept) : this.$store.state.hr.empls
-                if(this.search){
+            if(this.name == 'depts'&& this.depts){
+                return this.depts
+            } else if(this.name == 'empls' && this.empls){
+                let res = this.filterDept? this.empls.filter((el)=>el.dept == this.filterDept) : this.empls
+                if(this.searched){
                     res = res.filter((el)=>{
                         let str = el.name.toLowerCase()
-                        return str.includes(this.search.toLowerCase())
+                        return str.includes(this.searched.toLowerCase())
                     })
                 }
                 return res
+            } else if (this.name == 'holidays' && this.holidays){
+                return this.holidays
             }
         },
-        component(){
-            if(this.name == 'depts'){
-                return 'deptdialog'
-            } else if (this.name == 'empls'){
-                return 'employeedialog'
-            }
-        }
     },
     methods:{
 
@@ -86,6 +105,7 @@ export default {
         await this.$store.dispatch('getUsers');
         await this.$store.dispatch('getEmplsAll')
         await this.$store.dispatch('getDepts')
+        await this.$store.dispatch('getHolidays')
         EventBus.$on('closeDialog', ()=>{
             console.log('bus');
             

@@ -2347,42 +2347,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         filterDept: null,
         //dialog ot add a record
         dialog: false,
-        depts: [{
-          name: "HR",
-          id: 1,
-          supervisor: 'Jan Kowalski'
-        }, {
-          name: "IT",
-          id: 2,
-          supervisor: 'Betty Kowalski'
-        }],
-        empls: [{
-          name: 'Jan Kowalski',
-          dept: 1,
-          date_start: '2020-03-16',
-          leave_base: 20,
-          leave_used: 0,
-          leave_old: 2,
-          position: 'programmer',
-          supervisor_id: 2,
-          contract_type: 'B2B',
-          user_id: 1,
-          leave_full: true,
-          id: 1
-        }, {
-          name: 'Anna Kowalski',
-          dept: 2,
-          date_start: '2020-03-16',
-          leave_base: 20,
-          leave_used: 0,
-          leave_old: 2,
-          position: 'programmer',
-          supervisor_id: 2,
-          contract_type: 'B2B',
-          user_id: 1,
-          leave_full: true,
-          id: 1
-        }],
+        //depts:[{name:"HR", id:1, supervisor: 'Jan Kowalski'}, {name:"IT", id:2, supervisor: 'Betty Kowalski'}],
+        // empls: [
+        //     {name:'Jan Kowalski', dept: 1, date_start:'2020-03-16', leave_base: 20, leave_used:0, leave_old:2, position:'programmer', supervisor_id:2, contract_type: 'B2B', user_id:1, leave_full:true, id:1},
+        //     {name:'Anna Kowalski', dept: 2, date_start:'2020-03-16', leave_base: 20, leave_used:0, leave_old:2, position:'programmer', supervisor_id:2, contract_type: 'B2B', user_id:1, leave_full:true, id:1}
+        //     ],
         //header for the list
         headers: [{
           title: 'Dział',
@@ -2398,7 +2367,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, {
           title: 'supervisor',
           cols: 4
-        }]
+        }],
+        component: 'deptdialog'
       }
     };
   },
@@ -2703,123 +2673,52 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      pageTitle: 'Pracownicy',
-      plusTitle: 'Dodaj Pracownika',
-      search: '',
-      filterDept: null,
-      dialog: false,
-      depts: [{
-        label: "HR",
-        id: 1
-      }, {
-        label: "IT",
-        id: 2
-      }],
-      empls: [{
-        name: 'Jan Kowalski',
-        dept: 1,
-        date_start: '2020-03-16',
-        leave_base: 20,
-        leave_used: 0,
-        leave_old: 2,
-        position: 'programmer',
-        supervisor_id: 2,
-        contract_type: 'B2B',
-        user_id: 1,
-        leave_full: true,
-        id: 1
-      }, {
-        name: 'Anna Kowalski',
-        dept: 2,
-        date_start: '2020-03-16',
-        leave_base: 20,
-        leave_used: 0,
-        leave_old: 2,
-        position: 'programmer',
-        supervisor_id: 2,
-        contract_type: 'B2B',
-        user_id: 1,
-        leave_full: true,
-        id: 1
-      }],
-      headers: [{
-        title: 'Imię i Nazwisko',
-        cols: 4
-      }, {
-        title: 'Dział',
-        cols: 2
-      }, {
-        title: 'Stanowisko',
-        cols: 3
-      }, {
-        title: 'Przełożony',
-        cols: 3
-      }],
-      keys: [{
-        title: 'name',
-        cols: 4
-      }, {
-        title: 'dept',
-        cols: 2
-      }, {
-        title: 'position',
-        cols: 3
-      }, {
-        title: 'supervisor_id',
-        cols: 3
-      }]
+      info: {
+        pageTitle: 'Pracownicy',
+        plusTitle: 'Dodaj Pracownika',
+        searched: '',
+        search: true,
+        filter: true,
+        filterDept: null,
+        dialog: false,
+        // depts:[{label:"HR", id:1}, {label:"IT", id:2}],
+        // empls: [
+        //     {name:'Jan Kowalski', dept: 1, date_start:'2020-03-16', leave_base: 20, leave_used:0, leave_old:2, position:'programmer', supervisor_id:2, contract_type: 'B2B', user_id:1, leave_full:true, id:1},
+        //     {name:'Anna Kowalski', dept: 2, date_start:'2020-03-16', leave_base: 20, leave_used:0, leave_old:2, position:'programmer', supervisor_id:2, contract_type: 'B2B', user_id:1, leave_full:true, id:1}
+        //     ],
+        headers: [{
+          title: 'Imię i Nazwisko',
+          cols: 4
+        }, {
+          title: 'Dział',
+          cols: 2
+        }, {
+          title: 'Stanowisko',
+          cols: 3
+        }, {
+          title: 'Przełożony',
+          cols: 3
+        }],
+        keys: [{
+          title: 'name',
+          cols: 4
+        }, {
+          title: 'dept',
+          cols: 2
+        }, {
+          title: 'position',
+          cols: 3
+        }, {
+          title: 'supervisor_id',
+          cols: 3
+        }],
+        component: 'employeedialog'
+      }
     };
   },
   computed: {
@@ -2878,6 +2777,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/pages/FormDialog.vue?vue&type=script&lang=js&":
+/*!***************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/pages/FormDialog.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  mounted: function mounted() {},
+  created: function created() {}
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/pages/Forms.vue?vue&type=script&lang=js&":
 /*!**********************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/pages/Forms.vue?vue&type=script&lang=js& ***!
@@ -2892,6 +2811,160 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      info: {
+        component: 'formdialog',
+        pageTitle: 'Wnioski Urlopowe',
+        plusTitle: 'Dodaj Wniosek Urlopowy',
+        searched: '',
+        search: true,
+        filter: true,
+        filterDept: null,
+        dialog: false,
+        headers: [{
+          title: 'Rodzaj urlopu',
+          cols: 5
+        }, {
+          title: 'Data akceptacji',
+          cols: 3
+        }, {
+          title: 'Pracownik',
+          cols: 3
+        }],
+        keys: [{
+          title: 'type',
+          cols: 5
+        }, {
+          title: 'date_approved',
+          cols: 3
+        }, {
+          title: 'employee_id',
+          cols: 3
+        }]
+      }
+    };
+  },
+  mounted: function mounted() {},
+  created: function created() {}
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/pages/HolidayDialog.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/pages/HolidayDialog.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _libs_bus__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../libs/bus */ "./resources/js/libs/bus.js");
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      picker: false,
+      form: {
+        name: '',
+        date: '' //weekend: null
+
+      }
+    };
+  },
+  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])({
+    holidays: function holidays(state) {
+      return state.hr.holidays;
+    }
+  })), {}, {
+    temp: function temp() {
+      return this.type == 'new' ? {
+        title: 'Dodaj Dzień Wolny'
+      } : {
+        title: 'Edytuj Dzień Wolny'
+      };
+    }
+  }),
+  methods: {
+    resetForm: function resetForm() {
+      //this.form = {...this.cleanForm}
+      _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog');
+    },
+    saveForm: function saveForm() {
+      var _this = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+        var date, weekend;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                date = new Date(_this.form.date);
+                weekend = [5, 6].indexOf(date.getDay()) ? true : false;
+                _this.form.weekend = weekend;
+                _context.next = 5;
+                return axios.post('/holis', _this.form);
+
+              case 5:
+                _context.next = 7;
+                return _this.$store.dispatch('getHolidays');
+
+              case 7:
+                _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog');
+
+              case 8:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }))();
+    }
+  },
   mounted: function mounted() {},
   created: function created() {}
 });
@@ -2912,6 +2985,40 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      info: {
+        component: 'holidaydialog',
+        pageTitle: 'Dni Wolne od Pracy',
+        plusTitle: 'Dodaj Dzień Wolny',
+        searched: '',
+        search: false,
+        filter: false,
+        filterDept: null,
+        dialog: false,
+        headers: [{
+          title: 'Nazwa Święta',
+          cols: 5
+        }, {
+          title: 'Data',
+          cols: 3
+        }, {
+          title: 'Weekend',
+          cols: 3
+        }],
+        keys: [{
+          title: 'name',
+          cols: 5
+        }, {
+          title: 'date',
+          cols: 3
+        }, {
+          title: 'weekend',
+          cols: 3
+        }]
+      }
+    };
+  },
   mounted: function mounted() {},
   created: function created() {}
 });
@@ -2929,8 +3036,12 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-/* harmony import */ var _libs_bus__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../libs/bus */ "./resources/js/libs/bus.js");
+/* harmony import */ var _FormDialog__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./FormDialog */ "./resources/js/components/pages/FormDialog.vue");
+/* harmony import */ var _HolidayDialog__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./HolidayDialog */ "./resources/js/components/pages/HolidayDialog.vue");
+/* harmony import */ var _EmployeeDialog__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./EmployeeDialog */ "./resources/js/components/pages/EmployeeDialog.vue");
+/* harmony import */ var _DepartmentDialog__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./DepartmentDialog */ "./resources/js/components/pages/DepartmentDialog.vue");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _libs_bus__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../libs/bus */ "./resources/js/libs/bus.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -2995,43 +3106,70 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 
 
+
+
+
+
 /* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    formdialog: _FormDialog__WEBPACK_IMPORTED_MODULE_1__["default"],
+    holidaydialog: _HolidayDialog__WEBPACK_IMPORTED_MODULE_2__["default"],
+    employeedialog: _EmployeeDialog__WEBPACK_IMPORTED_MODULE_3__["default"],
+    deptdialog: _DepartmentDialog__WEBPACK_IMPORTED_MODULE_4__["default"]
+  },
   props: {
     info: Object,
     name: String
   },
   data: function data() {
     return _objectSpread({}, this.info);
+    /*         info:{
+                    pageTitle://title of the main card
+                    plusTitle://name of plus button to add a new record
+                    searched://searched phrase, if enabled, set ''
+                    search:// true - enables search input in the header
+                    filter:// true - enables filter-select
+                    filterDept:null,
+                    dialog: //false - dialog to add a new record hidden at mount
+                    headers: //headers for the list [{title:'Imię i Nazwisko', cols:4}],
+                    keys: //keys for the values of the list [{title:'name', cols:4}],
+                    component: //name of the component that renders in dialog
+                } */
   },
-  computed: {
+  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_5__["mapState"])({
+    depts: function depts(state) {
+      return state.hr.depts;
+    },
+    empls: function empls(state) {
+      return state.hr.empls;
+    },
+    holidays: function holidays(state) {
+      return state.hr.holidays;
+    }
+  })), {}, {
     items: function items() {
       var _this = this;
 
-      if (this.name == 'depts' && this.$store.state.hr.depts) {
-        return this.$store.state.hr.depts;
-      } else if (this.name == 'empls' && this.$store.state.hr.empls) {
-        var res = this.filterDept ? this.$store.state.hr.empls.filter(function (el) {
+      if (this.name == 'depts' && this.depts) {
+        return this.depts;
+      } else if (this.name == 'empls' && this.empls) {
+        var res = this.filterDept ? this.empls.filter(function (el) {
           return el.dept == _this.filterDept;
-        }) : this.$store.state.hr.empls;
+        }) : this.empls;
 
-        if (this.search) {
+        if (this.searched) {
           res = res.filter(function (el) {
             var str = el.name.toLowerCase();
-            return str.includes(_this.search.toLowerCase());
+            return str.includes(_this.searched.toLowerCase());
           });
         }
 
         return res;
-      }
-    },
-    component: function component() {
-      if (this.name == 'depts') {
-        return 'deptdialog';
-      } else if (this.name == 'empls') {
-        return 'employeedialog';
+      } else if (this.name == 'holidays' && this.holidays) {
+        return this.holidays;
       }
     }
-  },
+  }),
   methods: {},
   mounted: function mounted() {
     var _this2 = this;
@@ -3053,12 +3191,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
               return _this2.$store.dispatch('getDepts');
 
             case 6:
-              _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$on('closeDialog', function () {
+              _context.next = 8;
+              return _this2.$store.dispatch('getHolidays');
+
+            case 8:
+              _libs_bus__WEBPACK_IMPORTED_MODULE_6__["default"].$on('closeDialog', function () {
                 console.log('bus');
                 _this2.dialog = false;
               });
 
-            case 7:
+            case 9:
             case "end":
               return _context.stop();
           }
@@ -40876,292 +41018,31 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "v-container",
-    {
-      staticStyle: { height: "calc(100% - 56px)", "max-width": "1200px" },
-      attrs: { fluid: "" }
-    },
-    [
-      _c(
-        "v-row",
-        [
-          _c(
-            "v-col",
-            [
-              _c(
-                "v-card",
-                {
-                  staticClass: "gradient",
-                  attrs: { app: "", raised: "", dark: "" }
-                },
-                [
-                  _c(
-                    "v-row",
-                    { attrs: { justify: "center", align: "center" } },
-                    [
-                      _c(
-                        "v-col",
-                        [
-                          _vm.depts
-                            ? _c("v-select", {
-                                attrs: {
-                                  items: _vm.depts,
-                                  calss: "shrink",
-                                  "item-text": "label",
-                                  placeholder: "Filtruj po dziale",
-                                  "item-value": "id",
-                                  clearable: "",
-                                  "single-line": "",
-                                  dense: "",
-                                  autocomplete: "off",
-                                  dark: "",
-                                  filled: "",
-                                  rounded: "",
-                                  "hide-details": ""
-                                },
-                                model: {
-                                  value: _vm.filterDept,
-                                  callback: function($$v) {
-                                    _vm.filterDept = $$v
-                                  },
-                                  expression: "filterDept"
-                                }
-                              })
-                            : _vm._e()
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "v-col",
-                        [
-                          _c("v-text-field", {
-                            attrs: {
-                              type: "search",
-                              placeholder: "Szukaj Pracownika",
-                              "single-line": "",
-                              dense: "",
-                              autocomplete: "off",
-                              dark: "",
-                              filled: "",
-                              rounded: "",
-                              "hide-details": ""
-                            },
-                            model: {
-                              value: _vm.search,
-                              callback: function($$v) {
-                                _vm.search = $$v
-                              },
-                              expression: "search"
-                            }
-                          })
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "v-col",
-                        [
-                          _c(
-                            "v-btn",
-                            {
-                              attrs: { text: "" },
-                              on: {
-                                click: function($event) {
-                                  _vm.dialog = !_vm.dialog
-                                }
-                              }
-                            },
-                            [
-                              _c("v-icon", [_vm._v("mdi-plus")]),
-                              _vm._v(
-                                "\n                            " +
-                                  _vm._s(_vm.plusTitle) +
-                                  "\n                        "
-                              )
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _vm.dialog
-                            ? _c(
-                                "v-dialog",
-                                {
-                                  model: {
-                                    value: _vm.dialog,
-                                    callback: function($$v) {
-                                      _vm.dialog = $$v
-                                    },
-                                    expression: "dialog"
-                                  }
-                                },
-                                [
-                                  _c("employeedialog", {
-                                    attrs: { type: "new" }
-                                  })
-                                ],
-                                1
-                              )
-                            : _vm._e()
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              )
-            ],
-            1
-          )
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "v-row",
-        { staticClass: "fill-height" },
-        [
-          _c(
-            "v-col",
-            [
-              _c(
-                "v-card",
-                {
-                  staticClass: "gradient",
-                  staticStyle: { height: "100%" },
-                  attrs: { app: "", raised: "", dark: "" }
-                },
-                [
-                  _c(
-                    "v-card-title",
-                    { staticClass: "text-h5 justify-center" },
-                    [_vm._v(_vm._s(_vm.pageTitle))]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "v-card",
-                    {
-                      staticClass: "cyan darken-4 ml-3 mb-2",
-                      attrs: { dark: "", width: "94.5%" }
-                    },
-                    [
-                      _c(
-                        "v-row",
-                        _vm._l(_vm.headers, function(ref) {
-                          var title = ref.title
-                          var cols = ref.cols
-                          return _c(
-                            "v-col",
-                            {
-                              key: title,
-                              staticClass: "py-0",
-                              attrs: { cols: cols }
-                            },
-                            [
-                              _c(
-                                "v-card-subtitle",
-                                {
-                                  staticClass:
-                                    "font-weight-bold py-2 text-center"
-                                },
-                                [_vm._v(_vm._s(title))]
-                              )
-                            ],
-                            1
-                          )
-                        }),
-                        1
-                      )
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c("v-virtual-scroll", {
-                    attrs: {
-                      dense: "",
-                      height: "350px",
-                      items: _vm.items,
-                      "item-height": 60
-                    },
-                    scopedSlots: _vm._u([
-                      {
-                        key: "default",
-                        fn: function(ref) {
-                          var item = ref.item
-                          return [
-                            _c(
-                              "v-list-item",
-                              { key: item.id },
-                              [
-                                _c(
-                                  "v-card",
-                                  {
-                                    staticClass: "my-1 transparent",
-                                    attrs: { width: "97%" }
-                                  },
-                                  [
-                                    _c(
-                                      "v-row",
-                                      {
-                                        attrs: {
-                                          align: "center",
-                                          justify: "center"
-                                        }
-                                      },
-                                      _vm._l(_vm.keys, function(ref) {
-                                        var title = ref.title
-                                        var cols = ref.cols
-                                        return _c(
-                                          "v-col",
-                                          {
-                                            key: title,
-                                            staticClass: "py-0",
-                                            attrs: {
-                                              cols: cols,
-                                              justify: "center"
-                                            }
-                                          },
-                                          [
-                                            _c(
-                                              "v-card-subtitle",
-                                              {
-                                                staticClass:
-                                                  "font-weight-bold py-2 text-center"
-                                              },
-                                              [_vm._v(_vm._s(item[title]))]
-                                            )
-                                          ],
-                                          1
-                                        )
-                                      }),
-                                      1
-                                    )
-                                  ],
-                                  1
-                                )
-                              ],
-                              1
-                            )
-                          ]
-                        }
-                      }
-                    ])
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          )
-        ],
-        1
-      )
-    ],
-    1
-  )
+  return _c("listcomp", { attrs: { info: _vm.info, name: "empls" } })
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/pages/FormDialog.vue?vue&type=template&id=5b669942&":
+/*!*******************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/pages/FormDialog.vue?vue&type=template&id=5b669942& ***!
+  \*******************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div")
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -41185,7 +41066,176 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [_vm._v("Forms")])
+  return _c("listcomp", { attrs: { info: _vm.info, name: "forms" } })
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/pages/HolidayDialog.vue?vue&type=template&id=c3cc3fcc&":
+/*!**********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/pages/HolidayDialog.vue?vue&type=template&id=c3cc3fcc& ***!
+  \**********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "v-card",
+    { staticClass: "gradient" },
+    [
+      _c(
+        "v-card-title",
+        { staticClass: "headline white--text justify-center" },
+        [_vm._v(_vm._s(_vm.temp.title))]
+      ),
+      _vm._v(" "),
+      _c(
+        "v-card-text",
+        [
+          _c(
+            "v-container",
+            [
+              _c(
+                "v-row",
+                [
+                  _c(
+                    "v-col",
+                    [
+                      _c("v-text-field", {
+                        attrs: {
+                          hint: "Nazwa Święta",
+                          "persistent-hint": "",
+                          "single-line": "",
+                          dense: "",
+                          autocomplete: "off",
+                          dark: "",
+                          filled: "",
+                          rounded: ""
+                        },
+                        model: {
+                          value: _vm.form.name,
+                          callback: function($$v) {
+                            _vm.$set(_vm.form, "name", $$v)
+                          },
+                          expression: "form.name"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("v-text-field", {
+                        attrs: {
+                          value: _vm.form.date,
+                          hint: "Data Dnia Wolnego",
+                          "persistent-hint": "",
+                          "single-line": "",
+                          dense: "",
+                          autocomplete: "off",
+                          dark: "",
+                          filled: "",
+                          rounded: ""
+                        },
+                        on: {
+                          click: function($event) {
+                            _vm.picker = !_vm.picker
+                          }
+                        }
+                      }),
+                      _vm._v(" "),
+                      _vm.picker
+                        ? _c("v-date-picker", {
+                            staticStyle: {
+                              position: "absolute",
+                              "z-index": "4",
+                              top: "20px",
+                              right: "15px"
+                            },
+                            attrs: {
+                              "no-title": "",
+                              locale: "pl",
+                              "first-day-of-week": "1"
+                            },
+                            on: {
+                              input: function($event) {
+                                _vm.picker = false
+                              }
+                            },
+                            model: {
+                              value: _vm.form.date,
+                              callback: function($$v) {
+                                _vm.$set(_vm.form, "date", $$v)
+                              },
+                              expression: "form.date"
+                            }
+                          })
+                        : _vm._e()
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-row",
+        { attrs: { justify: "space-around" } },
+        [
+          _c(
+            "v-card-actions",
+            [
+              _c(
+                "v-col",
+                [
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { dark: "", color: "teal darken-3", rounded: "" },
+                      on: { click: _vm.resetForm }
+                    },
+                    [_vm._v("Anuluj")]
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-col",
+                [
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { dark: "", color: "teal darken-3", rounded: "" },
+                      on: { click: _vm.saveForm }
+                    },
+                    [_vm._v("Zapisz")]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -41209,7 +41259,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [_vm._v("Holidays")])
+  return _c("listcomp", { attrs: { info: _vm.info, name: "holidays" } })
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -41309,11 +41359,11 @@ var render = function() {
                                   "hide-details": ""
                                 },
                                 model: {
-                                  value: _vm.search,
+                                  value: _vm.searched,
                                   callback: function($$v) {
-                                    _vm.search = $$v
+                                    _vm.searched = $$v
                                   },
-                                  expression: "search"
+                                  expression: "searched"
                                 }
                               })
                             ],
@@ -101722,8 +101772,7 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
 
 Vue.component('welcome', __webpack_require__(/*! ./components/Welcome */ "./resources/js/components/Welcome.vue")["default"]);
 Vue.component('mainnav', __webpack_require__(/*! ./components/MainNav */ "./resources/js/components/MainNav.vue")["default"]);
-Vue.component('employeedialog', __webpack_require__(/*! ./components/pages/EmployeeDialog */ "./resources/js/components/pages/EmployeeDialog.vue")["default"]);
-Vue.component('deptdialog', __webpack_require__(/*! ./components/pages/DepartmentDialog */ "./resources/js/components/pages/DepartmentDialog.vue")["default"]);
+Vue.component('listcomp', __webpack_require__(/*! ./components/pages/ListComp */ "./resources/js/components/pages/ListComp.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -102354,6 +102403,75 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/pages/FormDialog.vue":
+/*!******************************************************!*\
+  !*** ./resources/js/components/pages/FormDialog.vue ***!
+  \******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _FormDialog_vue_vue_type_template_id_5b669942___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./FormDialog.vue?vue&type=template&id=5b669942& */ "./resources/js/components/pages/FormDialog.vue?vue&type=template&id=5b669942&");
+/* harmony import */ var _FormDialog_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./FormDialog.vue?vue&type=script&lang=js& */ "./resources/js/components/pages/FormDialog.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _FormDialog_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _FormDialog_vue_vue_type_template_id_5b669942___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _FormDialog_vue_vue_type_template_id_5b669942___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/pages/FormDialog.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/pages/FormDialog.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************!*\
+  !*** ./resources/js/components/pages/FormDialog.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_FormDialog_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./FormDialog.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/pages/FormDialog.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_FormDialog_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/pages/FormDialog.vue?vue&type=template&id=5b669942&":
+/*!*************************************************************************************!*\
+  !*** ./resources/js/components/pages/FormDialog.vue?vue&type=template&id=5b669942& ***!
+  \*************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_FormDialog_vue_vue_type_template_id_5b669942___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./FormDialog.vue?vue&type=template&id=5b669942& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/pages/FormDialog.vue?vue&type=template&id=5b669942&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_FormDialog_vue_vue_type_template_id_5b669942___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_FormDialog_vue_vue_type_template_id_5b669942___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/pages/Forms.vue":
 /*!*************************************************!*\
   !*** ./resources/js/components/pages/Forms.vue ***!
@@ -102418,6 +102536,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Forms_vue_vue_type_template_id_a91be1ee___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Forms_vue_vue_type_template_id_a91be1ee___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/pages/HolidayDialog.vue":
+/*!*********************************************************!*\
+  !*** ./resources/js/components/pages/HolidayDialog.vue ***!
+  \*********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _HolidayDialog_vue_vue_type_template_id_c3cc3fcc___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./HolidayDialog.vue?vue&type=template&id=c3cc3fcc& */ "./resources/js/components/pages/HolidayDialog.vue?vue&type=template&id=c3cc3fcc&");
+/* harmony import */ var _HolidayDialog_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./HolidayDialog.vue?vue&type=script&lang=js& */ "./resources/js/components/pages/HolidayDialog.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _HolidayDialog_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _HolidayDialog_vue_vue_type_template_id_c3cc3fcc___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _HolidayDialog_vue_vue_type_template_id_c3cc3fcc___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/pages/HolidayDialog.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/pages/HolidayDialog.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************!*\
+  !*** ./resources/js/components/pages/HolidayDialog.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_HolidayDialog_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./HolidayDialog.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/pages/HolidayDialog.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_HolidayDialog_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/pages/HolidayDialog.vue?vue&type=template&id=c3cc3fcc&":
+/*!****************************************************************************************!*\
+  !*** ./resources/js/components/pages/HolidayDialog.vue?vue&type=template&id=c3cc3fcc& ***!
+  \****************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_HolidayDialog_vue_vue_type_template_id_c3cc3fcc___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./HolidayDialog.vue?vue&type=template&id=c3cc3fcc& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/pages/HolidayDialog.vue?vue&type=template&id=c3cc3fcc&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_HolidayDialog_vue_vue_type_template_id_c3cc3fcc___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_HolidayDialog_vue_vue_type_template_id_c3cc3fcc___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
@@ -102686,7 +102873,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   state: {
     empls: null,
     supervisors: null,
-    depts: null
+    depts: null,
+    holidays: null
   },
   mutations: {
     assignEmpls: function assignEmpls(state, payload) {
@@ -102698,6 +102886,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     assignDepts: function assignDepts(state, payload) {
       state.depts = payload;
+    },
+    assignHolidays: function assignHolidays(state, payload) {
+      state.holidays = payload;
     }
   },
   actions: {
@@ -102745,6 +102936,29 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             }
           }
         }, _callee2);
+      }))();
+    },
+    getHolidays: function getHolidays(_ref3) {
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+        var commit, res;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                commit = _ref3.commit;
+                _context3.next = 3;
+                return axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/holis');
+
+              case 3:
+                res = _context3.sent;
+                commit('assignHolidays', res.data);
+
+              case 5:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
       }))();
     }
   }

@@ -25,8 +25,7 @@ window.Vue = require('vue');
 
 Vue.component('welcome', require('./components/Welcome').default);
 Vue.component('mainnav', require('./components/MainNav').default);
-Vue.component('employeedialog', require('./components/pages/EmployeeDialog').default);
-Vue.component('deptdialog', require('./components/pages/DepartmentDialog').default);
+Vue.component('listcomp', require('./components/pages/ListComp').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
