@@ -8,6 +8,7 @@ require('./bootstrap');
 import store from './libs/vuex/store'
 import vuetify from './libs/vuetify'
 import router from './libs/router'
+import { EventBus } from './libs/bus';
 
 window.Vue = require('vue');
 
@@ -24,6 +25,8 @@ window.Vue = require('vue');
 
 Vue.component('welcome', require('./components/Welcome').default);
 Vue.component('mainnav', require('./components/MainNav').default);
+Vue.component('employeedialog', require('./components/pages/EmployeeDialog').default);
+Vue.component('deptdialog', require('./components/pages/DepartmentDialog').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

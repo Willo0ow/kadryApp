@@ -6,6 +6,7 @@ import depts from '../components/pages/Departments'
 import empls from '../components/pages/Employees'
 import forms from '../components/pages/Forms'
 import holidays from '../components/pages/Holidays'
+//import listcomp from '../components/ListComp'
 
 
 Vue.use(VueRouter)

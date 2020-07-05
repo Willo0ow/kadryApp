@@ -20,6 +20,9 @@ Auth::routes();
 
 Route::get('/user', 'UserController@user');
 Route::get('/logout', 'UserController@logout');
+Route::resource('/empls', 'EmployeeController');
+Route::resource('/users', 'UserController');
+Route::resource('/depts', 'DepartmentController');
 
 //Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/main/{any}','HomeController@index')->where('any', '.*');

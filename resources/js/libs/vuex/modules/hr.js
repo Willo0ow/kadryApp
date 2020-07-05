@@ -1,0 +1,30 @@
+import Axios from "axios"
+
+export default{
+    state:{
+        empls:null,
+        supervisors:null,
+        depts:null
+    },
+    mutations:{
+        assignEmpls(state, payload){
+            state.empls = payload
+            let res = payload.filter((el)=>el.supervisor==true)
+            state.supervisors = res
+        },
+        assignDepts(state, payload){
+            state.depts = payload
+        },
+    },
+    actions:{
+        async getEmplsAll({commit}){
+            let res = await Axios.get('/empls')
+            commit('assignEmpls', res.data)
+        },
+        async getDepts({commit}){
+            let res = await Axios.get('/depts')
+            commit('assignDepts', res.data)
+        }
+
+    }
+}

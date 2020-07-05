@@ -1,19 +1,15 @@
 <template>
     <v-parallax dark src='./images/background.jpg' style="height:100%; width:100%">
         <v-app-bar permanent app flat class="grey lighten-3">
-            <v-dialog max-width="700px">
-                <template v-slot:activator="{on,attrs}">
-                    <v-btn v-on="on" v-bind="attrs" text>Logowanie</v-btn>
-                </template>
+             <v-btn @click="loginDialog=!loginDialog" text>Logowanie</v-btn>
+            <v-dialog max-width="700px" v-model="loginDialog" v-if="loginDialog">
                 <v-card class="grey lighten-3">
                     <v-card-title class="blue-grey darken-1 white--text">Logowanie</v-card-title>
                     <slot name="form-login"></slot>
                 </v-card>
             </v-dialog>
-            <v-dialog max-width="700px">
-                <template v-slot:activator="{on,attrs}">
-                    <v-btn v-on="on" v-bind="attrs" text>Rejestracja</v-btn>
-                </template>
+            <v-btn @click="registerDialog=!registerDialog" text>Rejestracja</v-btn>
+            <v-dialog max-width="700px" v-model="registerDialog" v-if="registerDialog">
                 <v-card class="grey lighten-3">
                     <v-card-title class="blue-grey darken-1 white--text">Rejestracja</v-card-title>
                     <slot name="form-register"></slot>
@@ -33,6 +29,12 @@
 
 <script>
     export default {
+        data(){
+            return{
+                loginDialog: false,
+                registerDialog:false
+            }
+        },
         mounted() {
             
         }
