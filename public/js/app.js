@@ -2248,6 +2248,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    type: String,
+    pickForm: Object
+  },
   data: function data() {
     return {
       form: {
@@ -2282,17 +2286,37 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _context.next = 2;
+                console.log(_this.type);
+
+                if (!(_this.type == 'new')) {
+                  _context.next = 6;
+                  break;
+                }
+
+                _context.next = 4;
                 return axios.post('/depts', _this.form);
 
-              case 2:
-                _context.next = 4;
+              case 4:
+                _context.next = 9;
+                break;
+
+              case 6:
+                if (!(_this.type == 'edit')) {
+                  _context.next = 9;
+                  break;
+                }
+
+                _context.next = 9;
+                return axios.patch('/depts/' + _this.form.id, _this.form);
+
+              case 9:
+                _context.next = 11;
                 return _this.$store.dispatch('getDepts');
 
-              case 4:
+              case 11:
                 _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog');
 
-              case 5:
+              case 12:
               case "end":
                 return _context.stop();
             }
@@ -2302,7 +2326,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   },
   mounted: function mounted() {},
-  created: function created() {}
+  created: function created() {
+    this.form = this.type == 'new' ? this.form : _objectSpread({}, this.pickForm);
+  }
 });
 
 /***/ }),
@@ -2337,22 +2363,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     return {
       info: {
         pageTitle: 'Działy',
-        //plus button title
         plusTitle: 'Dodaj Dział',
-        //search input won't render
         search: false,
-        //filter select won't render
         filter: false,
-        //selected filter
         filterDept: null,
-        //dialog ot add a record
         dialog: false,
-        //depts:[{name:"HR", id:1, supervisor: 'Jan Kowalski'}, {name:"IT", id:2, supervisor: 'Betty Kowalski'}],
-        // empls: [
-        //     {name:'Jan Kowalski', dept: 1, date_start:'2020-03-16', leave_base: 20, leave_used:0, leave_old:2, position:'programmer', supervisor_id:2, contract_type: 'B2B', user_id:1, leave_full:true, id:1},
-        //     {name:'Anna Kowalski', dept: 2, date_start:'2020-03-16', leave_base: 20, leave_used:0, leave_old:2, position:'programmer', supervisor_id:2, contract_type: 'B2B', user_id:1, leave_full:true, id:1}
-        //     ],
-        //header for the list
         headers: [{
           title: 'Dział',
           cols: 4
@@ -2360,15 +2375,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           title: 'Kierownik',
           cols: 4
         }],
-        //values for the header columns
         keys: [{
           title: 'name',
           cols: 4
         }, {
-          title: 'supervisor',
+          title: 'supervisor_id',
           cols: 4
         }],
-        component: 'deptdialog'
+        component: 'deptdialog',
+        pickForm: null,
+        route: '/depts',
+        getList: 'getDepts',
+        deleteMsg: 'Dział został usunięty',
+        editDialog: false
       }
     };
   },
@@ -2479,7 +2498,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     type: String,
-    item: Object
+    //item:Object,
+    pickForm: Object
   },
   data: function data() {
     return {
@@ -2560,6 +2580,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     depts: function depts(state) {
       return state.hr.depts;
+    },
+    holidays: function holidays(state) {
+      return state.hr.holidays;
     }
   })), {}, {
     selects: function selects() {
@@ -2579,7 +2602,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         items: this.supervisors,
         hint: 'Przełożony',
         model: 'supervisor_id',
-        label: 'label',
+        label: 'name',
         value: 'id'
       }, {
         items: this.depts,
@@ -2613,6 +2636,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   }),
   methods: {
+    checkHolidays: function checkHolidays() {
+      var start = new Date(this.form.date_start);
+      var currMonth = new Date().getMonth();
+      return this.holidays.reduce(function (sum, val) {
+        var holi = new Date(val.date);
+        console.log('1', start <= holi, '2', val.weekend != 0, '3', currMonth >= holi.getMonth()); // if employee's start date is before the holiday, the holiday is on Sat or Sun, the holiday occured earlier this year or this month - add one additional day of leave
+
+        if (start <= holi && val.weekend != 0 && currMonth >= holi.getMonth()) {
+          sum += 1;
+        }
+
+        return sum;
+      }, 0);
+    },
     resetForm: function resetForm() {
       this.form = _objectSpread({}, this.cleanForm);
       _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog');
@@ -2625,17 +2662,37 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _context.next = 2;
+                console.log(_this.type);
+
+                if (!(_this.type == 'new')) {
+                  _context.next = 6;
+                  break;
+                }
+
+                _context.next = 4;
                 return axios.post('/empls', _this.form);
 
-              case 2:
-                _context.next = 4;
+              case 4:
+                _context.next = 9;
+                break;
+
+              case 6:
+                if (!(_this.type == 'edit')) {
+                  _context.next = 9;
+                  break;
+                }
+
+                _context.next = 9;
+                return axios.patch('/empls/' + _this.form.id, _this.form);
+
+              case 9:
+                _context.next = 11;
                 return _this.$store.dispatch('getEmplsAll');
 
-              case 4:
-                _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog'); //console.log('saved');
+              case 11:
+                _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog');
 
-              case 5:
+              case 12:
               case "end":
                 return _context.stop();
             }
@@ -2645,7 +2702,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   },
   created: function created() {
-    this.form = this.item ? this.item : this.form;
+    this.form = this.pickForm ? _objectSpread({}, this.pickForm) : this.form;
   }
 });
 
@@ -2686,14 +2743,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         filter: true,
         filterDept: null,
         dialog: false,
-        // depts:[{label:"HR", id:1}, {label:"IT", id:2}],
-        // empls: [
-        //     {name:'Jan Kowalski', dept: 1, date_start:'2020-03-16', leave_base: 20, leave_used:0, leave_old:2, position:'programmer', supervisor_id:2, contract_type: 'B2B', user_id:1, leave_full:true, id:1},
-        //     {name:'Anna Kowalski', dept: 2, date_start:'2020-03-16', leave_base: 20, leave_used:0, leave_old:2, position:'programmer', supervisor_id:2, contract_type: 'B2B', user_id:1, leave_full:true, id:1}
-        //     ],
+        editDialog: false,
         headers: [{
           title: 'Imię i Nazwisko',
-          cols: 4
+          cols: 3
         }, {
           title: 'Dział',
           cols: 2
@@ -2702,11 +2755,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           cols: 3
         }, {
           title: 'Przełożony',
-          cols: 3
+          cols: 2
         }],
         keys: [{
           title: 'name',
-          cols: 4
+          cols: 3
         }, {
           title: 'dept',
           cols: 2
@@ -2715,9 +2768,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           cols: 3
         }, {
           title: 'supervisor_id',
-          cols: 3
+          cols: 2
         }],
-        component: 'employeedialog'
+        component: 'employeedialog',
+        pickForm: null,
+        route: '/empls',
+        getList: 'getEmplsAll',
+        deleteMsg: 'Pracownik został usunięty'
       }
     };
   },
@@ -2761,7 +2818,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
             case 6:
               _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$on('closeDialog', function () {
-                console.log('bus');
                 _this2.dialog = false;
               });
 
@@ -2786,11 +2842,89 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      types: ['wypoczynkowy', 'okolicznościowy', 'bezpłatny', 'na żądanie', 'inny'],
+      form: {
+        type: null,
+        date_start: '',
+        date_end: '',
+        status: 'new',
+        date_send: null,
+        note: '',
+        reject_msg: '',
+        sub: null
+      }
+    };
+  },
+  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])({
+    empls: function empls(state) {
+      return state.hr.empls;
+    }
+  })), {}, {
+    temp: function temp() {
+      return this.type == 'new' ? {
+        title: 'Dodaj Wniosek Urlopowy'
+      } : {
+        title: 'Wniosek Urlopowy'
+      };
+    },
+    empl: function empl() {
+      var id = this.$route.params.id;
+      return this.empls ? this.empls.find(function (el) {
+        return el.id == id;
+      }) : {};
+    },
+    subs: function subs() {}
+  }),
+  methods: {
+    ifNote: function ifNote() {
+      this.form.type == 'okolicznościowy' || this.form.type == 'na żądanie' ? false : true;
+    },
+    resetForm: function resetForm() {},
+    saveForm: function saveForm() {},
+    sendForm: function sendForm() {}
+  },
   mounted: function mounted() {},
   created: function created() {}
 });
@@ -2806,20 +2940,43 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _libs_bus__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../libs/bus */ "./resources/js/libs/bus.js");
+/* harmony import */ var _ListFormComp__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ListFormComp */ "./resources/js/components/pages/ListFormComp.vue");
 //
 //
 //
 //
+
+
+
 /* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    listformcomp: _ListFormComp__WEBPACK_IMPORTED_MODULE_2__["default"]
+  },
   data: function data() {
-    return {
-      info: {
+    return {};
+  },
+  computed: {
+    pTitle: function pTitle() {
+      var path = this.$route.path;
+
+      if (path == '/allforms') {
+        return 'Wnioski Urlopowe';
+      } else if (path.includes('deptforms')) {
+        return 'Wnioski Urlopowe Dizału ' + this.$route.params.dept;
+      } else {
+        return 'Moje Wnioski Urlopowe';
+      }
+    },
+    info: function info() {
+      return {
         component: 'formdialog',
-        pageTitle: 'Wnioski Urlopowe',
+        pageTitle: this.pTitle,
         plusTitle: 'Dodaj Wniosek Urlopowy',
         searched: '',
-        search: true,
-        filter: true,
+        search: this.filters().search,
+        filter: this.filters().filter,
         filterDept: null,
         dialog: false,
         headers: [{
@@ -2841,9 +2998,32 @@ __webpack_require__.r(__webpack_exports__);
         }, {
           title: 'employee_id',
           cols: 3
-        }]
+        }],
+        editDialog: false
+      };
+    }
+  },
+  methods: {
+    filters: function filters() {
+      var path = this.$route.path;
+
+      if (path == '/allforms') {
+        return {
+          search: true,
+          filter: true
+        };
+      } else if (path.includes('deptforms')) {
+        return {
+          search: true,
+          filter: false
+        };
       }
-    };
+
+      return {
+        search: false,
+        filter: false
+      };
+    }
   },
   mounted: function mounted() {},
   created: function created() {}
@@ -2906,6 +3086,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    type: String,
+    pickForm: Object
+  },
   data: function data() {
     return {
       picker: false,
@@ -2930,43 +3114,151 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   }),
   methods: {
-    resetForm: function resetForm() {
-      //this.form = {...this.cleanForm}
-      _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog');
-    },
-    saveForm: function saveForm() {
+    checkHoliday: function checkHoliday() {
       var _this = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-        var date, weekend;
+        var currMonth, holiMonth;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                date = new Date(_this.form.date);
-                weekend = [5, 6].indexOf(date.getDay()) ? true : false;
-                _this.form.weekend = weekend;
+                currMonth = new Date().getMonth();
+                holiMonth = new Date(_this.form.date).getMonth();
+
+                if (!(_this.form.weekend && currMonth == holiMonth)) {
+                  _context.next = 5;
+                  break;
+                }
+
                 _context.next = 5;
-                return axios.post('/holis', _this.form);
+                return axios.post('/updateLeaveAdd?newDate=' + _this.form.date + '&oldDate=&num=1&change=false');
 
               case 5:
-                _context.next = 7;
-                return _this.$store.dispatch('getHolidays');
-
-              case 7:
-                _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog');
-
-              case 8:
               case "end":
                 return _context.stop();
             }
           }
         }, _callee);
       }))();
+    },
+    checkEditHoliday: function checkEditHoliday() {
+      var _this2 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+        var now, form;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                now = new Date().getMonth();
+                form = new Date(_this2.form.date).getMonth();
+
+                if (!(_this2.pickForm.weekend == 1 && _this2.form.weekend == 0)) {
+                  _context2.next = 7;
+                  break;
+                }
+
+                _context2.next = 5;
+                return axios.post('/updateLeaveAdd?newDate=' + _this2.form.date + '&oldDate=' + _this2.pickForm.date + '&num=-1&change=false');
+
+              case 5:
+                _context2.next = 15;
+                break;
+
+              case 7:
+                if (!(_this2.pickForm.weekend == 0 && _this2.form.weekend == 1 && form <= now)) {
+                  _context2.next = 12;
+                  break;
+                }
+
+                _context2.next = 10;
+                return axios.post('/updateLeaveAdd?newDate=' + _this2.form.date + '&oldDate=' + _this2.pickForm.date + '&num=1&change=false');
+
+              case 10:
+                _context2.next = 15;
+                break;
+
+              case 12:
+                if (!(_this2.pickForm.weekend == 1 && _this2.form.weekend == 1 && form <= now)) {
+                  _context2.next = 15;
+                  break;
+                }
+
+                _context2.next = 15;
+                return axios.post('/updateLeaveAdd?newDate=' + _this2.form.date + '&oldDate=' + _this2.pickForm.date + '&num=1&change=true');
+
+              case 15:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }))();
+    },
+    resetForm: function resetForm() {
+      _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog');
+    },
+    saveForm: function saveForm() {
+      var _this3 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+        var date, weekend;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                date = new Date(_this3.form.date);
+                weekend = [6, 0].includes(date.getDay()) ? true : false;
+                _this3.form.weekend = weekend;
+
+                if (!(_this3.type == 'new')) {
+                  _context3.next = 9;
+                  break;
+                }
+
+                _this3.checkHoliday();
+
+                _context3.next = 7;
+                return axios.post('/holis', _this3.form);
+
+              case 7:
+                _context3.next = 14;
+                break;
+
+              case 9:
+                if (!(_this3.type == 'edit')) {
+                  _context3.next = 14;
+                  break;
+                }
+
+                _context3.next = 12;
+                return _this3.checkEditHoliday();
+
+              case 12:
+                _context3.next = 14;
+                return axios.patch('/holis/' + _this3.form.id, _this3.form);
+
+              case 14:
+                _context3.next = 16;
+                return _this3.$store.dispatch('getHolidays');
+
+              case 16:
+                _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog');
+
+              case 17:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }))();
     }
   },
   mounted: function mounted() {},
-  created: function created() {}
+  created: function created() {
+    this.form = this.type == 'new' ? this.form : _objectSpread({}, this.pickForm);
+  }
 });
 
 /***/ }),
@@ -2980,14 +3272,18 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
+    var _info;
+
     return {
-      info: {
+      info: (_info = {
         component: 'holidaydialog',
         pageTitle: 'Dni Wolne od Pracy',
         plusTitle: 'Dodaj Dzień Wolny',
@@ -2998,25 +3294,25 @@ __webpack_require__.r(__webpack_exports__);
         dialog: false,
         headers: [{
           title: 'Nazwa Święta',
-          cols: 5
+          cols: 4
         }, {
           title: 'Data',
           cols: 3
         }, {
           title: 'Weekend',
-          cols: 3
+          cols: 2
         }],
         keys: [{
           title: 'name',
-          cols: 5
+          cols: 4
         }, {
           title: 'date',
           cols: 3
         }, {
           title: 'weekend',
-          cols: 3
+          cols: 2
         }]
-      }
+      }, _defineProperty(_info, "component", 'holidaydialog'), _defineProperty(_info, "pickForm", null), _defineProperty(_info, "route", '/holis'), _defineProperty(_info, "getList", 'getHolidays'), _defineProperty(_info, "deleteMsg", 'Dzień wolny został usunięty'), _defineProperty(_info, "editDialog", false), _info)
     };
   },
   mounted: function mounted() {},
@@ -3104,6 +3400,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -3130,10 +3434,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                     search:// true - enables search input in the header
                     filter:// true - enables filter-select
                     filterDept:null,
+                    editDialog: //false - dialog to edit a record, hidden at mount
                     dialog: //false - dialog to add a new record hidden at mount
                     headers: //headers for the list [{title:'Imię i Nazwisko', cols:4}],
                     keys: //keys for the values of the list [{title:'name', cols:4}],
-                    component: //name of the component that renders in dialog
+                    component: //name of the component that renders in dialog,
+                    pickForm: //null - prop will be assigned to and sent to editdialog,
+                    route: // route to controller,
+                    getList: // dispatch action in vuex to get items for the list,
+                    deleteMsg: // message to display when item of the list is deleted
                 } */
   },
   computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_5__["mapState"])({
@@ -3170,42 +3479,299 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     }
   }),
-  methods: {},
-  mounted: function mounted() {
-    var _this2 = this;
+  methods: {
+    edit: function edit(item) {
+      this.pickForm = item;
+      console.log(item);
+      this.editDialog = !this.editDialog;
+    },
+    remove: function remove(id, item) {
+      var _this2 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                console.log(id);
+                _context.next = 3;
+                return axios["delete"](_this2.route + '/' + id);
+
+              case 3:
+                _context.next = 5;
+                return _this2.$store.dispatch(_this2.getList);
+
+              case 5:
+                alert(_this2.deleteMsg);
+
+              case 6:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }))();
+    }
+  },
+  mounted: function mounted() {
+    var _this3 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
         while (1) {
-          switch (_context.prev = _context.next) {
+          switch (_context2.prev = _context2.next) {
             case 0:
-              _context.next = 2;
-              return _this2.$store.dispatch('getUsers');
+              _context2.next = 2;
+              return _this3.$store.dispatch('getUsers');
 
             case 2:
-              _context.next = 4;
-              return _this2.$store.dispatch('getEmplsAll');
+              _context2.next = 4;
+              return _this3.$store.dispatch('getEmplsAll');
 
             case 4:
-              _context.next = 6;
-              return _this2.$store.dispatch('getDepts');
+              _context2.next = 6;
+              return _this3.$store.dispatch('getDepts');
 
             case 6:
-              _context.next = 8;
-              return _this2.$store.dispatch('getHolidays');
+              _context2.next = 8;
+              return _this3.$store.dispatch('getHolidays');
 
             case 8:
               _libs_bus__WEBPACK_IMPORTED_MODULE_6__["default"].$on('closeDialog', function () {
-                console.log('bus');
-                _this2.dialog = false;
+                _this3.dialog = false;
+                _this3.editDialog = false;
               });
 
             case 9:
             case "end":
-              return _context.stop();
+              return _context2.stop();
           }
         }
-      }, _callee);
+      }, _callee2);
+    }))();
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/pages/ListFormComp.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/pages/ListFormComp.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _FormDialog__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./FormDialog */ "./resources/js/components/pages/FormDialog.vue");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _libs_bus__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../libs/bus */ "./resources/js/libs/bus.js");
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    formdialog: _FormDialog__WEBPACK_IMPORTED_MODULE_1__["default"]
+  },
+  props: {
+    info: Object,
+    name: String
+  },
+  data: function data() {
+    return _objectSpread({}, this.info);
+    /*         info:{
+                    pageTitle://title of the main card
+                    plusTitle://name of plus button to add a new record
+                    searched://searched phrase, if enabled, set ''
+                    search:// true - enables search input in the header
+                    filter:// true - enables filter-select
+                    filterDept:null,
+                    editDialog: //false - dialog to edit a record, hidden at mount
+                    dialog: //false - dialog to add a new record hidden at mount
+                    headers: //headers for the list [{title:'Imię i Nazwisko', cols:4}],
+                    keys: //keys for the values of the list [{title:'name', cols:4}],
+                    component: //name of the component that renders in dialog,
+                    pickForm: //null - prop will be assigned to and sent to editdialog,
+                    route: // route to controller,
+                    getList: // dispatch action in vuex to get items for the list,
+                    deleteMsg: // message to display when item of the list is deleted
+                } */
+  },
+  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapState"])({
+    depts: function depts(state) {
+      return state.hr.depts;
+    },
+    empls: function empls(state) {
+      return state.hr.empls;
+    },
+    holidays: function holidays(state) {
+      return state.hr.holidays;
+    }
+  })), {}, {
+    items: function items() {
+      var _this = this;
+
+      if (this.name == 'depts' && this.depts) {
+        return this.depts;
+      } else if (this.name == 'empls' && this.empls) {
+        var res = this.filterDept ? this.empls.filter(function (el) {
+          return el.dept == _this.filterDept;
+        }) : this.empls;
+
+        if (this.searched) {
+          res = res.filter(function (el) {
+            var str = el.name.toLowerCase();
+            return str.includes(_this.searched.toLowerCase());
+          });
+        }
+
+        return res;
+      } else if (this.name == 'holidays' && this.holidays) {
+        return this.holidays;
+      }
+    }
+  }),
+  methods: {
+    edit: function edit(item) {
+      this.pickForm = item;
+      console.log(item);
+      this.editDialog = !this.editDialog;
+    },
+    remove: function remove(id) {
+      var _this2 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                console.log(id);
+                _context.next = 3;
+                return axios["delete"](_this2.route + '/' + id);
+
+              case 3:
+                _context.next = 5;
+                return _this2.$store.dispatch(_this2.getList);
+
+              case 5:
+                alert(_this2.deleteMsg);
+
+              case 6:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }))();
+    }
+  },
+  mounted: function mounted() {
+    var _this3 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.next = 2;
+              return _this3.$store.dispatch('getUsers');
+
+            case 2:
+              _context2.next = 4;
+              return _this3.$store.dispatch('getEmplsAll');
+
+            case 4:
+              _context2.next = 6;
+              return _this3.$store.dispatch('getDepts');
+
+            case 6:
+              _context2.next = 8;
+              return _this3.$store.dispatch('getHolidays');
+
+            case 8:
+              _libs_bus__WEBPACK_IMPORTED_MODULE_3__["default"].$on('closeDialog', function () {
+                _this3.dialog = false;
+                _this3.editDialog = false;
+              });
+
+            case 9:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2);
     }))();
   }
 });
@@ -40227,9 +40793,9 @@ var render = function() {
                                       _vm._v("mdi-account")
                                     ]),
                                     _vm._v(
-                                      "\n                            " +
+                                      "\r\n                    " +
                                         _vm._s(_vm.user.name) +
-                                        "\n                        "
+                                        "\r\n                "
                                     )
                                   ],
                                   1
@@ -40241,7 +40807,7 @@ var render = function() {
                     ],
                     null,
                     false,
-                    3129711284
+                    3280902772
                   )
                 },
                 [
@@ -41042,7 +41608,149 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div")
+  return _c(
+    "v-card",
+    { staticClass: "gradient" },
+    [
+      _vm.empl ? _c("h1", [_vm._v("empl")]) : _vm._e(),
+      _vm._v(" "),
+      _c(
+        "v-card-title",
+        { staticClass: "headline white--text justify-center" },
+        [_vm._v(_vm._s(_vm.temp.title))]
+      ),
+      _vm._v(" "),
+      _c(
+        "v-card-text",
+        [
+          _c(
+            "v-container",
+            [
+              _c(
+                "v-row",
+                [
+                  _vm.empls
+                    ? _c(
+                        "v-col",
+                        [
+                          _vm.ifNote()
+                            ? _c("v-text-field", {
+                                attrs: {
+                                  hint: "Powód urlopu",
+                                  "persistent-hint": "",
+                                  "single-line": "",
+                                  dense: "",
+                                  autocomplete: "off",
+                                  dark: "",
+                                  filled: "",
+                                  rounded: ""
+                                },
+                                model: {
+                                  value: _vm.form.note,
+                                  callback: function($$v) {
+                                    _vm.$set(_vm.form, "note", $$v)
+                                  },
+                                  expression: "form.note"
+                                }
+                              })
+                            : _vm._e(),
+                          _vm._v(" "),
+                          _c("v-select", {
+                            attrs: {
+                              items: _vm.empls,
+                              "item-text": "name",
+                              "item-value": "id",
+                              hint: "Wybierz kierownika działu",
+                              "persistent-hint": "",
+                              "single-line": "",
+                              dense: "",
+                              autocomplete: "off",
+                              dark: "",
+                              filled: "",
+                              rounded: ""
+                            },
+                            model: {
+                              value: _vm.form.supervisor_id,
+                              callback: function($$v) {
+                                _vm.$set(_vm.form, "supervisor_id", $$v)
+                              },
+                              expression: "form.supervisor_id"
+                            }
+                          })
+                        ],
+                        1
+                      )
+                    : _vm._e()
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-row",
+        { attrs: { justify: "space-around" } },
+        [
+          _c(
+            "v-card-actions",
+            [
+              _c(
+                "v-col",
+                [
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { dark: "", color: "teal darken-3", rounded: "" },
+                      on: { click: _vm.resetForm }
+                    },
+                    [_vm._v("Anuluj")]
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-col",
+                [
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { dark: "", color: "teal darken-3", rounded: "" },
+                      on: { click: _vm.saveForm }
+                    },
+                    [_vm._v("Zapisz")]
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-col",
+                [
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { dark: "", color: "teal darken-3", rounded: "" },
+                      on: { click: _vm.sendForm }
+                    },
+                    [_vm._v("Wyślij")]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -41066,7 +41774,9 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("listcomp", { attrs: { info: _vm.info, name: "forms" } })
+  return _vm.pTitle
+    ? _c("listformcomp", { attrs: { info: _vm.info, name: "forms" } })
+    : _vm._e()
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -41463,30 +42173,34 @@ var render = function() {
                       _c(
                         "v-row",
                         { attrs: { align: "center", justify: "center" } },
-                        _vm._l(_vm.headers, function(ref) {
-                          var title = ref.title
-                          var cols = ref.cols
-                          return _c(
-                            "v-col",
-                            {
-                              key: title,
-                              staticClass: "py-0",
-                              attrs: { cols: cols }
-                            },
-                            [
-                              _c(
-                                "v-card-subtitle",
-                                {
-                                  staticClass:
-                                    "font-weight-bold py-2 text-center"
-                                },
-                                [_vm._v(_vm._s(title))]
-                              )
-                            ],
-                            1
-                          )
-                        }),
-                        1
+                        [
+                          _vm._l(_vm.headers, function(ref) {
+                            var title = ref.title
+                            var cols = ref.cols
+                            return _c(
+                              "v-col",
+                              {
+                                key: title,
+                                staticClass: "py-0",
+                                attrs: { cols: cols }
+                              },
+                              [
+                                _c(
+                                  "v-card-subtitle",
+                                  {
+                                    staticClass:
+                                      "font-weight-bold py-2 text-center"
+                                  },
+                                  [_vm._v(_vm._s(title))]
+                                )
+                              ],
+                              1
+                            )
+                          }),
+                          _vm._v(" "),
+                          _c("v-col", { attrs: { cols: "2" } })
+                        ],
+                        2
                       )
                     ],
                     1
@@ -41504,6 +42218,7 @@ var render = function() {
                         key: "default",
                         fn: function(ref) {
                           var item = ref.item
+                          var index = ref.index
                           return [
                             _c(
                               "v-list-item",
@@ -41524,33 +42239,493 @@ var render = function() {
                                           justify: "center"
                                         }
                                       },
-                                      _vm._l(_vm.keys, function(ref) {
-                                        var title = ref.title
-                                        var cols = ref.cols
-                                        return _c(
+                                      [
+                                        _vm._l(_vm.keys, function(ref) {
+                                          var title = ref.title
+                                          var cols = ref.cols
+                                          return _c(
+                                            "v-col",
+                                            {
+                                              key: title,
+                                              staticClass: "py-0",
+                                              attrs: {
+                                                cols: cols,
+                                                justify: "center"
+                                              }
+                                            },
+                                            [
+                                              _c(
+                                                "v-card-subtitle",
+                                                {
+                                                  staticClass:
+                                                    "font-weight-bold py-2 text-center"
+                                                },
+                                                [_vm._v(_vm._s(item[title]))]
+                                              )
+                                            ],
+                                            1
+                                          )
+                                        }),
+                                        _vm._v(" "),
+                                        _c(
                                           "v-col",
-                                          {
-                                            key: title,
-                                            staticClass: "py-0",
-                                            attrs: {
-                                              cols: cols,
-                                              justify: "center"
-                                            }
-                                          },
                                           [
                                             _c(
-                                              "v-card-subtitle",
+                                              "v-btn",
                                               {
-                                                staticClass:
-                                                  "font-weight-bold py-2 text-center"
+                                                attrs: { text: "", small: "" },
+                                                on: {
+                                                  click: function($event) {
+                                                    return _vm.edit(
+                                                      _vm.items[index]
+                                                    )
+                                                  }
+                                                }
                                               },
-                                              [_vm._v(_vm._s(item[title]))]
+                                              [
+                                                _c("v-icon", [
+                                                  _vm._v("mdi-pencil")
+                                                ])
+                                              ],
+                                              1
+                                            ),
+                                            _vm._v(" "),
+                                            _vm.editDialog
+                                              ? _c(
+                                                  "v-dialog",
+                                                  {
+                                                    model: {
+                                                      value: _vm.editDialog,
+                                                      callback: function($$v) {
+                                                        _vm.editDialog = $$v
+                                                      },
+                                                      expression: "editDialog"
+                                                    }
+                                                  },
+                                                  [
+                                                    _c(_vm.component, {
+                                                      tag: "component",
+                                                      attrs: {
+                                                        type: "edit",
+                                                        pickForm: _vm.pickForm
+                                                      }
+                                                    })
+                                                  ],
+                                                  1
+                                                )
+                                              : _vm._e()
+                                          ],
+                                          1
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "v-col",
+                                          [
+                                            _c(
+                                              "v-icon",
+                                              {
+                                                on: {
+                                                  click: function($event) {
+                                                    return _vm.remove(
+                                                      item.id,
+                                                      item
+                                                    )
+                                                  }
+                                                }
+                                              },
+                                              [_vm._v("mdi-trash-can")]
                                             )
                                           ],
                                           1
                                         )
-                                      }),
-                                      1
+                                      ],
+                                      2
+                                    )
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            )
+                          ]
+                        }
+                      }
+                    ])
+                  })
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/pages/ListFormComp.vue?vue&type=template&id=434e58c7&":
+/*!*********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/pages/ListFormComp.vue?vue&type=template&id=434e58c7& ***!
+  \*********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "v-container",
+    {
+      staticStyle: { height: "calc(100% - 56px)", "max-width": "1200px" },
+      attrs: { fluid: "" }
+    },
+    [
+      _c(
+        "v-row",
+        [
+          _c(
+            "v-col",
+            [
+              _c(
+                "v-card",
+                {
+                  staticClass: "gradient",
+                  attrs: { app: "", raised: "", dark: "" }
+                },
+                [
+                  _c(
+                    "v-row",
+                    { attrs: { justify: "center", align: "center" } },
+                    [
+                      _vm.filter
+                        ? _c(
+                            "v-col",
+                            [
+                              _vm.depts
+                                ? _c("v-select", {
+                                    attrs: {
+                                      items: _vm.depts,
+                                      calss: "shrink",
+                                      "item-text": "label",
+                                      placeholder: "Filtruj po dziale",
+                                      "item-value": "id",
+                                      clearable: "",
+                                      "single-line": "",
+                                      dense: "",
+                                      autocomplete: "off",
+                                      dark: "",
+                                      filled: "",
+                                      rounded: "",
+                                      "hide-details": ""
+                                    },
+                                    model: {
+                                      value: _vm.filterDept,
+                                      callback: function($$v) {
+                                        _vm.filterDept = $$v
+                                      },
+                                      expression: "filterDept"
+                                    }
+                                  })
+                                : _vm._e()
+                            ],
+                            1
+                          )
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.search
+                        ? _c(
+                            "v-col",
+                            [
+                              _c("v-text-field", {
+                                attrs: {
+                                  type: "search",
+                                  placeholder: "Szukaj Pracownika",
+                                  "single-line": "",
+                                  dense: "",
+                                  autocomplete: "off",
+                                  dark: "",
+                                  filled: "",
+                                  rounded: "",
+                                  "hide-details": ""
+                                },
+                                model: {
+                                  value: _vm.searched,
+                                  callback: function($$v) {
+                                    _vm.searched = $$v
+                                  },
+                                  expression: "searched"
+                                }
+                              })
+                            ],
+                            1
+                          )
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _c(
+                        "v-col",
+                        [
+                          _c(
+                            "v-btn",
+                            {
+                              attrs: { text: "" },
+                              on: {
+                                click: function($event) {
+                                  _vm.dialog = !_vm.dialog
+                                }
+                              }
+                            },
+                            [
+                              _c("v-icon", [_vm._v("mdi-plus")]),
+                              _vm._v(
+                                "\n                            " +
+                                  _vm._s(_vm.plusTitle) +
+                                  "\n                        "
+                              )
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _vm.dialog
+                            ? _c(
+                                "v-dialog",
+                                {
+                                  model: {
+                                    value: _vm.dialog,
+                                    callback: function($$v) {
+                                      _vm.dialog = $$v
+                                    },
+                                    expression: "dialog"
+                                  }
+                                },
+                                [_c("formdialog", { attrs: { type: "new" } })],
+                                1
+                              )
+                            : _vm._e()
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-row",
+        { staticClass: "fill-height" },
+        [
+          _c(
+            "v-col",
+            [
+              _c(
+                "v-card",
+                {
+                  staticClass: "gradient",
+                  staticStyle: { height: "100%" },
+                  attrs: { app: "", raised: "", dark: "" }
+                },
+                [
+                  _c(
+                    "v-card-title",
+                    { staticClass: "text-h5 justify-center" },
+                    [_vm._v(_vm._s(_vm.pageTitle))]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-card",
+                    {
+                      staticClass: "cyan darken-4 ml-3 mb-2",
+                      attrs: { dark: "", width: "94.5%" }
+                    },
+                    [
+                      _c(
+                        "v-row",
+                        { attrs: { align: "center", justify: "center" } },
+                        [
+                          _vm._l(_vm.headers, function(ref) {
+                            var title = ref.title
+                            var cols = ref.cols
+                            return _c(
+                              "v-col",
+                              {
+                                key: title,
+                                staticClass: "py-0",
+                                attrs: { cols: cols }
+                              },
+                              [
+                                _c(
+                                  "v-card-subtitle",
+                                  {
+                                    staticClass:
+                                      "font-weight-bold py-2 text-center"
+                                  },
+                                  [_vm._v(_vm._s(title))]
+                                )
+                              ],
+                              1
+                            )
+                          }),
+                          _vm._v(" "),
+                          _c("v-col", { attrs: { cols: "2" } })
+                        ],
+                        2
+                      )
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c("v-virtual-scroll", {
+                    attrs: {
+                      dense: "",
+                      height: "350px",
+                      items: _vm.items,
+                      "item-height": 60
+                    },
+                    scopedSlots: _vm._u([
+                      {
+                        key: "default",
+                        fn: function(ref) {
+                          var item = ref.item
+                          var index = ref.index
+                          return [
+                            _c(
+                              "v-list-item",
+                              { key: item.id },
+                              [
+                                _c(
+                                  "v-card",
+                                  {
+                                    staticClass: "my-1 transparent",
+                                    attrs: { width: "97%" }
+                                  },
+                                  [
+                                    _c(
+                                      "v-row",
+                                      {
+                                        attrs: {
+                                          align: "center",
+                                          justify: "center"
+                                        }
+                                      },
+                                      [
+                                        _vm._l(_vm.keys, function(ref) {
+                                          var title = ref.title
+                                          var cols = ref.cols
+                                          return _c(
+                                            "v-col",
+                                            {
+                                              key: title,
+                                              staticClass: "py-0",
+                                              attrs: {
+                                                cols: cols,
+                                                justify: "center"
+                                              }
+                                            },
+                                            [
+                                              _c(
+                                                "v-card-subtitle",
+                                                {
+                                                  staticClass:
+                                                    "font-weight-bold py-2 text-center"
+                                                },
+                                                [_vm._v(_vm._s(item[title]))]
+                                              )
+                                            ],
+                                            1
+                                          )
+                                        }),
+                                        _vm._v(" "),
+                                        _c(
+                                          "v-col",
+                                          [
+                                            _c(
+                                              "v-btn",
+                                              {
+                                                attrs: { text: "", small: "" },
+                                                on: {
+                                                  click: function($event) {
+                                                    return _vm.edit(
+                                                      _vm.items[index]
+                                                    )
+                                                  }
+                                                }
+                                              },
+                                              [
+                                                _c("v-icon", [
+                                                  _vm._v("mdi-pencil")
+                                                ])
+                                              ],
+                                              1
+                                            ),
+                                            _vm._v(" "),
+                                            _vm.editDialog
+                                              ? _c(
+                                                  "v-dialog",
+                                                  {
+                                                    model: {
+                                                      value: _vm.editDialog,
+                                                      callback: function($$v) {
+                                                        _vm.editDialog = $$v
+                                                      },
+                                                      expression: "editDialog"
+                                                    }
+                                                  },
+                                                  [
+                                                    _c(_vm.component, {
+                                                      tag: "component",
+                                                      attrs: {
+                                                        type: "edit",
+                                                        pickForm: _vm.pickForm
+                                                      }
+                                                    })
+                                                  ],
+                                                  1
+                                                )
+                                              : _vm._e()
+                                          ],
+                                          1
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "v-col",
+                                          [
+                                            _c(
+                                              "v-icon",
+                                              {
+                                                on: {
+                                                  click: function($event) {
+                                                    return _vm.remove(item.id)
+                                                  }
+                                                }
+                                              },
+                                              [_vm._v("mdi-trash-can")]
+                                            )
+                                          ],
+                                          1
+                                        )
+                                      ],
+                                      2
                                     )
                                   ],
                                   1
@@ -102748,6 +103923,75 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/pages/ListFormComp.vue":
+/*!********************************************************!*\
+  !*** ./resources/js/components/pages/ListFormComp.vue ***!
+  \********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ListFormComp_vue_vue_type_template_id_434e58c7___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ListFormComp.vue?vue&type=template&id=434e58c7& */ "./resources/js/components/pages/ListFormComp.vue?vue&type=template&id=434e58c7&");
+/* harmony import */ var _ListFormComp_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ListFormComp.vue?vue&type=script&lang=js& */ "./resources/js/components/pages/ListFormComp.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _ListFormComp_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _ListFormComp_vue_vue_type_template_id_434e58c7___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ListFormComp_vue_vue_type_template_id_434e58c7___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/pages/ListFormComp.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/pages/ListFormComp.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************!*\
+  !*** ./resources/js/components/pages/ListFormComp.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ListFormComp_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./ListFormComp.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/pages/ListFormComp.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ListFormComp_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/pages/ListFormComp.vue?vue&type=template&id=434e58c7&":
+/*!***************************************************************************************!*\
+  !*** ./resources/js/components/pages/ListFormComp.vue?vue&type=template&id=434e58c7& ***!
+  \***************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ListFormComp_vue_vue_type_template_id_434e58c7___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./ListFormComp.vue?vue&type=template&id=434e58c7& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/pages/ListFormComp.vue?vue&type=template&id=434e58c7&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ListFormComp_vue_vue_type_template_id_434e58c7___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ListFormComp_vue_vue_type_template_id_434e58c7___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/libs/bus.js":
 /*!**********************************!*\
   !*** ./resources/js/libs/bus.js ***!
@@ -103101,8 +104345,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\xampp\htdocs\projekty\kadryApp\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\projekty\kadryApp\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

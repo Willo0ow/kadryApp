@@ -39,7 +39,8 @@ import EventBus from '../../libs/bus';
 export default {
     props:{
         type: String,
-        item:Object
+        //item:Object,
+        pickForm:Object,
     },
     data(){
         return{
@@ -89,13 +90,14 @@ export default {
             //employees: state => state.hr.employees
             supervisors: state => state.hr.supervisors,
             users: state => state.user.users,
-            depts: state => state.hr.depts
+            depts: state => state.hr.depts,
+            holidays: state => state.hr.holidays
         }),
         selects(){
             return [
                 {items:this.users, hint:'user', model:'user_id', label:'name', value:'id'},
                 {items:this.contract, hint:'umowa', model:'contract_type', label:'label', value:'label'},
-                {items:this.supervisors, hint:'Przełożony', model:'supervisor_id', label:'label', value:'id'},
+                {items:this.supervisors, hint:'Przełożony', model:'supervisor_id', label:'name', value:'id'},
                 {items:this.depts, hint:'dzial', model:'dept', label:'name', value:'name'}
             ]
         },
@@ -111,21 +113,37 @@ export default {
         },
     },
     methods:{
+        checkHolidays(){
+            let start = new Date(this.form.date_start)
+            let currMonth = new Date().getMonth()
+            return this.holidays.reduce((sum, val)=>{
+                let holi = new Date(val.date)
+                console.log('1', start<=holi, '2', val.weekend != 0, '3', currMonth>= holi.getMonth() );
+                // if employee's start date is before the holiday, the holiday is on Sat or Sun, the holiday occured earlier this year or this month - add one additional day of leave
+                if(start<=holi && val.weekend != 0 && currMonth>= holi.getMonth()){
+                    sum +=1
+                }
+                return sum
+            },0)
+        },
         resetForm(){
             this.form = {...this.cleanForm}
             EventBus.$emit('closeDialog')
         },
         async saveForm(){
-            await axios.post('/empls', this.form)
+            console.log(this.type);
+            if(this.type == 'new'){
+                await axios.post('/empls', this.form)
+            } else if (this.type == 'edit'){
+                await axios.patch('/empls/'+ this.form.id, this.form)
+            }
             await this.$store.dispatch('getEmplsAll')
             EventBus.$emit('closeDialog')
-            //console.log('saved');
-
-            
         }
     },
     created(){
-        this.form = this.item? this.item : this.form
+        this.form = this.pickForm? {...this.pickForm} : this.form
+        
     }
 }
 </script>

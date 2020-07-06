@@ -1,17 +1,17 @@
 <template>
 <div>
     <v-app-bar app class="gradient" dark elevation="0">
-                <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-                <v-spacer></v-spacer>
-                <v-menu open-on-hover bottom offset-y v-if="user" content-class="transparent">
-                    <template v-slot:activator="{ on, attrs }">
-                       <v-chip v-if="user" class="transparent pr-10" v-bind="attrs" v-on="on">
-                            <v-icon class="mr-2" >mdi-account</v-icon>
-                            {{user.name}}
-                        </v-chip>
-                    </template>
-                    <v-btn @click="logout" width="100%" class="logout"><a href="/">Wyloguj</a></v-btn>
-                </v-menu>
+        <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+        <v-spacer></v-spacer>
+        <v-menu open-on-hover bottom offset-y v-if="user" content-class="transparent">
+            <template v-slot:activator="{ on, attrs }">
+                <v-chip v-if="user" class="transparent pr-10" v-bind="attrs" v-on="on">
+                    <v-icon class="mr-2" >mdi-account</v-icon>
+                    {{user.name}}
+                </v-chip>
+            </template>
+            <v-btn @click="logout" width="100%" class="logout"><a href="/">Wyloguj</a></v-btn>
+        </v-menu>
     </v-app-bar>
     <v-navigation-drawer 
         v-model="drawer" 

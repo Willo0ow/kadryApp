@@ -71,7 +71,7 @@
             <v-app class="full-height">
                 <mainnav></mainnav>
                 <v-main class="teal-bg">
-                    <router-view></router-view>
+                    <router-view :key="$route.path"></router-view>
                 </v-main>
             </v-app>
         </div>

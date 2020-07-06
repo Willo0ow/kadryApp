@@ -15,8 +15,14 @@
                     filter:false,
                     filterDept:null,
                     dialog: false,
-                    headers: [{title:'Nazwa Święta', cols:5}, {title:'Data', cols:3}, {title:'Weekend', cols:3}],
-                    keys: [{title:'name', cols:5}, {title:'date', cols:3}, {title:'weekend', cols:3}],
+                    headers: [{title:'Nazwa Święta', cols:4}, {title:'Data', cols:3}, {title:'Weekend', cols:2}],
+                    keys: [{title:'name', cols:4}, {title:'date', cols:3}, {title:'weekend', cols:2}],
+                    component: 'holidaydialog',
+                    pickForm: null,
+                    route: '/holis',
+                    getList: 'getHolidays',
+                    deleteMsg: 'Dzień wolny został usunięty',
+                    editDialog: false
                 }
             }
         },

@@ -28,6 +28,10 @@
 import {mapState} from 'vuex'
 import EventBus from '../../libs/bus';
     export default {
+        props:{
+            type:String,
+            pickForm: Object
+        },
         data(){
             return {
                 form: {
@@ -51,7 +55,12 @@ import EventBus from '../../libs/bus';
                 EventBus.$emit('closeDialog')
             },
             async saveForm(){
-                await axios.post('/depts', this.form)
+                console.log(this.type);
+                if(this.type == 'new'){
+                    await axios.post('/depts', this.form)
+                } else if (this.type == 'edit'){
+                    await axios.patch('/depts/'+ this.form.id, this.form)
+                }
                 await this.$store.dispatch('getDepts')
                 EventBus.$emit('closeDialog')
             }
@@ -60,7 +69,7 @@ import EventBus from '../../libs/bus';
 
         },
         created(){
-            
+            this.form = this.type == 'new'? this.form : {...this.pickForm}
         }
     }
 </script>

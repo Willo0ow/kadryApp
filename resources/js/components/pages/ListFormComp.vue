@@ -16,7 +16,7 @@
                                 {{plusTitle}}
                             </v-btn>
                             <v-dialog v-model="dialog" v-if="dialog">
-                                <component :is="component" type="new"></component>
+                                <formdialog type="new"></formdialog>
                             </v-dialog>
                         </v-col>
                     </v-row>
@@ -45,7 +45,7 @@
                                                 <component :is="component" type="edit" :pickForm="pickForm"></component>
                                             </v-dialog>
                                         </v-col>
-                                        <v-col><v-icon @click="remove(item.id, item)">mdi-trash-can</v-icon></v-col>
+                                        <v-col><v-icon @click="remove(item.id)">mdi-trash-can</v-icon></v-col>
                                     </v-row>
                                 </v-card>
                             </v-list-item>
@@ -58,14 +58,11 @@
 </template>
 <script>
 import formdialog from './FormDialog'
-import holidaydialog from './HolidayDialog'
-import employeedialog from './EmployeeDialog'
-import deptdialog from './DepartmentDialog'
 import {mapState} from 'vuex'
 import EventBus from '../../libs/bus';
 export default {
     components:{
-        formdialog,holidaydialog,employeedialog,deptdialog
+        formdialog
     },
     props:{info:Object, name:String},
     data(){
@@ -117,7 +114,7 @@ export default {
             console.log(item);
             this.editDialog = !this.editDialog
         },
-        async remove(id, item){
+        async remove(id){
             console.log(id);
             await axios.delete(this.route + '/'+ id)
             await this.$store.dispatch(this.getList)

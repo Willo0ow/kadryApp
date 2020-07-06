@@ -1,8 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Employee;
+use DateTime;
 use Illuminate\Http\Request;
 
 class EmployeeController extends Controller
@@ -14,7 +14,7 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        return Employee::all();
+        return Employee::orderBy('dept')->get();
     }
 
     /**

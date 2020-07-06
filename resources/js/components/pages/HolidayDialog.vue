@@ -29,6 +29,10 @@
 import {mapState} from 'vuex'
 import EventBus from '../../libs/bus'
     export default {
+        props:{
+            type:String,
+            pickForm:Object
+        },
         data(){
             return {
                 picker:false,
@@ -49,15 +53,38 @@ import EventBus from '../../libs/bus'
             },
         },
         methods:{
+            async checkHoliday(){
+                let currMonth = new Date().getMonth()
+                let holiMonth = new Date(this.form.date).getMonth()
+                if(this.form.weekend && currMonth == holiMonth){
+                    await axios.post('/updateLeaveAdd?newDate='+ this.form.date+'&oldDate=&num=1&change=false')
+                }
+            },
+            async checkEditHoliday(){
+                let now = new Date().getMonth()
+                let form = new Date(this.form.date).getMonth()
+                if(this.pickForm.weekend==1 && this.form.weekend==0){
+                    await axios.post('/updateLeaveAdd?newDate='+ this.form.date+'&oldDate='+this.pickForm.date +'&num=-1&change=false')
+                } else if (this.pickForm.weekend == 0 && this.form.weekend == 1 && form<=now){
+                    await axios.post('/updateLeaveAdd?newDate='+ this.form.date+'&oldDate='+this.pickForm.date +'&num=1&change=false')
+                } else if (this.pickForm.weekend == 1 && this.form.weekend == 1 && form<=now){
+                    await axios.post('/updateLeaveAdd?newDate='+ this.form.date+'&oldDate='+this.pickForm.date +'&num=1&change=true')
+                }
+            },
             resetForm(){
-                //this.form = {...this.cleanForm}
                 EventBus.$emit('closeDialog')
             },
             async saveForm(){
                 let date = new Date(this.form.date)
-                let weekend = [5,6].indexOf(date.getDay())? true : false
+                let weekend = [6, 0].includes(date.getDay())? true : false
                 this.form.weekend = weekend
-                await axios.post('/holis', this.form)
+                if(this.type == 'new'){
+                    this.checkHoliday()
+                    await axios.post('/holis', this.form)
+                } else if (this.type == 'edit'){
+                    await this.checkEditHoliday()
+                    await axios.patch('/holis/'+ this.form.id, this.form)
+                }
                 await this.$store.dispatch('getHolidays')
                 EventBus.$emit('closeDialog')
             }
@@ -66,7 +93,7 @@ import EventBus from '../../libs/bus'
 
         },
         created(){
-            
+            this.form = this.type == 'new'? this.form : {...this.pickForm}
         }
     }
 </script>

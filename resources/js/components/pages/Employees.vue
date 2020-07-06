@@ -15,14 +15,14 @@ export default {
                 filter:true,
                 filterDept:null,
                 dialog: false,
-                // depts:[{label:"HR", id:1}, {label:"IT", id:2}],
-                // empls: [
-                //     {name:'Jan Kowalski', dept: 1, date_start:'2020-03-16', leave_base: 20, leave_used:0, leave_old:2, position:'programmer', supervisor_id:2, contract_type: 'B2B', user_id:1, leave_full:true, id:1},
-                //     {name:'Anna Kowalski', dept: 2, date_start:'2020-03-16', leave_base: 20, leave_used:0, leave_old:2, position:'programmer', supervisor_id:2, contract_type: 'B2B', user_id:1, leave_full:true, id:1}
-                //     ],
-                headers: [{title:'Imię i Nazwisko', cols:4}, {title:'Dział', cols:2}, {title:'Stanowisko', cols:3}, {title:'Przełożony', cols:3}],
-                keys: [{title:'name', cols:4}, {title:'dept', cols:2}, {title:'position', cols:3}, {title:'supervisor_id', cols:3}],
-                component: 'employeedialog'
+                editDialog: false,
+                headers: [{title:'Imię i Nazwisko', cols:3}, {title:'Dział', cols:2}, {title:'Stanowisko', cols:3}, {title:'Przełożony', cols:2}],
+                keys: [{title:'name', cols:3}, {title:'dept', cols:2}, {title:'position', cols:3}, {title:'supervisor_id', cols:2}],
+                component: 'employeedialog',
+                pickForm:null,
+                route: '/empls',
+                getList: 'getEmplsAll',
+                deleteMsg: 'Pracownik został usunięty'
             }
         }
     },
@@ -36,7 +36,6 @@ export default {
                 })
             }
             return res
-            
         }
 
     },
@@ -48,8 +47,6 @@ export default {
         await this.$store.dispatch('getEmplsAll')
         await this.$store.dispatch('getDepts')
         EventBus.$on('closeDialog', ()=>{
-            console.log('bus');
-            
             this.dialog = false
         })
     }
