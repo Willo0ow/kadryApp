@@ -1996,6 +1996,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2013,7 +2014,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         var tiles = [{
           title: 'Moje wnioski',
           icon: 'mdi-file-document',
-          link: '/forms/' + this.user.id
+          link: '/forms/' + this.emplId
         }];
 
         if (role == 5) {
@@ -2061,18 +2062,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     icon: function icon() {
       return this.mini ? 'mdi-chevron-right' : 'mdi-chevron-left';
+    },
+    emplId: function emplId() {
+      var _this = this;
+
+      return this.$store.state.hr.empls.find(function (el) {
+        return el.user_id == _this.user.id;
+      }).id;
     }
   },
   methods: {
     logout: function logout() {
-      var _this = this;
+      var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _this.$store.commit('resetUser');
+                _this2.$store.commit('resetUser');
 
                 _context.next = 3;
                 return axios.get('/logout');
@@ -2095,7 +2103,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
   },
   beforeMount: function beforeMount() {
-    var _this2 = this;
+    var _this3 = this;
 
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
@@ -2103,12 +2111,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           switch (_context2.prev = _context2.next) {
             case 0:
               _context2.next = 2;
-              return _this2.$store.dispatch('getUser');
+              return _this3.$store.dispatch('getUser');
 
             case 2:
-              _this2.user = _this2.$store.state.user.user;
+              _context2.next = 4;
+              return _this3.$store.dispatch('getEmplsAll');
 
-            case 3:
+            case 4:
+              _this3.user = _this3.$store.state.user.user;
+
+            case 5:
             case "end":
               return _context2.stop();
           }
@@ -2838,96 +2850,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/pages/FormDialog.vue?vue&type=script&lang=js& ***!
   \***************************************************************************************************************************************************************************/
 /*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {
-    return {
-      types: ['wypoczynkowy', 'okolicznościowy', 'bezpłatny', 'na żądanie', 'inny'],
-      form: {
-        type: null,
-        date_start: '',
-        date_end: '',
-        status: 'new',
-        date_send: null,
-        note: '',
-        reject_msg: '',
-        sub: null
-      }
-    };
-  },
-  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])({
-    empls: function empls(state) {
-      return state.hr.empls;
-    }
-  })), {}, {
-    temp: function temp() {
-      return this.type == 'new' ? {
-        title: 'Dodaj Wniosek Urlopowy'
-      } : {
-        title: 'Wniosek Urlopowy'
-      };
-    },
-    empl: function empl() {
-      var id = this.$route.params.id;
-      return this.empls ? this.empls.find(function (el) {
-        return el.id == id;
-      }) : {};
-    },
-    subs: function subs() {}
-  }),
-  methods: {
-    ifNote: function ifNote() {
-      this.form.type == 'okolicznościowy' || this.form.type == 'na żądanie' ? false : true;
-    },
-    resetForm: function resetForm() {},
-    saveForm: function saveForm() {},
-    sendForm: function sendForm() {}
-  },
-  mounted: function mounted() {},
-  created: function created() {}
-});
+throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nSyntaxError: /Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/resources/js/components/pages/FormDialog.vue: Unexpected token, expected \";\" (70:25)\n\n\u001b[0m \u001b[90m 68 | \u001b[39m        methods\u001b[33m:\u001b[39m{\u001b[0m\n\u001b[0m \u001b[90m 69 | \u001b[39m            ifNote(){\u001b[0m\n\u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 70 | \u001b[39m                \u001b[36mreturn\u001b[39m []\u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mform\u001b[33m.\u001b[39mtype \u001b[33m==\u001b[39m \u001b[32m'okolicznościowy'\u001b[39m \u001b[33m||\u001b[39m \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mform\u001b[33m.\u001b[39mtype \u001b[33m==\u001b[39m \u001b[32m'na żądanie'\u001b[39m\u001b[33m?\u001b[39m \u001b[36mfalse\u001b[39m \u001b[33m:\u001b[39m \u001b[36mtrue\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m    | \u001b[39m                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 71 | \u001b[39m            }\u001b[33m,\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 72 | \u001b[39m            resetForm(){\u001b[0m\n\u001b[0m \u001b[90m 73 | \u001b[39m\u001b[0m\n    at Parser._raise (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:757:17)\n    at Parser.raiseWithData (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:750:17)\n    at Parser.raise (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:744:17)\n    at Parser.unexpected (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:8834:16)\n    at Parser.semicolon (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:8816:40)\n    at Parser.parseReturnStatement (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:11571:12)\n    at Parser.parseStatementContent (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:11251:21)\n    at Parser.parseStatement (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:11203:17)\n    at Parser.parseBlockOrModuleBlockBody (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:11778:25)\n    at Parser.parseBlockBody (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:11764:10)\n    at Parser.parseBlock (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:11748:10)\n    at Parser.parseFunctionBody (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:10751:24)\n    at Parser.parseFunctionBodyAndFinish (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:10734:10)\n    at Parser.parseMethod (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:10696:10)\n    at Parser.parseObjectMethod (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:10612:19)\n    at Parser.parseObjPropValue (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:10654:23)\n    at Parser.parseObjectMember (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:10578:10)\n    at Parser.parseObj (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:10487:25)\n    at Parser.parseExprAtom (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:10087:28)\n    at Parser.parseExprSubscripts (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:9688:23)\n    at Parser.parseMaybeUnary (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:9668:21)\n    at Parser.parseExprOps (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:9538:23)\n    at Parser.parseMaybeConditional (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:9511:23)\n    at Parser.parseMaybeAssign (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:9466:21)\n    at Parser.parseObjectProperty (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:10629:101)\n    at Parser.parseObjPropValue (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:10654:101)\n    at Parser.parseObjectMember (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:10578:10)\n    at Parser.parseObj (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:10487:25)\n    at Parser.parseExprAtom (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:10087:28)\n    at Parser.parseExprSubscripts (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:9688:23)\n    at Parser.parseMaybeUnary (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:9668:21)\n    at Parser.parseExprOps (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:9538:23)\n    at Parser.parseMaybeConditional (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:9511:23)\n    at Parser.parseMaybeAssign (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:9466:21)\n    at Parser.parseExportDefaultExpression (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:12405:24)\n    at Parser.parseExport (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:12307:31)");
 
 /***/ }),
 
@@ -40793,9 +40718,9 @@ var render = function() {
                                       _vm._v("mdi-account")
                                     ]),
                                     _vm._v(
-                                      "\r\n                    " +
+                                      "\n                    " +
                                         _vm._s(_vm.user.name) +
-                                        "\r\n                "
+                                        "\n                "
                                     )
                                   ],
                                   1
@@ -40807,7 +40732,7 @@ var render = function() {
                     ],
                     null,
                     false,
-                    3280902772
+                    1910453428
                   )
                 },
                 [
@@ -40829,113 +40754,115 @@ var render = function() {
         1
       ),
       _vm._v(" "),
-      _c(
-        "v-navigation-drawer",
-        {
-          attrs: {
-            app: "",
-            floating: "",
-            permanent: _vm.drawer,
-            "mini-variant": ""
-          },
-          model: {
-            value: _vm.drawer,
-            callback: function($$v) {
-              _vm.drawer = $$v
+      _vm.list
+        ? _c(
+            "v-navigation-drawer",
+            {
+              attrs: {
+                app: "",
+                floating: "",
+                permanent: _vm.drawer,
+                "mini-variant": ""
+              },
+              model: {
+                value: _vm.drawer,
+                callback: function($$v) {
+                  _vm.drawer = $$v
+                },
+                expression: "drawer"
+              }
             },
-            expression: "drawer"
-          }
-        },
-        [
-          _c(
-            "v-list",
-            { attrs: { dense: "", dark: "" } },
             [
               _c(
-                "v-list-item",
+                "v-list",
+                { attrs: { dense: "", dark: "" } },
                 [
                   _c(
-                    "v-list-item-action",
+                    "v-list-item",
                     [
                       _c(
-                        "v-icon",
-                        {
-                          attrs: { color: _vm.teal },
-                          on: {
-                            click: function($event) {
-                              $event.stopPropagation()
-                              _vm.drawer = !_vm.drawer
-                            }
-                          }
-                        },
-                        [_vm._v("mdi-arrow-left-drop-circle")]
+                        "v-list-item-action",
+                        [
+                          _c(
+                            "v-icon",
+                            {
+                              attrs: { color: _vm.teal },
+                              on: {
+                                click: function($event) {
+                                  $event.stopPropagation()
+                                  _vm.drawer = !_vm.drawer
+                                }
+                              }
+                            },
+                            [_vm._v("mdi-arrow-left-drop-circle")]
+                          )
+                        ],
+                        1
                       )
                     ],
                     1
                   )
                 ],
                 1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-list",
+                _vm._l(_vm.list, function(el) {
+                  return _c(
+                    "v-list-item",
+                    { key: el.title, attrs: { link: "", to: el.link } },
+                    [
+                      _c(
+                        "v-tooltip",
+                        {
+                          attrs: { right: "" },
+                          scopedSlots: _vm._u(
+                            [
+                              {
+                                key: "activator",
+                                fn: function(ref) {
+                                  var on = ref.on
+                                  var attrs = ref.attrs
+                                  return [
+                                    _c(
+                                      "v-icon",
+                                      _vm._g(
+                                        _vm._b(
+                                          { attrs: { color: _vm.teal } },
+                                          "v-icon",
+                                          attrs,
+                                          false
+                                        ),
+                                        on
+                                      ),
+                                      [_vm._v(_vm._s(el.icon))]
+                                    )
+                                  ]
+                                }
+                              }
+                            ],
+                            null,
+                            true
+                          )
+                        },
+                        [
+                          _vm._v(" "),
+                          _c("span", { staticClass: "white--text" }, [
+                            _vm._v(_vm._s(el.title))
+                          ])
+                        ]
+                      )
+                    ],
+                    1
+                  )
+                }),
+                1
               )
             ],
             1
-          ),
-          _vm._v(" "),
-          _c(
-            "v-list",
-            _vm._l(_vm.list, function(el) {
-              return _c(
-                "v-list-item",
-                { key: el.title, attrs: { link: "", to: el.link } },
-                [
-                  _c(
-                    "v-tooltip",
-                    {
-                      attrs: { right: "" },
-                      scopedSlots: _vm._u(
-                        [
-                          {
-                            key: "activator",
-                            fn: function(ref) {
-                              var on = ref.on
-                              var attrs = ref.attrs
-                              return [
-                                _c(
-                                  "v-icon",
-                                  _vm._g(
-                                    _vm._b(
-                                      { attrs: { color: _vm.teal } },
-                                      "v-icon",
-                                      attrs,
-                                      false
-                                    ),
-                                    on
-                                  ),
-                                  [_vm._v(_vm._s(el.icon))]
-                                )
-                              ]
-                            }
-                          }
-                        ],
-                        null,
-                        true
-                      )
-                    },
-                    [
-                      _vm._v(" "),
-                      _c("span", { staticClass: "white--text" }, [
-                        _vm._v(_vm._s(el.title))
-                      ])
-                    ]
-                  )
-                ],
-                1
-              )
-            }),
-            1
           )
-        ],
-        1
-      )
+        : _vm._e()
     ],
     1
   )
@@ -41612,8 +41539,6 @@ var render = function() {
     "v-card",
     { staticClass: "gradient" },
     [
-      _vm.empl ? _c("h1", [_vm._v("empl")]) : _vm._e(),
-      _vm._v(" "),
       _c(
         "v-card-title",
         { staticClass: "headline white--text justify-center" },
@@ -41633,6 +41558,50 @@ var render = function() {
                     ? _c(
                         "v-col",
                         [
+                          _c("v-select", {
+                            attrs: {
+                              items: _vm.types,
+                              hint: "Wybierz typ urlopu",
+                              "persistent-hint": "",
+                              "single-line": "",
+                              dense: "",
+                              autocomplete: "off",
+                              dark: "",
+                              filled: "",
+                              rounded: ""
+                            },
+                            model: {
+                              value: _vm.form.type,
+                              callback: function($$v) {
+                                _vm.$set(_vm.form, "type", $$v)
+                              },
+                              expression: "form.type"
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("v-select", {
+                            attrs: {
+                              items: _vm.subs,
+                              "item-text": "name",
+                              "item-value": "id",
+                              hint: "Wybierz zastępcę",
+                              "persistent-hint": "",
+                              "single-line": "",
+                              dense: "",
+                              autocomplete: "off",
+                              dark: "",
+                              filled: "",
+                              rounded: ""
+                            },
+                            model: {
+                              value: _vm.form.sub,
+                              callback: function($$v) {
+                                _vm.$set(_vm.form, "sub", $$v)
+                              },
+                              expression: "form.sub"
+                            }
+                          }),
+                          _vm._v(" "),
                           _vm.ifNote()
                             ? _c("v-text-field", {
                                 attrs: {
@@ -41653,34 +41622,34 @@ var render = function() {
                                   expression: "form.note"
                                 }
                               })
-                            : _vm._e(),
-                          _vm._v(" "),
-                          _c("v-select", {
-                            attrs: {
-                              items: _vm.empls,
-                              "item-text": "name",
-                              "item-value": "id",
-                              hint: "Wybierz kierownika działu",
-                              "persistent-hint": "",
-                              "single-line": "",
-                              dense: "",
-                              autocomplete: "off",
-                              dark: "",
-                              filled: "",
-                              rounded: ""
-                            },
-                            model: {
-                              value: _vm.form.supervisor_id,
-                              callback: function($$v) {
-                                _vm.$set(_vm.form, "supervisor_id", $$v)
-                              },
-                              expression: "form.supervisor_id"
-                            }
-                          })
+                            : _vm._e()
                         ],
                         1
                       )
-                    : _vm._e()
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _c(
+                    "v-col",
+                    [
+                      _c("v-date-picker", {
+                        staticClass: "grey",
+                        attrs: {
+                          range: "",
+                          "no-title": "",
+                          locale: "pl",
+                          "first-day-of-week": "1"
+                        },
+                        model: {
+                          value: _vm.form.dates,
+                          callback: function($$v) {
+                            _vm.$set(_vm.form, "dates", $$v)
+                          },
+                          expression: "form.dates"
+                        }
+                      })
+                    ],
+                    1
+                  )
                 ],
                 1
               )
@@ -104345,8 +104314,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\xampp\htdocs\projekty\kadryApp\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\projekty\kadryApp\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

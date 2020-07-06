@@ -1,13 +1,16 @@
 <template>
     <v-card class="gradient">
-        <h1 v-if="empl">empl</h1>
         <v-card-title class="headline white--text justify-center">{{temp.title}}</v-card-title>
         <v-card-text>
             <v-container>
                 <v-row>
                     <v-col v-if="empls">
+                        <v-select :items="types" hint="Wybierz typ urlopu" v-model="form.type" persistent-hint single-line dense autocomplete="off" dark filled rounded></v-select>
+                        <v-select :items="subs" item-text="name" item-value="id" hint="Wybierz zastępcę" v-model="form.sub" persistent-hint single-line dense autocomplete="off" dark filled rounded></v-select>
                         <v-text-field hint="Powód urlopu" v-model="form.note" persistent-hint single-line dense autocomplete="off" dark filled rounded v-if="ifNote()"></v-text-field>
-                        <v-select :items="empls" item-text="name" item-value="id" hint="Wybierz kierownika działu" v-model="form.supervisor_id" persistent-hint single-line dense autocomplete="off" dark filled rounded></v-select>
+                    </v-col>
+                    <v-col>
+                        <v-date-picker class="grey" v-model="form.dates" range no-title locale="pl" first-day-of-week="1"></v-date-picker>
                     </v-col>
                 </v-row>
             </v-container>
@@ -37,8 +40,7 @@ import {mapState} from 'vuex'
                 types:['wypoczynkowy', 'okolicznościowy', 'bezpłatny', 'na żądanie', 'inny'],
                 form : {
                     type:null,
-                    date_start:'',
-                    date_end:'',
+                    dates:['',''],
                     status:'new',
                     date_send:null,
                     note:'',
@@ -56,15 +58,16 @@ import {mapState} from 'vuex'
             },
             empl(){
                 let {id} = this.$route.params
-                return this.empls? this.empls.find((el)=>el.id == id) : {}
+                let res = this.empls? this.empls.find((el)=>el.id == id) : {}
+                return res
             },
             subs(){
-
-            }
+                return this.empls.filter((el)=>el.dept == this.empl.dept)
+            },
         },
         methods:{
             ifNote(){
-                this.form.type == 'okolicznościowy' || this.form.type == 'na żądanie'? false : true
+                return []this.form.type == 'okolicznościowy' || this.form.type == 'na żądanie'? false : true
             },
             resetForm(){
 
@@ -80,7 +83,7 @@ import {mapState} from 'vuex'
 
         },
         created(){
-            
+            this.$store.dispatch('getEmplsAll')
         }
     }
 </script>

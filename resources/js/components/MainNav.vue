@@ -14,6 +14,7 @@
         </v-menu>
     </v-app-bar>
     <v-navigation-drawer 
+        v-if="list"
         v-model="drawer" 
         app
         floating
@@ -57,7 +58,7 @@
                 if(this.user){
                     let {role} = this.user
                     let tiles =  [
-                        {title: 'Moje wnioski', icon:'mdi-file-document', link:'/forms/'+this.user.id},
+                        {title: 'Moje wnioski', icon:'mdi-file-document', link:'/forms/'+this.emplId},
                     ]
                     if(role == 5){return tiles}
                     if(role !=2 && role !=1){
@@ -79,6 +80,9 @@
             icon(){
                 return this.mini? 'mdi-chevron-right':'mdi-chevron-left'
             },
+            emplId(){
+                return this.$store.state.hr.empls.find((el)=>el.user_id == this.user.id).id
+            }
         },
         methods:{
             async logout(){
@@ -96,6 +100,7 @@
         },
         async beforeMount(){
             await this.$store.dispatch('getUser')
+            await this.$store.dispatch('getEmplsAll')
             this.user = this.$store.state.user.user
         },
         mounted() {
