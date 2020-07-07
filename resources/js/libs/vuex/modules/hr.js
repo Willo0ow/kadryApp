@@ -21,9 +21,16 @@ export default{
             state.holidays = payload
         },
         assignLeaveForms(state, payload){
-            payload.forEach((el, idx))
-            let {date_start, date_end} = payload
-            state.leaveForms = payload
+            let arr = payload.reduce((res, el)=>{
+                let {date_start, date_end} = el
+                let rec = el
+                delete rec.date_start
+                delete rec.date_end
+                rec = {...rec, dates:[date_start, date_end]}
+                res.push(rec)
+                return res
+            },[])
+            state.leaveForms = arr
         }
     },
     actions:{

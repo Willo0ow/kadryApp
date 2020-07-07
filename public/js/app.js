@@ -2991,6 +2991,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 return axios.post('/leaveform', form);
 
               case 3:
+                _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog');
+
+              case 4:
               case "end":
                 return _context.stop();
             }
@@ -3027,6 +3030,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 return axios.post('/leaveform/' + form.id, form);
 
               case 9:
+                _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog');
+
+              case 10:
               case "end":
                 return _context2.stop();
             }
@@ -40923,9 +40929,9 @@ var render = function() {
                                       _vm._v("mdi-account")
                                     ]),
                                     _vm._v(
-                                      "\r\n                    " +
+                                      "\n                    " +
                                         _vm._s(_vm.user.name) +
-                                        "\r\n                "
+                                        "\n                "
                                     )
                                   ],
                                   1
@@ -40937,7 +40943,7 @@ var render = function() {
                     ],
                     null,
                     false,
-                    3280902772
+                    1910453428
                   )
                 },
                 [
@@ -103780,15 +103786,14 @@ __webpack_require__.r(__webpack_exports__);
 /*!******************************************************!*\
   !*** ./resources/js/components/pages/FormDialog.vue ***!
   \******************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _FormDialog_vue_vue_type_template_id_5b669942___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./FormDialog.vue?vue&type=template&id=5b669942& */ "./resources/js/components/pages/FormDialog.vue?vue&type=template&id=5b669942&");
 /* harmony import */ var _FormDialog_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./FormDialog.vue?vue&type=script&lang=js& */ "./resources/js/components/pages/FormDialog.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _FormDialog_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _FormDialog_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -103818,7 +103823,7 @@ component.options.__file = "resources/js/components/pages/FormDialog.vue"
 /*!*******************************************************************************!*\
   !*** ./resources/js/components/pages/FormDialog.vue?vue&type=script&lang=js& ***!
   \*******************************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -104311,6 +104316,12 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   state: {
@@ -104335,10 +104346,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       state.holidays = payload;
     },
     assignLeaveForms: function assignLeaveForms(state, payload) {
-      payload.forEach((el, idx));
-      var date_start = payload.date_start,
-          date_end = payload.date_end;
-      state.leaveForms = payload;
+      var arr = payload.reduce(function (res, el) {
+        var date_start = el.date_start,
+            date_end = el.date_end;
+        var rec = el;
+        delete rec.date_start;
+        delete rec.date_end;
+        rec = _objectSpread(_objectSpread({}, rec), {}, {
+          dates: [date_start, date_end]
+        });
+        res.push(rec);
+        return res;
+      }, []);
+      state.leaveForms = arr;
     }
   },
   actions: {
@@ -104574,8 +104594,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\xampp\htdocs\projekty\kadryApp\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\projekty\kadryApp\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

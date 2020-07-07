@@ -143,7 +143,6 @@ export default {
     },
     created(){
         this.form = this.pickForm? {...this.pickForm} : this.form
-        
     }
 }
 </script>

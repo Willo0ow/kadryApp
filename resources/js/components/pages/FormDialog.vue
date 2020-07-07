@@ -81,6 +81,7 @@ import EventBus from '../../libs/bus';
             async saveForm(){
                 let form = this.prepForm()
                 await axios.post('/leaveform', form)
+                EventBus.$emit('closeDialog')
             },
             async sendForm(){
                 let form = this.prepForm()
@@ -90,6 +91,7 @@ import EventBus from '../../libs/bus';
                 } else {
                     await axios.post('/leaveform/'+form.id, form)
                 }
+                EventBus.$emit('closeDialog')
             }
         },
         mounted() {
