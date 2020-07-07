@@ -7,7 +7,7 @@
                     <v-col v-if="empls">
                         <v-select :items="types" hint="Wybierz typ urlopu" v-model="form.type" persistent-hint single-line dense autocomplete="off" dark filled rounded></v-select>
                         <v-select :items="subs" item-text="name" item-value="id" hint="Wybierz zastępcę" v-model="form.sub" persistent-hint single-line dense autocomplete="off" dark filled rounded></v-select>
-                        <v-text-field hint="Powód urlopu" v-model="form.note" persistent-hint single-line dense autocomplete="off" dark filled rounded v-if="ifNote()"></v-text-field>
+                        <v-text-field hint="Powód urlopu" v-model="form.note" persistent-hint single-line dense autocomplete="off" dark filled rounded v-if="ifNote"></v-text-field>
                     </v-col>
                     <v-col>
                         <v-date-picker class="grey" v-model="form.dates" range no-title locale="pl" first-day-of-week="1"></v-date-picker>
@@ -34,18 +34,17 @@
 
 <script>
 import {mapState} from 'vuex'
+import EventBus from '../../libs/bus';
     export default {
+        props:{
+            pickForm:Object,
+            type:String
+        },
         data(){
             return {
                 types:['wypoczynkowy', 'okolicznościowy', 'bezpłatny', 'na żądanie', 'inny'],
                 form : {
-                    type:null,
-                    dates:['',''],
-                    status:'new',
-                    date_send:null,
-                    note:'',
-                    reject_msg:'',
-                    sub:null,
+
                 }
             }
         },
@@ -62,21 +61,35 @@ import {mapState} from 'vuex'
                 return res
             },
             subs(){
-                return this.empls.filter((el)=>el.dept == this.empl.dept)
+                let res = this.empls.filter((el)=>el.dept == this.empl.dept && el.id != this.$route.params.id)
+                return res
+            },
+            ifNote(){ 
+                return ['inny', 'bezpłatny', 'okolicznościowy'].indexOf(this.form.type)>=0 ? true : false
             },
         },
         methods:{
-            ifNote(){
-                return []this.form.type == 'okolicznościowy' || this.form.type == 'na żądanie'? false : true
-            },
             resetForm(){
-
+                EventBus.$emit('closeDialog')
             },
-            saveForm(){
-
+            prepForm(){
+                let form = this.form
+                let [date_start, date_end] = form.dates
+                delete form.dates
+                return form = {...form, date_start:date_start, date_end:date_end}
             },
-            sendForm(){
-
+            async saveForm(){
+                let form = this.prepForm()
+                await axios.post('/leaveform', form)
+            },
+            async sendForm(){
+                let form = this.prepForm()
+                form['date_sent'] = new Date().toISOString().slice(0,10)
+                if(form.id){
+                    await axios.post('/leaveform', form)
+                } else {
+                    await axios.post('/leaveform/'+form.id, form)
+                }
             }
         },
         mounted() {
@@ -84,6 +97,18 @@ import {mapState} from 'vuex'
         },
         created(){
             this.$store.dispatch('getEmplsAll')
-        }
+            if (this.type=='new'){this.form = {type:null,
+                    dates:['',''],
+                    status:'draft',
+                    note:'',
+                    reject_msg:'',
+                    sub:null,
+                    dept: this.empl.dept,
+                    empl_id: parseInt(this.$route.params.id),
+                    user_id: this.$store.state.user.user.id}}
+            else {
+                this.form == this.pickForm
+            }
+        } 
     }
 </script>

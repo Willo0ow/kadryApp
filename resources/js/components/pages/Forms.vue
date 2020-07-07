@@ -36,7 +36,7 @@ import listformcomp from './ListFormComp'
                     filterDept:null,
                     dialog: false,
                     headers: [{title:'Rodzaj urlopu', cols:5}, {title:'Data akceptacji', cols:3}, {title:'Pracownik', cols:3}],
-                    keys: [{title:'type', cols:5}, {title:'date_approved', cols:3}, {title:'employee_id', cols:3}],
+                    keys: [{title:'type', cols:3},{title:'name', cols:3}, {title:'date_start', cols:2}, {title:'date_end', cols:2}],
                     editDialog: false
                 }},
         },
@@ -52,7 +52,7 @@ import listformcomp from './ListFormComp'
             },
         },
         mounted() {
-
+            
         },
         created(){
             

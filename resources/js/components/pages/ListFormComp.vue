@@ -33,7 +33,7 @@
                             <v-col cols="2"></v-col>
                         </v-row>
                     </v-card>
-                    <v-virtual-scroll dense height="350px" :items="items" :item-height="60">
+                    <v-virtual-scroll dense height="350px" :items="items" :item-height="60" v-if="items">
                         <template v-slot="{item, index}">
                             <v-list-item :key="item.id">
                                 <v-card width="97%" class="my-1 transparent">
@@ -42,7 +42,7 @@
                                         <v-col>
                                             <v-btn @click="edit(items[index])" text small><v-icon>mdi-pencil</v-icon></v-btn>
                                             <v-dialog v-model="editDialog" v-if="editDialog">
-                                                <component :is="component" type="edit" :pickForm="pickForm"></component>
+                                                <formdialog type="edit" :pickForm="pickForm"></formdialog>
                                             </v-dialog>
                                         </v-col>
                                         <v-col><v-icon @click="remove(item.id)">mdi-trash-can</v-icon></v-col>
@@ -89,24 +89,9 @@ export default {
         ...mapState({
             depts: state => state.hr.depts,
             empls: state => state.hr.empls,
-            holidays: state => state.hr.holidays
+            holidays: state => state.hr.holidays,
+            items: state => state.hr.leaveForms
         }),
-        items(){
-            if(this.name == 'depts'&& this.depts){
-                return this.depts
-            } else if(this.name == 'empls' && this.empls){
-                let res = this.filterDept? this.empls.filter((el)=>el.dept == this.filterDept) : this.empls
-                if(this.searched){
-                    res = res.filter((el)=>{
-                        let str = el.name.toLowerCase()
-                        return str.includes(this.searched.toLowerCase())
-                    })
-                }
-                return res
-            } else if (this.name == 'holidays' && this.holidays){
-                return this.holidays
-            }
-        },
     },
     methods:{
         edit(item){
@@ -130,6 +115,11 @@ export default {
             this.dialog = false
             this.editDialog = false
         })
+    },
+    async created(){
+        await this.$store.dispatch('getEmplForms', this.$route.params.id)
+        //console.log('cerated');
+        
     }
 }
 </script>

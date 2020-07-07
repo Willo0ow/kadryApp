@@ -2850,9 +2850,212 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/pages/FormDialog.vue?vue&type=script&lang=js& ***!
   \***************************************************************************************************************************************************************************/
 /*! exports provided: default */
-/***/ (function(module, exports) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nSyntaxError: /Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/resources/js/components/pages/FormDialog.vue: Unexpected token, expected \";\" (70:25)\n\n\u001b[0m \u001b[90m 68 | \u001b[39m        methods\u001b[33m:\u001b[39m{\u001b[0m\n\u001b[0m \u001b[90m 69 | \u001b[39m            ifNote(){\u001b[0m\n\u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 70 | \u001b[39m                \u001b[36mreturn\u001b[39m []\u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mform\u001b[33m.\u001b[39mtype \u001b[33m==\u001b[39m \u001b[32m'okolicznościowy'\u001b[39m \u001b[33m||\u001b[39m \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mform\u001b[33m.\u001b[39mtype \u001b[33m==\u001b[39m \u001b[32m'na żądanie'\u001b[39m\u001b[33m?\u001b[39m \u001b[36mfalse\u001b[39m \u001b[33m:\u001b[39m \u001b[36mtrue\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m    | \u001b[39m                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 71 | \u001b[39m            }\u001b[33m,\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 72 | \u001b[39m            resetForm(){\u001b[0m\n\u001b[0m \u001b[90m 73 | \u001b[39m\u001b[0m\n    at Parser._raise (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:757:17)\n    at Parser.raiseWithData (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:750:17)\n    at Parser.raise (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:744:17)\n    at Parser.unexpected (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:8834:16)\n    at Parser.semicolon (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:8816:40)\n    at Parser.parseReturnStatement (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:11571:12)\n    at Parser.parseStatementContent (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:11251:21)\n    at Parser.parseStatement (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:11203:17)\n    at Parser.parseBlockOrModuleBlockBody (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:11778:25)\n    at Parser.parseBlockBody (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:11764:10)\n    at Parser.parseBlock (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:11748:10)\n    at Parser.parseFunctionBody (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:10751:24)\n    at Parser.parseFunctionBodyAndFinish (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:10734:10)\n    at Parser.parseMethod (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:10696:10)\n    at Parser.parseObjectMethod (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:10612:19)\n    at Parser.parseObjPropValue (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:10654:23)\n    at Parser.parseObjectMember (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:10578:10)\n    at Parser.parseObj (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:10487:25)\n    at Parser.parseExprAtom (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:10087:28)\n    at Parser.parseExprSubscripts (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:9688:23)\n    at Parser.parseMaybeUnary (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:9668:21)\n    at Parser.parseExprOps (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:9538:23)\n    at Parser.parseMaybeConditional (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:9511:23)\n    at Parser.parseMaybeAssign (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:9466:21)\n    at Parser.parseObjectProperty (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:10629:101)\n    at Parser.parseObjPropValue (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:10654:101)\n    at Parser.parseObjectMember (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:10578:10)\n    at Parser.parseObj (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:10487:25)\n    at Parser.parseExprAtom (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:10087:28)\n    at Parser.parseExprSubscripts (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:9688:23)\n    at Parser.parseMaybeUnary (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:9668:21)\n    at Parser.parseExprOps (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:9538:23)\n    at Parser.parseMaybeConditional (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:9511:23)\n    at Parser.parseMaybeAssign (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:9466:21)\n    at Parser.parseExportDefaultExpression (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:12405:24)\n    at Parser.parseExport (/Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/node_modules/@babel/parser/lib/index.js:12307:31)");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _libs_bus__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../libs/bus */ "./resources/js/libs/bus.js");
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    pickForm: Object,
+    type: String
+  },
+  data: function data() {
+    return {
+      types: ['wypoczynkowy', 'okolicznościowy', 'bezpłatny', 'na żądanie', 'inny'],
+      form: {}
+    };
+  },
+  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])({
+    empls: function empls(state) {
+      return state.hr.empls;
+    }
+  })), {}, {
+    temp: function temp() {
+      return this.type == 'new' ? {
+        title: 'Dodaj Wniosek Urlopowy'
+      } : {
+        title: 'Wniosek Urlopowy'
+      };
+    },
+    empl: function empl() {
+      var id = this.$route.params.id;
+      var res = this.empls ? this.empls.find(function (el) {
+        return el.id == id;
+      }) : {};
+      return res;
+    },
+    subs: function subs() {
+      var _this = this;
+
+      var res = this.empls.filter(function (el) {
+        return el.dept == _this.empl.dept && el.id != _this.$route.params.id;
+      });
+      return res;
+    },
+    ifNote: function ifNote() {
+      return ['inny', 'bezpłatny', 'okolicznościowy'].indexOf(this.form.type) >= 0 ? true : false;
+    }
+  }),
+  methods: {
+    resetForm: function resetForm() {
+      _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog');
+    },
+    prepForm: function prepForm() {
+      var form = this.form;
+
+      var _form$dates = _slicedToArray(form.dates, 2),
+          date_start = _form$dates[0],
+          date_end = _form$dates[1];
+
+      delete form.dates;
+      return form = _objectSpread(_objectSpread({}, form), {}, {
+        date_start: date_start,
+        date_end: date_end
+      });
+    },
+    saveForm: function saveForm() {
+      var _this2 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+        var form;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                form = _this2.prepForm();
+                _context.next = 3;
+                return axios.post('/leaveform', form);
+
+              case 3:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }))();
+    },
+    sendForm: function sendForm() {
+      var _this3 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+        var form;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                form = _this3.prepForm();
+                form['date_sent'] = new Date().toISOString().slice(0, 10);
+
+                if (!form.id) {
+                  _context2.next = 7;
+                  break;
+                }
+
+                _context2.next = 5;
+                return axios.post('/leaveform', form);
+
+              case 5:
+                _context2.next = 9;
+                break;
+
+              case 7:
+                _context2.next = 9;
+                return axios.post('/leaveform/' + form.id, form);
+
+              case 9:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }))();
+    }
+  },
+  mounted: function mounted() {},
+  created: function created() {
+    this.$store.dispatch('getEmplsAll');
+
+    if (this.type == 'new') {
+      this.form = {
+        type: null,
+        dates: ['', ''],
+        status: 'draft',
+        note: '',
+        reject_msg: '',
+        sub: null,
+        dept: this.empl.dept,
+        empl_id: parseInt(this.$route.params.id),
+        user_id: this.$store.state.user.user.id
+      };
+    } else {
+      this.form == this.pickForm;
+    }
+  }
+});
 
 /***/ }),
 
@@ -2916,13 +3119,16 @@ __webpack_require__.r(__webpack_exports__);
         }],
         keys: [{
           title: 'type',
-          cols: 5
-        }, {
-          title: 'date_approved',
           cols: 3
         }, {
-          title: 'employee_id',
+          title: 'name',
           cols: 3
+        }, {
+          title: 'date_start',
+          cols: 2
+        }, {
+          title: 'date_end',
+          cols: 2
         }],
         editDialog: false
       };
@@ -3594,7 +3800,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                     deleteMsg: // message to display when item of the list is deleted
                 } */
   },
-  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapState"])({
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapState"])({
     depts: function depts(state) {
       return state.hr.depts;
     },
@@ -3603,31 +3809,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     holidays: function holidays(state) {
       return state.hr.holidays;
+    },
+    items: function items(state) {
+      return state.hr.leaveForms;
     }
-  })), {}, {
-    items: function items() {
-      var _this = this;
-
-      if (this.name == 'depts' && this.depts) {
-        return this.depts;
-      } else if (this.name == 'empls' && this.empls) {
-        var res = this.filterDept ? this.empls.filter(function (el) {
-          return el.dept == _this.filterDept;
-        }) : this.empls;
-
-        if (this.searched) {
-          res = res.filter(function (el) {
-            var str = el.name.toLowerCase();
-            return str.includes(_this.searched.toLowerCase());
-          });
-        }
-
-        return res;
-      } else if (this.name == 'holidays' && this.holidays) {
-        return this.holidays;
-      }
-    }
-  }),
+  })),
   methods: {
     edit: function edit(item) {
       this.pickForm = item;
@@ -3635,7 +3821,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.editDialog = !this.editDialog;
     },
     remove: function remove(id) {
-      var _this2 = this;
+      var _this = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
@@ -3644,14 +3830,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
               case 0:
                 console.log(id);
                 _context.next = 3;
-                return axios["delete"](_this2.route + '/' + id);
+                return axios["delete"](_this.route + '/' + id);
 
               case 3:
                 _context.next = 5;
-                return _this2.$store.dispatch(_this2.getList);
+                return _this.$store.dispatch(_this.getList);
 
               case 5:
-                alert(_this2.deleteMsg);
+                alert(_this.deleteMsg);
 
               case 6:
               case "end":
@@ -3663,7 +3849,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   },
   mounted: function mounted() {
-    var _this3 = this;
+    var _this2 = this;
 
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
@@ -3671,24 +3857,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           switch (_context2.prev = _context2.next) {
             case 0:
               _context2.next = 2;
-              return _this3.$store.dispatch('getUsers');
+              return _this2.$store.dispatch('getUsers');
 
             case 2:
               _context2.next = 4;
-              return _this3.$store.dispatch('getEmplsAll');
+              return _this2.$store.dispatch('getEmplsAll');
 
             case 4:
               _context2.next = 6;
-              return _this3.$store.dispatch('getDepts');
+              return _this2.$store.dispatch('getDepts');
 
             case 6:
               _context2.next = 8;
-              return _this3.$store.dispatch('getHolidays');
+              return _this2.$store.dispatch('getHolidays');
 
             case 8:
               _libs_bus__WEBPACK_IMPORTED_MODULE_3__["default"].$on('closeDialog', function () {
-                _this3.dialog = false;
-                _this3.editDialog = false;
+                _this2.dialog = false;
+                _this2.editDialog = false;
               });
 
             case 9:
@@ -3697,6 +3883,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           }
         }
       }, _callee2);
+    }))();
+  },
+  created: function created() {
+    var _this3 = this;
+
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              _context3.next = 2;
+              return _this3.$store.dispatch('getEmplForms', _this3.$route.params.id);
+
+            case 2:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3);
     }))();
   }
 });
@@ -40718,9 +40923,9 @@ var render = function() {
                                       _vm._v("mdi-account")
                                     ]),
                                     _vm._v(
-                                      "\n                    " +
+                                      "\r\n                    " +
                                         _vm._s(_vm.user.name) +
-                                        "\n                "
+                                        "\r\n                "
                                     )
                                   ],
                                   1
@@ -40732,7 +40937,7 @@ var render = function() {
                     ],
                     null,
                     false,
-                    1910453428
+                    3280902772
                   )
                 },
                 [
@@ -41602,7 +41807,7 @@ var render = function() {
                             }
                           }),
                           _vm._v(" "),
-                          _vm.ifNote()
+                          _vm.ifNote
                             ? _c("v-text-field", {
                                 attrs: {
                                   hint: "Powód urlopu",
@@ -42564,149 +42769,173 @@ var render = function() {
                     1
                   ),
                   _vm._v(" "),
-                  _c("v-virtual-scroll", {
-                    attrs: {
-                      dense: "",
-                      height: "350px",
-                      items: _vm.items,
-                      "item-height": 60
-                    },
-                    scopedSlots: _vm._u([
-                      {
-                        key: "default",
-                        fn: function(ref) {
-                          var item = ref.item
-                          var index = ref.index
-                          return [
-                            _c(
-                              "v-list-item",
-                              { key: item.id },
-                              [
-                                _c(
-                                  "v-card",
-                                  {
-                                    staticClass: "my-1 transparent",
-                                    attrs: { width: "97%" }
-                                  },
-                                  [
-                                    _c(
-                                      "v-row",
-                                      {
-                                        attrs: {
-                                          align: "center",
-                                          justify: "center"
-                                        }
-                                      },
-                                      [
-                                        _vm._l(_vm.keys, function(ref) {
-                                          var title = ref.title
-                                          var cols = ref.cols
-                                          return _c(
-                                            "v-col",
+                  _vm.items
+                    ? _c("v-virtual-scroll", {
+                        attrs: {
+                          dense: "",
+                          height: "350px",
+                          items: _vm.items,
+                          "item-height": 60
+                        },
+                        scopedSlots: _vm._u(
+                          [
+                            {
+                              key: "default",
+                              fn: function(ref) {
+                                var item = ref.item
+                                var index = ref.index
+                                return [
+                                  _c(
+                                    "v-list-item",
+                                    { key: item.id },
+                                    [
+                                      _c(
+                                        "v-card",
+                                        {
+                                          staticClass: "my-1 transparent",
+                                          attrs: { width: "97%" }
+                                        },
+                                        [
+                                          _c(
+                                            "v-row",
                                             {
-                                              key: title,
-                                              staticClass: "py-0",
                                               attrs: {
-                                                cols: cols,
+                                                align: "center",
                                                 justify: "center"
                                               }
                                             },
                                             [
-                                              _c(
-                                                "v-card-subtitle",
-                                                {
-                                                  staticClass:
-                                                    "font-weight-bold py-2 text-center"
-                                                },
-                                                [_vm._v(_vm._s(item[title]))]
-                                              )
-                                            ],
-                                            1
-                                          )
-                                        }),
-                                        _vm._v(" "),
-                                        _c(
-                                          "v-col",
-                                          [
-                                            _c(
-                                              "v-btn",
-                                              {
-                                                attrs: { text: "", small: "" },
-                                                on: {
-                                                  click: function($event) {
-                                                    return _vm.edit(
-                                                      _vm.items[index]
-                                                    )
-                                                  }
-                                                }
-                                              },
-                                              [
-                                                _c("v-icon", [
-                                                  _vm._v("mdi-pencil")
-                                                ])
-                                              ],
-                                              1
-                                            ),
-                                            _vm._v(" "),
-                                            _vm.editDialog
-                                              ? _c(
-                                                  "v-dialog",
+                                              _vm._l(_vm.keys, function(ref) {
+                                                var title = ref.title
+                                                var cols = ref.cols
+                                                return _c(
+                                                  "v-col",
                                                   {
-                                                    model: {
-                                                      value: _vm.editDialog,
-                                                      callback: function($$v) {
-                                                        _vm.editDialog = $$v
-                                                      },
-                                                      expression: "editDialog"
+                                                    key: title,
+                                                    staticClass: "py-0",
+                                                    attrs: {
+                                                      cols: cols,
+                                                      justify: "center"
                                                     }
                                                   },
                                                   [
-                                                    _c(_vm.component, {
-                                                      tag: "component",
-                                                      attrs: {
-                                                        type: "edit",
-                                                        pickForm: _vm.pickForm
-                                                      }
-                                                    })
+                                                    _c(
+                                                      "v-card-subtitle",
+                                                      {
+                                                        staticClass:
+                                                          "font-weight-bold py-2 text-center"
+                                                      },
+                                                      [
+                                                        _vm._v(
+                                                          _vm._s(item[title])
+                                                        )
+                                                      ]
+                                                    )
                                                   ],
                                                   1
                                                 )
-                                              : _vm._e()
-                                          ],
-                                          1
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "v-col",
-                                          [
-                                            _c(
-                                              "v-icon",
-                                              {
-                                                on: {
-                                                  click: function($event) {
-                                                    return _vm.remove(item.id)
-                                                  }
-                                                }
-                                              },
-                                              [_vm._v("mdi-trash-can")]
-                                            )
-                                          ],
-                                          1
-                                        )
-                                      ],
-                                      2
-                                    )
-                                  ],
-                                  1
-                                )
-                              ],
-                              1
-                            )
-                          ]
-                        }
-                      }
-                    ])
-                  })
+                                              }),
+                                              _vm._v(" "),
+                                              _c(
+                                                "v-col",
+                                                [
+                                                  _c(
+                                                    "v-btn",
+                                                    {
+                                                      attrs: {
+                                                        text: "",
+                                                        small: ""
+                                                      },
+                                                      on: {
+                                                        click: function(
+                                                          $event
+                                                        ) {
+                                                          return _vm.edit(
+                                                            _vm.items[index]
+                                                          )
+                                                        }
+                                                      }
+                                                    },
+                                                    [
+                                                      _c("v-icon", [
+                                                        _vm._v("mdi-pencil")
+                                                      ])
+                                                    ],
+                                                    1
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _vm.editDialog
+                                                    ? _c(
+                                                        "v-dialog",
+                                                        {
+                                                          model: {
+                                                            value:
+                                                              _vm.editDialog,
+                                                            callback: function(
+                                                              $$v
+                                                            ) {
+                                                              _vm.editDialog = $$v
+                                                            },
+                                                            expression:
+                                                              "editDialog"
+                                                          }
+                                                        },
+                                                        [
+                                                          _c("formdialog", {
+                                                            attrs: {
+                                                              type: "edit",
+                                                              pickForm:
+                                                                _vm.pickForm
+                                                            }
+                                                          })
+                                                        ],
+                                                        1
+                                                      )
+                                                    : _vm._e()
+                                                ],
+                                                1
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "v-col",
+                                                [
+                                                  _c(
+                                                    "v-icon",
+                                                    {
+                                                      on: {
+                                                        click: function(
+                                                          $event
+                                                        ) {
+                                                          return _vm.remove(
+                                                            item.id
+                                                          )
+                                                        }
+                                                      }
+                                                    },
+                                                    [_vm._v("mdi-trash-can")]
+                                                  )
+                                                ],
+                                                1
+                                              )
+                                            ],
+                                            2
+                                          )
+                                        ],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  )
+                                ]
+                              }
+                            }
+                          ],
+                          null,
+                          false,
+                          1846927858
+                        )
+                      })
+                    : _vm._e()
                 ],
                 1
               )
@@ -103551,14 +103780,15 @@ __webpack_require__.r(__webpack_exports__);
 /*!******************************************************!*\
   !*** ./resources/js/components/pages/FormDialog.vue ***!
   \******************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _FormDialog_vue_vue_type_template_id_5b669942___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./FormDialog.vue?vue&type=template&id=5b669942& */ "./resources/js/components/pages/FormDialog.vue?vue&type=template&id=5b669942&");
 /* harmony import */ var _FormDialog_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./FormDialog.vue?vue&type=script&lang=js& */ "./resources/js/components/pages/FormDialog.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _FormDialog_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _FormDialog_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -103588,7 +103818,7 @@ component.options.__file = "resources/js/components/pages/FormDialog.vue"
 /*!*******************************************************************************!*\
   !*** ./resources/js/components/pages/FormDialog.vue?vue&type=script&lang=js& ***!
   \*******************************************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -104087,7 +104317,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     empls: null,
     supervisors: null,
     depts: null,
-    holidays: null
+    holidays: null,
+    leaveForms: null
   },
   mutations: {
     assignEmpls: function assignEmpls(state, payload) {
@@ -104102,6 +104333,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     assignHolidays: function assignHolidays(state, payload) {
       state.holidays = payload;
+    },
+    assignLeaveForms: function assignLeaveForms(state, payload) {
+      payload.forEach((el, idx));
+      var date_start = payload.date_start,
+          date_end = payload.date_end;
+      state.leaveForms = payload;
     }
   },
   actions: {
@@ -104172,6 +104409,29 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             }
           }
         }, _callee3);
+      }))();
+    },
+    getEmplForms: function getEmplForms(_ref4, data) {
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
+        var commit, res;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                commit = _ref4.commit;
+                _context4.next = 3;
+                return axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/leaveform?range=empl&data=' + data);
+
+              case 3:
+                res = _context4.sent;
+                commit('assignLeaveForms', res.data);
+
+              case 5:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4);
       }))();
     }
   }
@@ -104314,8 +104574,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\xampp\htdocs\projekty\kadryApp\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\projekty\kadryApp\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

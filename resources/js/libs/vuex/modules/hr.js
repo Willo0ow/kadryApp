@@ -5,7 +5,8 @@ export default{
         empls:null,
         supervisors:null,
         depts:null,
-        holidays: null
+        holidays: null,
+        leaveForms:null
     },
     mutations:{
         assignEmpls(state, payload){
@@ -18,6 +19,11 @@ export default{
         },
         assignHolidays(state, payload){
             state.holidays = payload
+        },
+        assignLeaveForms(state, payload){
+            payload.forEach((el, idx))
+            let {date_start, date_end} = payload
+            state.leaveForms = payload
         }
     },
     actions:{
@@ -32,6 +38,10 @@ export default{
         async getHolidays({commit}){
             let res = await Axios.get('/holis')
             commit('assignHolidays', res.data)
+        },
+        async getEmplForms({commit},data){
+            let res = await Axios.get('/leaveform?range=empl&data='+data)
+            commit('assignLeaveForms', res.data)
         }
 
     }
