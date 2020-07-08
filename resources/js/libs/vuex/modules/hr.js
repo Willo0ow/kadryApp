@@ -6,9 +6,15 @@ export default{
         supervisors:null,
         depts:null,
         holidays: null,
-        leaveForms:null
+        leaveForms:null,
+        deptEmpls:null,
+        edits:{}
     },
     mutations:{
+        getDeptEmpls(state, dept){
+            let res = state.empls.filter((el)=>el.dept == dept)
+            state.deptEmpls = res
+        },
         assignEmpls(state, payload){
             state.empls = payload
             let res = payload.filter((el)=>el.supervisor==true)
@@ -30,6 +36,18 @@ export default{
                 res.push(rec)
                 return res
             },[])
+            state.edits = {}
+            arr.forEach((el)=>{
+                state.edits[el.id] = false
+            })
+            
+            arr = arr.reduce((groups, val)=>{
+                let {status} = val
+                groups[status]? groups[status].push(val) : groups[status] = [val]
+                return groups
+            }, {})
+            console.log(arr);
+
             state.leaveForms = arr
         }
     },

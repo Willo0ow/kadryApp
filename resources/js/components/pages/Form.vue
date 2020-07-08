@@ -28,10 +28,12 @@
                     <v-col>
                         <v-btn dark color="teal darken-3" rounded @click="sendForm">Wyślij</v-btn>
                     </v-col>
+
                 </template>
             </v-card-actions>
         </v-row>
     </v-card>
+
 </template>
 
 <script>
@@ -45,17 +47,7 @@ import EventBus from '../../libs/bus';
         data(){
             return {
                 types:['wypoczynkowy', 'okolicznościowy', 'bezpłatny', 'na żądanie', 'inny'],
-                form : {
-                    type:null,
-                    dates:['',''],
-                    status:'draft',
-                    note:'',
-                    reject_msg:'',
-                    sub:null,
-                    dept: '',
-                    empl_id: '',
-                    user_id: this.$store.state.user.user.id
-                },
+                form : {},
                 empl:null
             }
         },
@@ -65,31 +57,32 @@ import EventBus from '../../libs/bus';
                 deptEmpls: state => state.hr.deptEmpls
             }),
             temp(){
-                //title of the component
                 return this.type == 'new'? {title:'Dodaj Wniosek Urlopowy'} :{ title:'Wniosek Urlopowy'}
             },
+/*             empl(){
+                if(this.$route.params.id){let {id} = this.$route.params
+                let res = this.empls? this.empls.find((el)=>el.id == id) : {}
+                return res}
+                return {}
+            }, */
             subs(){
-                //substitutions for the employee
                 if(this.empl){
-                    let res = this.deptEmpls.filter((el)=>el.id != this.$route.params.id)
+                    let res = this.empls.filter((el)=>el.dept == this.empl.dept && el.id != this.empl.id)
                     return res
                 } return []
             },
             ifNote(){ 
-                //adds note input if a particular type of leave has been chosen
                 return ['inny', 'bezpłatny', 'okolicznościowy'].indexOf(this.form.type)>=0 ? true : false
             },
             disabled(){
-                //prevents changes in the form if already sent
                 return (this.form.status != 'draft' && this.$route.params.id)?  true : false
             },
         },
         methods:{
             resetForm(){
-                EventBus.$emit('closeDialog', this.pickForm.id)
+                EventBus.$emit('closeDialog')
             },
             prepForm(){
-                //prepares the form to be sent to db
                 let form = this.form
                 let [date_start, date_end] = form.dates
                 delete form.dates
@@ -97,65 +90,56 @@ import EventBus from '../../libs/bus';
             },
             async saveForm(){
                 let form = this.prepForm()
-                if(form.id){
-                    //if edited form and save
-                    delete form.name
-                    await axios.patch('/leaveform/'+form.id, form)
-                } else {
-                    //if new form and save
-                    await axios.post('/leaveform', form)
-                }
-                //gets updaetd list of employee's forms
+                await axios.post('/leaveform', form)
                 await this.$store.dispatch('getEmplForms', this.$route.params.id)
-                EventBus.$emit('closeDialog', form.id)
+                EventBus.$emit('closeDialog')
             },
             async sendForm(){
                 let form = this.prepForm()
                 form['date_sent'] = new Date().toISOString().slice(0,10)
                 form.status = 'processed'
                 if(!form.id){
-                    //if new and send
                     await axios.post('/leaveform', form)
                 } else {
-                    //if editted form and send
                     delete form.name
                     await axios.patch('/leaveform/'+form.id, form)
                 }
-                //get updated list of employee's forms
                 await this.$store.dispatch('getEmplForms', this.$route.params.id)
-                EventBus.$emit('closeDialog', form.id)
+                EventBus.$emit('closeDialog')
             }
         },
         mounted() {
 
         },
         async created(){
-            //get the list of all employees
             await this.$store.dispatch('getEmplsAll')
-            if(this.type == 'edit'){
-                //if form editted, assign employee
-                let {id} = this.$route.params
-                let res = this.empls? this.empls.find((el)=>el.id == id) : {}
-                this.empl = res
-            }
+            let form = {type:null,
+                    dates:['',''],
+                    status:'draft',
+                    note:'',
+                    reject_msg:'',
+                    sub:null,
+                    dept: '',
+                    empl_id: '',
+                    user_id: this.$store.state.user.user.id}
             if (this.type=='new'&& this.$route.params.id){
-                //if new form and created by the employee
+                console.log('newEmployee');
                 let {id} = this.$route.params
                 let res = this.empls? this.empls.find((el)=>el.id == id) : {}
                 this.empl = res
-                this.form.dept = this.empl.dept
-                this.form.empl_id = parseInt(this.$route.params.id)
+                
+                form.dept = this.empl.dept
+                form.empl_id = parseInt(this.$route.params.id)
+                this.form = form
             }
-            else if (this.$route.params.dept && this.type == 'new'){
-                //if created by the supervisor
-                this.form.status = 'approved'
-                this.form.dept = this.$route.params.dept
+            else if (this.$route.params.dept){
+                form.status = 'approved'
+                form.dept = this.$route.params.dept
+                this.form = form
             }
             else {
-                //if employee edits the form
                 this.form = this.pickForm
             }
-            //get the staff of teh department
             this.$store.commit('getDeptEmpls',this.form.dept)
         } 
     }

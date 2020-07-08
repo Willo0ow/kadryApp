@@ -41,9 +41,11 @@
                                         <v-col :cols="cols" class="py-0" v-for="{title,cols} of keys" :key="title" justify="center"><v-card-subtitle class="font-weight-bold py-2 text-center">{{item[title]}}</v-card-subtitle></v-col>
                                         <v-col>
                                             <v-btn @click="edit(items[index])" text small><v-icon>mdi-pencil</v-icon></v-btn>
-                                            <v-dialog v-model="editDialog" v-if="editDialog">
-                                                <component :is="component" type="edit" :pickForm="pickForm"></component>
-                                            </v-dialog>
+                                            <template v-if="currentEdit == item.id">
+                                                <v-dialog v-model="editDialog" v-if="editDialog">
+                                                    <component :is="component" type="edit" :pickForm="pickForm"></component>
+                                                </v-dialog>
+                                            </template>
                                         </v-col>
                                         <v-col><v-icon @click="remove(item.id, item)">mdi-trash-can</v-icon></v-col>
                                     </v-row>
@@ -69,7 +71,7 @@ export default {
     },
     props:{info:Object, name:String},
     data(){
-        return {...this.info}
+        return {...this.info, currentEdit:null}
 /*         info:{
                 pageTitle://title of the main card
                 plusTitle://name of plus button to add a new record
@@ -113,6 +115,7 @@ export default {
     },
     methods:{
         edit(item){
+            this.currentEdit = item.id
             this.pickForm = item
             console.log(item);
             this.editDialog = !this.editDialog
@@ -122,7 +125,7 @@ export default {
             await axios.delete(this.route + '/'+ id)
             await this.$store.dispatch(this.getList)
             alert(this.deleteMsg)
-        }
+        },
     },
     async mounted(){
         await this.$store.dispatch('getUsers');

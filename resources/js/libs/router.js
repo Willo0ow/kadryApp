@@ -6,7 +6,7 @@ import depts from '../components/pages/Departments'
 import empls from '../components/pages/Employees'
 import forms from '../components/pages/Forms'
 import holidays from '../components/pages/Holidays'
-//import listcomp from '../components/ListComp'
+import form from '../components/pages/Form'
 
 
 Vue.use(VueRouter)
@@ -22,6 +22,7 @@ export default new VueRouter({
         {path:'/allforms', component:forms},
         {path:'/holidays', component:holidays},
         {path:'/settings', component:sett},
+        {path:'/form/:id', component:form},
         
     ]
 })

@@ -48,6 +48,7 @@ export default {
         await this.$store.dispatch('getDepts')
         EventBus.$on('closeDialog', ()=>{
             this.dialog = false
+            
         })
     }
 }

@@ -27,30 +27,28 @@
             <v-col>
                 <v-card app raised class="gradient" dark style="height:100%">
                     <v-card-title class="text-h5 justify-center">{{pageTitle}}</v-card-title>
-                    <v-card  class="cyan darken-4 ml-3 mb-2" dark width="94.5%">
-                        <v-row align="center" justify="center">
-                            <v-col :cols="cols" class="py-0" v-for="{title,cols} of headers" :key="title"><v-card-subtitle class="font-weight-bold py-2 text-center">{{title}}</v-card-subtitle></v-col>
-                            <v-col cols="2"></v-col>
-                        </v-row>
-                    </v-card>
-                    <v-virtual-scroll dense height="350px" :items="items" :item-height="60" v-if="items">
-                        <template v-slot="{item, index}">
+                    <v-container v-for="el of categories" :key="el" id="catList">
+                        <v-card-subtitle>{{el}}</v-card-subtitle>
+
+                    <v-list dense v-for="item of items[el]" :key="item.id" class="transparent">
                             <v-list-item :key="item.id">
                                 <v-card width="97%" class="my-1 transparent">
                                     <v-row align="center" justify="center">
                                         <v-col :cols="cols" class="py-0" v-for="{title,cols} of keys" :key="title" justify="center"><v-card-subtitle class="font-weight-bold py-2 text-center">{{item[title]}}</v-card-subtitle></v-col>
                                         <v-col>
-                                            <v-btn @click="edit(items[index])" text small><v-icon>mdi-pencil</v-icon></v-btn>
-                                            <v-dialog v-model="editDialog" v-if="editDialog">
-                                                <formdialog type="edit" :pickForm="pickForm"></formdialog>
-                                            </v-dialog>
+                                            <v-btn @click="edit(item)" text small><v-icon>mdi-pencil</v-icon></v-btn>
+                                            <template v-if="currentEdit == item.id">
+                                                <v-dialog v-model="editDialog">
+                                                    <formdialog type="edit" :pickForm="pickForm"></formdialog>
+                                                </v-dialog>
+                                            </template>
                                         </v-col>
                                         <v-col><v-icon @click="remove(item.id)">mdi-trash-can</v-icon></v-col>
                                     </v-row>
                                 </v-card>
                             </v-list-item>
-                        </template>
-                    </v-virtual-scroll>
+                    </v-list>
+                    </v-container>
                 </v-card>
             </v-col>
         </v-row>
@@ -66,7 +64,7 @@ export default {
     },
     props:{info:Object, name:String},
     data(){
-        return {...this.info}
+        return {...this.info, categories:[], currentEdit:null}
 /*         info:{
                 pageTitle://title of the main card
                 plusTitle://name of plus button to add a new record
@@ -90,11 +88,16 @@ export default {
             depts: state => state.hr.depts,
             empls: state => state.hr.empls,
             holidays: state => state.hr.holidays,
-            items: state => state.hr.leaveForms
+            items: state => state.hr.leaveForms,
+            //edits: state => state.hr.edits
         }),
+        empl_id(){
+            return this.$route.params.id
+        }
     },
     methods:{
         edit(item){
+            this.currentEdit = item.id
             this.pickForm = item
             console.log(item);
             this.editDialog = !this.editDialog
@@ -102,8 +105,21 @@ export default {
         async remove(id){
             console.log(id);
             await axios.delete(this.route + '/'+ id)
-            await this.$store.dispatch(this.getList)
+            if(this.empl_id){
+                await this.$store.dispatch(this.getList, this.empl_id)
+            } else {
+                await this.$store.dispatch(this.getList)
+            }
+            this.getCategories()
             alert(this.deleteMsg)
+        },
+        getCategories(){
+            let res = Object.keys(this.items)
+            let list =  ['granted', 'approved','processed', 'draft', 'rejected'].reduce((list,el)=>{
+                if(res.includes(el)){list.push(el)}
+                return list
+            },[])
+            this.categories = list
         }
     },
     async mounted(){
@@ -118,8 +134,16 @@ export default {
     },
     async created(){
         await this.$store.dispatch('getEmplForms', this.$route.params.id)
-        //console.log('cerated');
-        
+        this.getCategories()
     }
 }
 </script>
+<style scoped>
+    .v-card__subtitle{
+        padding: 0;
+        text-align: center;
+    }
+    #catList.container{
+        padding: 0;
+    }
+</style>

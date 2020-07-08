@@ -37,7 +37,10 @@ import listformcomp from './ListFormComp'
                     dialog: false,
                     headers: [{title:'Rodzaj urlopu', cols:5}, {title:'Data akceptacji', cols:3}, {title:'Pracownik', cols:3}],
                     keys: [{title:'type', cols:3},{title:'name', cols:3}, {title:'date_start', cols:2}, {title:'date_end', cols:2}],
-                    editDialog: false
+                    editDialog: false,
+                    getList: 'getEmplForms',
+                    pickForm:null,
+                    route:'/leaveform'
                 }},
         },
         methods:{
