@@ -4154,7 +4154,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   data: function data() {
     return _objectSpread(_objectSpread({}, this.info), {}, {
-      categories: [],
       currentEdit: null
     });
     /*         info:{
@@ -4187,8 +4186,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     items: function items(state) {
       return state.hr.leaveForms;
-    } //edits: state => state.hr.edits
-
+    },
+    categories: function categories(state) {
+      return state.hr.categories;
+    }
   })), {}, {
     empl_id: function empl_id() {
       return this.$route.params.id;
@@ -4198,7 +4199,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     edit: function edit(item) {
       this.currentEdit = item.id;
       this.pickForm = item;
-      console.log(item);
       this.editDialog = !this.editDialog;
     },
     remove: function remove(id) {
@@ -4209,50 +4209,36 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                console.log(id);
-                _context.next = 3;
+                _context.next = 2;
                 return axios["delete"](_this.route + '/' + id);
 
-              case 3:
+              case 2:
                 if (!_this.empl_id) {
-                  _context.next = 8;
+                  _context.next = 7;
                   break;
                 }
 
-                _context.next = 6;
+                _context.next = 5;
                 return _this.$store.dispatch(_this.getList, _this.empl_id);
 
-              case 6:
-                _context.next = 10;
+              case 5:
+                _context.next = 9;
                 break;
 
-              case 8:
-                _context.next = 10;
+              case 7:
+                _context.next = 9;
                 return _this.$store.dispatch(_this.getList);
 
-              case 10:
-                _this.getCategories();
-
+              case 9:
                 alert(_this.deleteMsg);
 
-              case 12:
+              case 10:
               case "end":
                 return _context.stop();
             }
           }
         }, _callee);
       }))();
-    },
-    getCategories: function getCategories() {
-      var res = Object.keys(this.items);
-      var list = ['granted', 'approved', 'processed', 'draft', 'rejected'].reduce(function (list, el) {
-        if (res.includes(el)) {
-          list.push(el);
-        }
-
-        return list;
-      }, []);
-      this.categories = list;
     }
   },
   mounted: function mounted() {
@@ -4300,13 +4286,28 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         while (1) {
           switch (_context3.prev = _context3.next) {
             case 0:
-              _context3.next = 2;
+              if (!_this3.$route.params.id) {
+                _context3.next = 5;
+                break;
+              }
+
+              _context3.next = 3;
               return _this3.$store.dispatch('getEmplForms', _this3.$route.params.id);
 
-            case 2:
-              _this3.getCategories();
-
             case 3:
+              _context3.next = 8;
+              break;
+
+            case 5:
+              if (!_this3.$route.params.dept) {
+                _context3.next = 8;
+                break;
+              }
+
+              _context3.next = 8;
+              return _this3.$store.dispatch('getDeptForms', _this3.$route.params.dept);
+
+            case 8:
             case "end":
               return _context3.stop();
           }
@@ -41382,9 +41383,9 @@ var render = function() {
                                       _vm._v("mdi-account")
                                     ]),
                                     _vm._v(
-                                      "\r\n                    " +
+                                      "\n                    " +
                                         _vm._s(_vm.user.name) +
-                                        "\r\n                "
+                                        "\n                "
                                     )
                                   ],
                                   1
@@ -41396,7 +41397,7 @@ var render = function() {
                     ],
                     null,
                     false,
-                    3280902772
+                    1910453428
                   )
                 },
                 [
@@ -105024,7 +105025,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_pages_Employees__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../components/pages/Employees */ "./resources/js/components/pages/Employees.vue");
 /* harmony import */ var _components_pages_Forms__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../components/pages/Forms */ "./resources/js/components/pages/Forms.vue");
 /* harmony import */ var _components_pages_Holidays__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../components/pages/Holidays */ "./resources/js/components/pages/Holidays.vue");
-/* harmony import */ var _components_pages_Form__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../components/pages/Form */ "./resources/js/components/pages/Form.vue");
+/* harmony import */ var _components_pages_Form__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../components/pages/Form */ "./resources/js/components/pages/Form.vue");
 
 
 
@@ -105064,7 +105065,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_router__WEBPACK_IMPORTED_MODU
     component: _components_Settings__WEBPACK_IMPORTED_MODULE_3__["default"]
   }, {
     path: '/form/:id',
-    component: _components_pages_Form__WEBPACK_IMPORTED_MODULE_9__["default"]
+    component: _components_pages_Form__WEBPACK_IMPORTED_MODULE_8__["default"]
   }]
 }));
 
@@ -105128,7 +105129,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     holidays: null,
     leaveForms: null,
     deptEmpls: null,
-    edits: {}
+    categories: null
   },
   mutations: {
     getDeptEmpls: function getDeptEmpls(state, dept) {
@@ -105163,17 +105164,21 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         res.push(rec);
         return res;
       }, []);
-      state.edits = {};
-      arr.forEach(function (el) {
-        state.edits[el.id] = false;
-      });
       arr = arr.reduce(function (groups, val) {
         var status = val.status;
         groups[status] ? groups[status].push(val) : groups[status] = [val];
         return groups;
       }, {});
-      console.log(arr);
       state.leaveForms = arr;
+      var res = Object.keys(arr);
+      var list = ['granted', 'approved', 'processed', 'draft', 'rejected'].reduce(function (keys, el) {
+        if (res.includes(el)) {
+          keys.push(el);
+        }
+
+        return keys;
+      }, []);
+      state.categories = list;
     }
   },
   actions: {
@@ -105267,6 +105272,29 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             }
           }
         }, _callee4);
+      }))();
+    },
+    getDeptForms: function getDeptForms(_ref5, data) {
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee5() {
+        var commit, res;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                commit = _ref5.commit;
+                _context5.next = 3;
+                return axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/leaveform?range=dept&data=' + data);
+
+              case 3:
+                res = _context5.sent;
+                commit('assignLeaveForms', res.data);
+
+              case 5:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5);
       }))();
     }
   }
@@ -105409,8 +105437,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\xampp\htdocs\projekty\kadryApp\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\projekty\kadryApp\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

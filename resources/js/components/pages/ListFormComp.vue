@@ -64,7 +64,7 @@ export default {
     },
     props:{info:Object, name:String},
     data(){
-        return {...this.info, categories:[], currentEdit:null}
+        return {...this.info, currentEdit:null}
 /*         info:{
                 pageTitle://title of the main card
                 plusTitle://name of plus button to add a new record
@@ -89,38 +89,27 @@ export default {
             empls: state => state.hr.empls,
             holidays: state => state.hr.holidays,
             items: state => state.hr.leaveForms,
-            //edits: state => state.hr.edits
+            categories: state => state.hr.categories
         }),
         empl_id(){
             return this.$route.params.id
-        }
+        },
     },
     methods:{
         edit(item){
             this.currentEdit = item.id
             this.pickForm = item
-            console.log(item);
             this.editDialog = !this.editDialog
         },
         async remove(id){
-            console.log(id);
             await axios.delete(this.route + '/'+ id)
             if(this.empl_id){
                 await this.$store.dispatch(this.getList, this.empl_id)
             } else {
                 await this.$store.dispatch(this.getList)
             }
-            this.getCategories()
             alert(this.deleteMsg)
         },
-        getCategories(){
-            let res = Object.keys(this.items)
-            let list =  ['granted', 'approved','processed', 'draft', 'rejected'].reduce((list,el)=>{
-                if(res.includes(el)){list.push(el)}
-                return list
-            },[])
-            this.categories = list
-        }
     },
     async mounted(){
         await this.$store.dispatch('getUsers');
@@ -133,8 +122,11 @@ export default {
         })
     },
     async created(){
-        await this.$store.dispatch('getEmplForms', this.$route.params.id)
-        this.getCategories()
+        if(this.$route.params.id){
+            await this.$store.dispatch('getEmplForms', this.$route.params.id)
+        } else if (this.$route.params.dept){
+            await this.$store.dispatch('getDeptForms', this.$route.params.dept)
+        }
     }
 }
 </script>

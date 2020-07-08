@@ -8,7 +8,7 @@ export default{
         holidays: null,
         leaveForms:null,
         deptEmpls:null,
-        edits:{}
+        categories:null
     },
     mutations:{
         getDeptEmpls(state, dept){
@@ -36,19 +36,21 @@ export default{
                 res.push(rec)
                 return res
             },[])
-            state.edits = {}
-            arr.forEach((el)=>{
-                state.edits[el.id] = false
-            })
+
             
             arr = arr.reduce((groups, val)=>{
                 let {status} = val
                 groups[status]? groups[status].push(val) : groups[status] = [val]
                 return groups
             }, {})
-            console.log(arr);
-
             state.leaveForms = arr
+
+            let res = Object.keys(arr)
+            let list =  ['granted', 'approved','processed', 'draft', 'rejected'].reduce((keys,el)=>{
+                if(res.includes(el)){keys.push(el)}
+                    return keys
+                },[])
+            state.categories = list
         }
     },
     actions:{
@@ -66,6 +68,10 @@ export default{
         },
         async getEmplForms({commit},data){
             let res = await Axios.get('/leaveform?range=empl&data='+data)
+            commit('assignLeaveForms', res.data)
+        },
+        async getDeptForms({commit},data){
+            let res = await Axios.get('/leaveform?range=dept&data='+data)
             commit('assignLeaveForms', res.data)
         }
 
