@@ -3224,11 +3224,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])({
     empls: function empls(state) {
       return state.hr.empls;
-    },
-    deptEmpls: function deptEmpls(state) {
-      return state.hr.deptEmpls;
-    }
+    } //deptEmpls: state => state.hr.deptEmpls
+
   })), {}, {
+    deptEmpls: function deptEmpls() {
+      var _this = this;
+
+      if (this.$route.params.dept) {
+        return this.empls.filter(function (el) {
+          return el.dept == _this.$route.params.dept;
+        });
+      } else {
+        return this.$store.state.hr.deptEmpls;
+      }
+    },
     temp: function temp() {
       //title of the component
       return this.type == 'new' ? {
@@ -3238,12 +3247,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       };
     },
     subs: function subs() {
-      var _this = this;
+      var _this2 = this;
 
       //substitutions for the employee
       if (this.empl) {
         var res = this.deptEmpls.filter(function (el) {
-          return el.id != _this.$route.params.id;
+          return el.id != _this2.$route.params.id;
         });
         return res;
       }
@@ -3260,6 +3269,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   }),
   methods: {
+    assignEmpl: function assignEmpl() {
+      this.form.empl_id = this.empl.id;
+    },
     resetForm: function resetForm() {
       _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog', this.pickForm.id);
     },
@@ -3278,7 +3290,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
     },
     saveForm: function saveForm() {
-      var _this2 = this;
+      var _this3 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
         var form;
@@ -3286,7 +3298,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                form = _this2.prepForm();
+                form = _this3.prepForm();
 
                 if (!form.id) {
                   _context.next = 7;
@@ -3308,7 +3320,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
               case 9:
                 _context.next = 11;
-                return _this2.$store.dispatch('getEmplForms', _this2.$route.params.id);
+                return _this3.$store.dispatch('getEmplForms', _this3.$route.params.id);
 
               case 11:
                 _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog', form.id);
@@ -3322,7 +3334,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }))();
     },
     sendForm: function sendForm() {
-      var _this3 = this;
+      var _this4 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
         var form;
@@ -3330,7 +3342,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                form = _this3.prepForm();
+                form = _this4.prepForm();
                 form['date_sent'] = new Date().toISOString().slice(0, 10);
                 form.status = 'processed';
 
@@ -3354,7 +3366,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
               case 11:
                 _context2.next = 13;
-                return _this3.$store.dispatch('getEmplForms', _this3.$route.params.id);
+                return _this4.$store.dispatch('getEmplForms', _this4.$route.params.id);
 
               case 13:
                 _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog', form.id);
@@ -3370,7 +3382,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   mounted: function mounted() {},
   created: function created() {
-    var _this4 = this;
+    var _this5 = this;
 
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
       var id, res, _id, _res;
@@ -3380,38 +3392,44 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           switch (_context3.prev = _context3.next) {
             case 0:
               _context3.next = 2;
-              return _this4.$store.dispatch('getEmplsAll');
+              return _this5.$store.dispatch('getEmplsAll');
 
             case 2:
-              if (_this4.type == 'edit') {
+              if (_this5.type == 'edit' && _this5.$route.params.id) {
                 //if form editted, assign employee
-                id = _this4.$route.params.id;
-                res = _this4.empls ? _this4.empls.find(function (el) {
+                id = _this5.$route.params.id;
+                res = _this5.empls ? _this5.empls.find(function (el) {
                   return el.id == id;
                 }) : {};
-                _this4.empl = res;
+                _this5.empl = res;
               }
 
-              if (_this4.type == 'new' && _this4.$route.params.id) {
+              if (_this5.type == 'new' && _this5.$route.params.id) {
                 //if new form and created by the employee
-                _id = _this4.$route.params.id;
-                _res = _this4.empls ? _this4.empls.find(function (el) {
+                _id = _this5.$route.params.id;
+                _res = _this5.empls ? _this5.empls.find(function (el) {
                   return el.id == _id;
                 }) : {};
-                _this4.empl = _res;
-                _this4.form.dept = _this4.empl.dept;
-                _this4.form.empl_id = parseInt(_this4.$route.params.id);
-              } else if (_this4.$route.params.dept && _this4.type == 'new') {
+                _this5.empl = _res;
+                _this5.form.dept = _this5.empl.dept;
+                _this5.form.empl_id = parseInt(_this5.$route.params.id);
+              } else if (_this5.$route.params.dept && _this5.type == 'new') {
                 //if created by the supervisor
-                _this4.form.status = 'approved';
-                _this4.form.dept = _this4.$route.params.dept;
+                _this5.form.status = 'approved';
+                _this5.form.dept = _this5.$route.params.dept;
+              } else if (_this5.$route.params.dept && _this5.type == 'edit') {
+                //if edited by the supervisor
+                _this5.form = _this5.pickForm;
+                _this5.empl = _this5.empls.find(function (el) {
+                  return el.id == _this5.form.empl_id;
+                });
               } else {
                 //if employee edits the form
-                _this4.form = _this4.pickForm;
+                _this5.form = _this5.pickForm;
               } //get the staff of teh department
 
 
-              _this4.$store.commit('getDeptEmpls', _this4.form.dept);
+              _this5.$store.commit('getDeptEmpls', _this5.form.dept);
 
             case 5:
             case "end":
@@ -42477,13 +42495,13 @@ var render = function() {
                       _c(
                         "v-col",
                         [
-                          this.$route.params.dept
+                          this.$route.params.dept && _vm.deptEmpls
                             ? _c("v-select", {
                                 attrs: {
                                   items: _vm.deptEmpls,
                                   hint: "Wybierz pracownika",
                                   "item-text": "name",
-                                  "item-value": "item",
+                                  "return-object": "",
                                   "persistent-hint": "",
                                   "single-line": "",
                                   dense: "",
@@ -42493,6 +42511,7 @@ var render = function() {
                                   rounded: "",
                                   readonly: _vm.disabled
                                 },
+                                on: { input: _vm.assignEmpl },
                                 model: {
                                   value: _vm.empl,
                                   callback: function($$v) {

@@ -5,7 +5,7 @@
             <v-container>
                 <v-row>
                     <v-col>
-                        <v-select :items="deptEmpls" hint="Wybierz pracownika" v-model="empl" item-text="name" item-value="item" persistent-hint single-line dense autocomplete="off" dark filled rounded :readonly="disabled" v-if="this.$route.params.dept"></v-select>
+                        <v-select :items="deptEmpls" hint="Wybierz pracownika" v-model="empl" @input="assignEmpl" item-text="name" return-object persistent-hint single-line dense autocomplete="off" dark filled rounded :readonly="disabled" v-if="this.$route.params.dept && deptEmpls"></v-select>
                         <v-select :items="types" hint="Wybierz typ urlopu" v-model="form.type" persistent-hint single-line dense autocomplete="off" dark filled rounded :readonly="disabled"></v-select>
                         <v-select :items="subs" item-text="name" item-value="id" hint="Wybierz zastępcę" v-model="form.sub" persistent-hint single-line dense autocomplete="off" dark filled rounded :readonly="disabled"></v-select>
                         <v-text-field hint="Powód urlopu" v-model="form.note" persistent-hint single-line dense autocomplete="off" dark filled rounded v-if="ifNote" :readonly="disabled"></v-text-field>
@@ -62,8 +62,15 @@ import EventBus from '../../libs/bus';
         computed:{
             ...mapState({
                 empls : state => state.hr.empls,
-                deptEmpls: state => state.hr.deptEmpls
+                //deptEmpls: state => state.hr.deptEmpls
             }),
+            deptEmpls(){
+                if(this.$route.params.dept){
+                    return this.empls.filter((el)=>{return el.dept == this.$route.params.dept})
+                } else {
+                    return this.$store.state.hr.deptEmpls
+                }
+            },
             temp(){
                 //title of the component
                 return this.type == 'new'? {title:'Dodaj Wniosek Urlopowy'} :{ title:'Wniosek Urlopowy'}
@@ -85,6 +92,9 @@ import EventBus from '../../libs/bus';
             },
         },
         methods:{
+            assignEmpl(){
+                this.form.empl_id = this.empl.id
+            },
             resetForm(){
                 EventBus.$emit('closeDialog', this.pickForm.id)
             },
@@ -132,7 +142,7 @@ import EventBus from '../../libs/bus';
         async created(){
             //get the list of all employees
             await this.$store.dispatch('getEmplsAll')
-            if(this.type == 'edit'){
+            if(this.type == 'edit' && this.$route.params.id){
                 //if form editted, assign employee
                 let {id} = this.$route.params
                 let res = this.empls? this.empls.find((el)=>el.id == id) : {}
@@ -151,6 +161,14 @@ import EventBus from '../../libs/bus';
                 this.form.status = 'approved'
                 this.form.dept = this.$route.params.dept
             }
+            else if (this.$route.params.dept && this.type == 'edit'){
+                //if edited by the supervisor
+                this.form = this.pickForm
+                this.empl = this.empls.find((el)=>{
+                    return el.id == this.form.empl_id
+                })
+            }
+
             else {
                 //if employee edits the form
                 this.form = this.pickForm
