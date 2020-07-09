@@ -3139,10 +3139,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _libs_bus__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../libs/bus */ "./resources/js/libs/bus.js");
 
 
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -3155,12 +3151,25 @@ function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -3227,15 +3236,30 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     } //deptEmpls: state => state.hr.deptEmpls
 
   })), {}, {
+    role: function role() {
+      var _this$$route = this.$route,
+          params = _this$$route.params,
+          path = _this$$route.path;
+
+      if (params.id) {
+        return 'empl';
+      } else if (params.dept) {
+        return 'dept';
+      } else if (path == '/allforms') {
+        return 'all';
+      }
+    },
     deptEmpls: function deptEmpls() {
       var _this = this;
 
-      if (this.$route.params.dept) {
+      if (this.role == 'dept') {
         return this.empls.filter(function (el) {
           return el.dept == _this.$route.params.dept;
         });
-      } else {
+      } else if (this.role == 'empl') {
         return this.$store.state.hr.deptEmpls;
+      } else if (this.role == 'all') {
+        return this.empls;
       }
     },
     temp: function temp() {
@@ -3250,11 +3274,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var _this2 = this;
 
       //substitutions for the employee
-      if (this.empl) {
+      if (this.empl && this.role != 'all') {
         var res = this.deptEmpls.filter(function (el) {
           return el.id != _this2.$route.params.id;
         });
         return res;
+      } else if (this.role == 'all' && this.empl) {
+        var _res = this.empls.filter(function (el) {
+          return el.dept == _this2.empl.dept && el.id != _this2.empl.id;
+        });
+
+        return _res;
       }
 
       return [];
@@ -3263,17 +3293,57 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       //adds note input if a particular type of leave has been chosen
       return ['inny', 'bezpłatny', 'okolicznościowy'].indexOf(this.form.type) >= 0 ? true : false;
     },
+    ifReject: function ifReject() {
+      return this.form.status == 'rejected' ? true : false;
+    },
+    ifSelectEmpls: function ifSelectEmpls() {
+      return (this.$route.path == '/allforms' || this.$route.params.dept) && this.deptEmpls;
+    },
     disabled: function disabled() {
       //prevents changes in the form if already sent
-      return this.form.status != 'draft' && this.$route.params.id ? true : false;
+      var role = this.role;
+      var status = this.form.status;
+      var empl = status != 'draft' && role == 'empl';
+
+      if (role == 'empl') {
+        return empl;
+      } else if ((role == 'dept' || role == 'all') && this.type == 'new') {
+        return false;
+      }
+
+      return true;
     }
   }),
   methods: {
+    updateStatus: function updateStatus(status) {
+      var _this3 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _this3.form.status = status;
+                _context.next = 3;
+                return _this3.saveForm();
+
+              case 3:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }))();
+    },
     assignEmpl: function assignEmpl() {
       this.form.empl_id = this.empl.id;
     },
     resetForm: function resetForm() {
-      _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog', this.pickForm.id);
+      if (this.type == 'new') {
+        _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog', 1);
+      } else {
+        _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog', this.pickForm.id);
+      }
     },
     prepForm: function prepForm() {
       //prepares the form to be sent to db
@@ -3290,50 +3360,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
     },
     saveForm: function saveForm() {
-      var _this3 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-        var form;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                form = _this3.prepForm();
-
-                if (!form.id) {
-                  _context.next = 7;
-                  break;
-                }
-
-                //if edited form and save
-                delete form.name;
-                _context.next = 5;
-                return axios.patch('/leaveform/' + form.id, form);
-
-              case 5:
-                _context.next = 9;
-                break;
-
-              case 7:
-                _context.next = 9;
-                return axios.post('/leaveform', form);
-
-              case 9:
-                _context.next = 11;
-                return _this3.$store.dispatch('getEmplForms', _this3.$route.params.id);
-
-              case 11:
-                _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog', form.id);
-
-              case 12:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee);
-      }))();
-    },
-    sendForm: function sendForm() {
       var _this4 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
@@ -3343,100 +3369,181 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             switch (_context2.prev = _context2.next) {
               case 0:
                 form = _this4.prepForm();
-                form['date_sent'] = new Date().toISOString().slice(0, 10);
-                form.status = 'processed';
 
-                if (form.id) {
-                  _context2.next = 8;
+                if (!form.id) {
+                  _context2.next = 7;
                   break;
                 }
 
-                _context2.next = 6;
-                return axios.post('/leaveform', form);
-
-              case 6:
-                _context2.next = 11;
-                break;
-
-              case 8:
-                //if editted form and send
+                //if edited form and save
                 delete form.name;
-                _context2.next = 11;
+                _context2.next = 5;
                 return axios.patch('/leaveform/' + form.id, form);
 
-              case 11:
-                _context2.next = 13;
+              case 5:
+                _context2.next = 9;
+                break;
+
+              case 7:
+                _context2.next = 9;
+                return axios.post('/leaveform', form);
+
+              case 9:
+                if (!_this4.$route.params.id) {
+                  _context2.next = 14;
+                  break;
+                }
+
+                _context2.next = 12;
                 return _this4.$store.dispatch('getEmplForms', _this4.$route.params.id);
 
-              case 13:
-                _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog', form.id);
+              case 12:
+                _context2.next = 17;
+                break;
 
               case 14:
+                if (!_this4.$route.params.dept) {
+                  _context2.next = 17;
+                  break;
+                }
+
+                _context2.next = 17;
+                return _this4.$store.dispatch('getDeptForms', _this4.$route.params.dept);
+
+              case 17:
+                _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog', form.id);
+
+              case 18:
               case "end":
                 return _context2.stop();
             }
           }
         }, _callee2);
       }))();
+    },
+    sendForm: function sendForm() {
+      var _this5 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+        var form;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                form = _this5.prepForm();
+                form['date_sent'] = new Date().toISOString().slice(0, 10);
+                form.status = _this5.$route.params.id ? 'processed' : 'approved';
+
+                if (form.id) {
+                  _context3.next = 8;
+                  break;
+                }
+
+                _context3.next = 6;
+                return axios.post('/leaveform', form);
+
+              case 6:
+                _context3.next = 11;
+                break;
+
+              case 8:
+                //if editted form and send
+                delete form.name;
+                _context3.next = 11;
+                return axios.patch('/leaveform/' + form.id, form);
+
+              case 11:
+                if (!_this5.$route.params.id) {
+                  _context3.next = 16;
+                  break;
+                }
+
+                _context3.next = 14;
+                return _this5.$store.dispatch('getEmplForms', _this5.$route.params.id);
+
+              case 14:
+                _context3.next = 19;
+                break;
+
+              case 16:
+                if (!_this5.$route.params.dept) {
+                  _context3.next = 19;
+                  break;
+                }
+
+                _context3.next = 19;
+                return _this5.$store.dispatch('getDeptForms', _this5.$route.params.dept);
+
+              case 19:
+                _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog', form.id);
+
+              case 20:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }))();
     }
   },
   mounted: function mounted() {},
   created: function created() {
-    var _this5 = this;
+    var _this6 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
-      var id, res, _id, _res;
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
+      var id, res, _id, _res2;
 
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
         while (1) {
-          switch (_context3.prev = _context3.next) {
+          switch (_context4.prev = _context4.next) {
             case 0:
-              _context3.next = 2;
-              return _this5.$store.dispatch('getEmplsAll');
+              _context4.next = 2;
+              return _this6.$store.dispatch('getEmplsAll');
 
             case 2:
-              if (_this5.type == 'edit' && _this5.$route.params.id) {
+              if (_this6.type == 'edit' && _this6.$route.params.id) {
                 //if form editted, assign employee
-                id = _this5.$route.params.id;
-                res = _this5.empls ? _this5.empls.find(function (el) {
+                id = _this6.$route.params.id;
+                res = _this6.empls ? _this6.empls.find(function (el) {
                   return el.id == id;
                 }) : {};
-                _this5.empl = res;
+                _this6.empl = res;
+                _this6.form = _this6.pickForm;
               }
 
-              if (_this5.type == 'new' && _this5.$route.params.id) {
+              if (_this6.type == 'new' && _this6.$route.params.id) {
                 //if new form and created by the employee
-                _id = _this5.$route.params.id;
-                _res = _this5.empls ? _this5.empls.find(function (el) {
+                _id = _this6.$route.params.id;
+                _res2 = _this6.empls ? _this6.empls.find(function (el) {
                   return el.id == _id;
                 }) : {};
-                _this5.empl = _res;
-                _this5.form.dept = _this5.empl.dept;
-                _this5.form.empl_id = parseInt(_this5.$route.params.id);
-              } else if (_this5.$route.params.dept && _this5.type == 'new') {
+                _this6.empl = _res2;
+                _this6.form.dept = _this6.empl.dept;
+                _this6.form.empl_id = parseInt(_this6.$route.params.id);
+              } else if (_this6.$route.params.dept && _this6.type == 'new') {
                 //if created by the supervisor
-                _this5.form.status = 'approved';
-                _this5.form.dept = _this5.$route.params.dept;
-              } else if (_this5.$route.params.dept && _this5.type == 'edit') {
+                _this6.form.status = 'approved';
+                _this6.form.dept = _this6.$route.params.dept;
+              } else if (_this6.$route.params.dept && _this6.type == 'edit') {
                 //if edited by the supervisor
-                _this5.form = _this5.pickForm;
-                _this5.empl = _this5.empls.find(function (el) {
-                  return el.id == _this5.form.empl_id;
+                _this6.form = _this6.pickForm;
+                _this6.empl = _this6.empls.find(function (el) {
+                  return el.id == _this6.form.empl_id;
                 });
-              } else {
+              } else if (_this6.$route.path == '/allforms' && _this6.type == 'edit') {
                 //if employee edits the form
-                _this5.form = _this5.pickForm;
+                _this6.form = _this6.pickForm;
               } //get the staff of teh department
 
 
-              _this5.$store.commit('getDeptEmpls', _this5.form.dept);
+              _this6.$store.commit('getDeptEmpls', _this6.form.dept);
 
             case 5:
             case "end":
-              return _context3.stop();
+              return _context4.stop();
           }
         }
-      }, _callee3);
+      }, _callee4);
     }))();
   }
 });
@@ -4202,7 +4309,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     holidays: function holidays(state) {
       return state.hr.holidays;
     },
-    items: function items(state) {
+    forms: function forms(state) {
       return state.hr.leaveForms;
     },
     categories: function categories(state) {
@@ -4211,6 +4318,27 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   })), {}, {
     empl_id: function empl_id() {
       return this.$route.params.id;
+    },
+    items: function items() {
+      var _this = this;
+
+      var forms = _objectSpread({}, this.forms); //if filter by dept enabled show only forms from the selected dept
+
+
+      var res = this.filterDept ? forms.filter(function (el) {
+        return el.dept == _this.filterDept;
+      }) : forms; //if search enabled show only forms with matching names
+
+      if (this.search) {
+        for (var el in res) {
+          res[el] = res[el].filter(function (val) {
+            var str = val.name.toLowerCase();
+            return str.includes(_this.searched.toLowerCase());
+          });
+        }
+      }
+
+      return res;
     }
   }),
   methods: {
@@ -4220,7 +4348,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.editDialog = !this.editDialog;
     },
     remove: function remove(id) {
-      var _this = this;
+      var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
@@ -4228,16 +4356,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             switch (_context.prev = _context.next) {
               case 0:
                 _context.next = 2;
-                return axios["delete"](_this.route + '/' + id);
+                return axios["delete"](_this2.route + '/' + id);
 
               case 2:
-                if (!_this.empl_id) {
+                if (!_this2.empl_id) {
                   _context.next = 7;
                   break;
                 }
 
                 _context.next = 5;
-                return _this.$store.dispatch(_this.getList, _this.empl_id);
+                return _this2.$store.dispatch(_this2.getList, _this2.empl_id);
 
               case 5:
                 _context.next = 9;
@@ -4245,10 +4373,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
               case 7:
                 _context.next = 9;
-                return _this.$store.dispatch(_this.getList);
+                return _this2.$store.dispatch(_this2.getList);
 
               case 9:
-                alert(_this.deleteMsg);
+                alert(_this2.deleteMsg);
 
               case 10:
               case "end":
@@ -4260,7 +4388,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   },
   mounted: function mounted() {
-    var _this2 = this;
+    var _this3 = this;
 
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
@@ -4268,24 +4396,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           switch (_context2.prev = _context2.next) {
             case 0:
               _context2.next = 2;
-              return _this2.$store.dispatch('getUsers');
+              return _this3.$store.dispatch('getUsers');
 
             case 2:
               _context2.next = 4;
-              return _this2.$store.dispatch('getEmplsAll');
+              return _this3.$store.dispatch('getEmplsAll');
 
             case 4:
               _context2.next = 6;
-              return _this2.$store.dispatch('getDepts');
+              return _this3.$store.dispatch('getDepts');
 
             case 6:
               _context2.next = 8;
-              return _this2.$store.dispatch('getHolidays');
+              return _this3.$store.dispatch('getHolidays');
 
             case 8:
               _libs_bus__WEBPACK_IMPORTED_MODULE_3__["default"].$on('closeDialog', function () {
-                _this2.dialog = false;
-                _this2.editDialog = false;
+                _this3.dialog = false;
+                _this3.editDialog = false;
               });
 
             case 9:
@@ -4297,35 +4425,48 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }))();
   },
   created: function created() {
-    var _this3 = this;
+    var _this4 = this;
 
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
         while (1) {
           switch (_context3.prev = _context3.next) {
             case 0:
-              if (!_this3.$route.params.id) {
+              if (!_this4.$route.params.id) {
                 _context3.next = 5;
                 break;
               }
 
               _context3.next = 3;
-              return _this3.$store.dispatch('getEmplForms', _this3.$route.params.id);
+              return _this4.$store.dispatch('getEmplForms', _this4.$route.params.id);
 
             case 3:
-              _context3.next = 8;
+              _context3.next = 13;
               break;
 
             case 5:
-              if (!_this3.$route.params.dept) {
-                _context3.next = 8;
+              if (!_this4.$route.params.dept) {
+                _context3.next = 10;
                 break;
               }
 
               _context3.next = 8;
-              return _this3.$store.dispatch('getDeptForms', _this3.$route.params.dept);
+              return _this4.$store.dispatch('getDeptForms', _this4.$route.params.dept);
 
             case 8:
+              _context3.next = 13;
+              break;
+
+            case 10:
+              if (!(_this4.$route.path == '/allforms')) {
+                _context3.next = 13;
+                break;
+              }
+
+              _context3.next = 13;
+              return _this4.$store.dispatch('getAllForms');
+
+            case 13:
             case "end":
               return _context3.stop();
           }
@@ -41401,9 +41542,9 @@ var render = function() {
                                       _vm._v("mdi-account")
                                     ]),
                                     _vm._v(
-                                      "\n                    " +
+                                      "\r\n                    " +
                                         _vm._s(_vm.user.name) +
-                                        "\n                "
+                                        "\r\n                "
                                     )
                                   ],
                                   1
@@ -41415,7 +41556,7 @@ var render = function() {
                     ],
                     null,
                     false,
-                    1910453428
+                    3280902772
                   )
                 },
                 [
@@ -42495,7 +42636,7 @@ var render = function() {
                       _c(
                         "v-col",
                         [
-                          this.$route.params.dept && _vm.deptEmpls
+                          _vm.ifSelectEmpls
                             ? _c("v-select", {
                                 attrs: {
                                   items: _vm.deptEmpls,
@@ -42589,6 +42730,29 @@ var render = function() {
                                   expression: "form.note"
                                 }
                               })
+                            : _vm._e(),
+                          _vm._v(" "),
+                          _vm.ifReject
+                            ? _c("v-text-field", {
+                                attrs: {
+                                  hint: "Powód odrzucenia",
+                                  "persistent-hint": "",
+                                  "single-line": "",
+                                  dense: "",
+                                  autocomplete: "off",
+                                  dark: "",
+                                  filled: "",
+                                  rounded: "",
+                                  readonly: ""
+                                },
+                                model: {
+                                  value: _vm.form.reject_msg,
+                                  callback: function($$v) {
+                                    _vm.$set(_vm.form, "reject_msg", $$v)
+                                  },
+                                  expression: "form.reject_msg"
+                                }
+                              })
                             : _vm._e()
                         ],
                         1
@@ -42655,6 +42819,27 @@ var render = function() {
                   _vm._v(" "),
                   !_vm.disabled
                     ? [
+                        _vm.role != "dept"
+                          ? _c(
+                              "v-col",
+                              [
+                                _c(
+                                  "v-btn",
+                                  {
+                                    attrs: {
+                                      dark: "",
+                                      color: "teal darken-3",
+                                      rounded: ""
+                                    },
+                                    on: { click: _vm.saveForm }
+                                  },
+                                  [_vm._v("Zapisz")]
+                                )
+                              ],
+                              1
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
                         _c(
                           "v-col",
                           [
@@ -42666,9 +42851,38 @@ var render = function() {
                                   color: "teal darken-3",
                                   rounded: ""
                                 },
-                                on: { click: _vm.saveForm }
+                                on: { click: _vm.sendForm }
                               },
-                              [_vm._v("Zapisz")]
+                              [_vm._v("Wyślij")]
+                            )
+                          ],
+                          1
+                        )
+                      ]
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.role == "dept" &&
+                  _vm.type == "edit" &&
+                  _vm.form.status == "processed"
+                    ? [
+                        _c(
+                          "v-col",
+                          [
+                            _c(
+                              "v-btn",
+                              {
+                                attrs: {
+                                  dark: "",
+                                  color: "teal darken-3",
+                                  rounded: ""
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.updateStatus("approved")
+                                  }
+                                }
+                              },
+                              [_vm._v("Zatwierdź")]
                             )
                           ],
                           1
@@ -42685,9 +42899,13 @@ var render = function() {
                                   color: "teal darken-3",
                                   rounded: ""
                                 },
-                                on: { click: _vm.sendForm }
+                                on: {
+                                  click: function($event) {
+                                    return _vm.updateStatus("rejected")
+                                  }
+                                }
                               },
-                              [_vm._v("Wyślij")]
+                              [_vm._v("Odrzuć")]
                             )
                           ],
                           1
@@ -105315,6 +105533,29 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           }
         }, _callee5);
       }))();
+    },
+    getAllForms: function getAllForms(_ref6) {
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee6() {
+        var commit, res;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                commit = _ref6.commit;
+                _context6.next = 3;
+                return axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/leaveform?range=&data=');
+
+              case 3:
+                res = _context6.sent;
+                commit('assignLeaveForms', res.data);
+
+              case 5:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6);
+      }))();
     }
   }
 });
@@ -105456,8 +105697,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\xampp\htdocs\projekty\kadryApp\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\projekty\kadryApp\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

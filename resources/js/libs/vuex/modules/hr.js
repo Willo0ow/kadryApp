@@ -73,6 +73,10 @@ export default{
         async getDeptForms({commit},data){
             let res = await Axios.get('/leaveform?range=dept&data='+data)
             commit('assignLeaveForms', res.data)
+        },
+        async getAllForms({commit}){
+            let res = await Axios.get('/leaveform?range=&data=')
+            commit('assignLeaveForms', res.data)
         }
 
     }

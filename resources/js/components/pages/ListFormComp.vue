@@ -88,11 +88,26 @@ export default {
             depts: state => state.hr.depts,
             empls: state => state.hr.empls,
             holidays: state => state.hr.holidays,
-            items: state => state.hr.leaveForms,
+            forms: state => state.hr.leaveForms,
             categories: state => state.hr.categories
         }),
         empl_id(){
             return this.$route.params.id
+        },
+        items(){
+            let forms = {...this.forms}
+            //if filter by dept enabled show only forms from the selected dept
+            let res = this.filterDept? forms.filter((el)=>el.dept == this.filterDept) : forms
+            //if search enabled show only forms with matching names
+            if(this.search){
+                for(let el in res){
+                    res[el] = res[el].filter((val)=>{
+                        let str = val.name.toLowerCase()
+                        return str.includes(this.searched.toLowerCase())
+                    })
+                }
+            }
+            return res
         },
     },
     methods:{
@@ -126,6 +141,8 @@ export default {
             await this.$store.dispatch('getEmplForms', this.$route.params.id)
         } else if (this.$route.params.dept){
             await this.$store.dispatch('getDeptForms', this.$route.params.dept)
+        } else if (this.$route.path == '/allforms'){
+            await this.$store.dispatch('getAllForms')
         }
     }
 }
