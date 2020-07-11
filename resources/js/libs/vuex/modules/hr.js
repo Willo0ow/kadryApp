@@ -8,7 +8,6 @@ export default{
         holidays: null,
         leaveForms:null,
         deptEmpls:null,
-        categories:null
     },
     mutations:{
         getDeptEmpls(state, dept){
@@ -36,21 +35,12 @@ export default{
                 res.push(rec)
                 return res
             },[])
-
-            
             arr = arr.reduce((groups, val)=>{
                 let {status} = val
                 groups[status]? groups[status].push(val) : groups[status] = [val]
                 return groups
             }, {})
             state.leaveForms = arr
-
-            let res = Object.keys(arr)
-            let list =  ['granted', 'approved','processed', 'draft', 'rejected'].reduce((keys,el)=>{
-                if(res.includes(el)){keys.push(el)}
-                    return keys
-                },[])
-            state.categories = list
         }
     },
     actions:{

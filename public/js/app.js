@@ -3206,6 +3206,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3236,6 +3244,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     } //deptEmpls: state => state.hr.deptEmpls
 
   })), {}, {
+    dept: function dept() {
+      return this.empl.dept;
+    },
     role: function role() {
       var _this$$route = this.$route,
           params = _this$$route.params,
@@ -3354,6 +3365,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           date_end = _form$dates[1];
 
       delete form.dates;
+
+      if (this.$route.path == '/allforms') {
+        form.dept = this.empl.dept;
+      }
+
       return form = _objectSpread(_objectSpread({}, form), {}, {
         date_start: date_start,
         date_end: date_end
@@ -3432,7 +3448,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
               case 0:
                 form = _this5.prepForm();
                 form['date_sent'] = new Date().toISOString().slice(0, 10);
-                form.status = _this5.$route.params.id ? 'processed' : 'approved';
+
+                if (_this5.$route.params.id) {
+                  form.status = 'processed';
+                }
 
                 if (form.id) {
                   _context3.next = 8;
@@ -3533,6 +3552,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
               } else if (_this6.$route.path == '/allforms' && _this6.type == 'edit') {
                 //if employee edits the form
                 _this6.form = _this6.pickForm;
+                _this6.empl = _this6.empls.find(function (el) {
+                  return el.id == _this6.form.empl_id;
+                });
+              } else if (_this6.$route.path == '/allforms' && _this6.type == 'new') {
+                //if employee edits the form
+                _this6.form.status = 'granted';
               } //get the staff of teh department
 
 
@@ -4311,9 +4336,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     forms: function forms(state) {
       return state.hr.leaveForms;
-    },
-    categories: function categories(state) {
-      return state.hr.categories;
     }
   })), {}, {
     empl_id: function empl_id() {
@@ -4322,16 +4344,26 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     items: function items() {
       var _this = this;
 
-      var forms = _objectSpread({}, this.forms); //if filter by dept enabled show only forms from the selected dept
+      var forms = _objectSpread({}, this.forms);
 
+      var res = {};
 
-      var res = this.filterDept ? forms.filter(function (el) {
-        return el.dept == _this.filterDept;
-      }) : forms; //if search enabled show only forms with matching names
+      if (this.filterDept) {
+        for (var el in forms) {
+          res[el] = forms[el].filter(function (val) {
+            return val.dept == _this.filterDept;
+          });
+        }
+      } else {
+        res = forms;
+      } //if filter by dept enabled show only forms from the selected dept
+      //let res = this.filterDept? forms.filter((el)=>el.dept == this.filterDept) : forms
+      //if search enabled show only forms with matching names
+
 
       if (this.search) {
-        for (var el in res) {
-          res[el] = res[el].filter(function (val) {
+        for (var _el in res) {
+          res[_el] = res[_el].filter(function (val) {
             var str = val.name.toLowerCase();
             return str.includes(_this.searched.toLowerCase());
           });
@@ -4339,6 +4371,26 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
 
       return res;
+    },
+    categories: function categories() {
+      var _this2 = this;
+
+      var res = Object.keys(this.items);
+      res = res.reduce(function (av, el) {
+        if (_this2.items[el].length > 0) {
+          av.push(el);
+        }
+
+        return av;
+      }, []);
+      var list = ['granted', 'approved', 'processed', 'draft', 'rejected'].reduce(function (keys, el) {
+        if (res.includes(el)) {
+          keys.push(el);
+        }
+
+        return keys;
+      }, []);
+      return list;
     }
   }),
   methods: {
@@ -4348,7 +4400,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.editDialog = !this.editDialog;
     },
     remove: function remove(id) {
-      var _this2 = this;
+      var _this3 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
@@ -4356,29 +4408,34 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             switch (_context.prev = _context.next) {
               case 0:
                 _context.next = 2;
-                return axios["delete"](_this2.route + '/' + id);
+                return axios["delete"](_this3.route + '/' + id);
 
               case 2:
-                if (!_this2.empl_id) {
+                if (!_this3.$route.params.id) {
                   _context.next = 7;
                   break;
                 }
 
                 _context.next = 5;
-                return _this2.$store.dispatch(_this2.getList, _this2.empl_id);
+                return _this3.$store.dispatch('getEmplForms', _this3.$route.params.id);
 
               case 5:
-                _context.next = 9;
+                _context.next = 10;
                 break;
 
               case 7:
-                _context.next = 9;
-                return _this2.$store.dispatch(_this2.getList);
+                if (!_this3.$route.params.dept) {
+                  _context.next = 10;
+                  break;
+                }
 
-              case 9:
-                alert(_this2.deleteMsg);
+                _context.next = 10;
+                return _this3.$store.dispatch('getDeptForms', _this3.$route.params.dept);
 
               case 10:
+                alert(_this3.deleteMsg);
+
+              case 11:
               case "end":
                 return _context.stop();
             }
@@ -4388,7 +4445,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   },
   mounted: function mounted() {
-    var _this3 = this;
+    var _this4 = this;
 
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
@@ -4396,24 +4453,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           switch (_context2.prev = _context2.next) {
             case 0:
               _context2.next = 2;
-              return _this3.$store.dispatch('getUsers');
+              return _this4.$store.dispatch('getUsers');
 
             case 2:
               _context2.next = 4;
-              return _this3.$store.dispatch('getEmplsAll');
+              return _this4.$store.dispatch('getEmplsAll');
 
             case 4:
               _context2.next = 6;
-              return _this3.$store.dispatch('getDepts');
+              return _this4.$store.dispatch('getDepts');
 
             case 6:
               _context2.next = 8;
-              return _this3.$store.dispatch('getHolidays');
+              return _this4.$store.dispatch('getHolidays');
 
             case 8:
               _libs_bus__WEBPACK_IMPORTED_MODULE_3__["default"].$on('closeDialog', function () {
-                _this3.dialog = false;
-                _this3.editDialog = false;
+                _this4.dialog = false;
+                _this4.editDialog = false;
               });
 
             case 9:
@@ -4425,46 +4482,46 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }))();
   },
   created: function created() {
-    var _this4 = this;
+    var _this5 = this;
 
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
         while (1) {
           switch (_context3.prev = _context3.next) {
             case 0:
-              if (!_this4.$route.params.id) {
+              if (!_this5.$route.params.id) {
                 _context3.next = 5;
                 break;
               }
 
               _context3.next = 3;
-              return _this4.$store.dispatch('getEmplForms', _this4.$route.params.id);
+              return _this5.$store.dispatch('getEmplForms', _this5.$route.params.id);
 
             case 3:
               _context3.next = 13;
               break;
 
             case 5:
-              if (!_this4.$route.params.dept) {
+              if (!_this5.$route.params.dept) {
                 _context3.next = 10;
                 break;
               }
 
               _context3.next = 8;
-              return _this4.$store.dispatch('getDeptForms', _this4.$route.params.dept);
+              return _this5.$store.dispatch('getDeptForms', _this5.$route.params.dept);
 
             case 8:
               _context3.next = 13;
               break;
 
             case 10:
-              if (!(_this4.$route.path == '/allforms')) {
+              if (!(_this5.$route.path == '/allforms')) {
                 _context3.next = 13;
                 break;
               }
 
               _context3.next = 13;
-              return _this4.$store.dispatch('getAllForms');
+              return _this5.$store.dispatch('getAllForms');
 
             case 13:
             case "end":
@@ -41542,9 +41599,9 @@ var render = function() {
                                       _vm._v("mdi-account")
                                     ]),
                                     _vm._v(
-                                      "\r\n                    " +
+                                      "\n                    " +
                                         _vm._s(_vm.user.name) +
-                                        "\r\n                "
+                                        "\n                "
                                     )
                                   ],
                                   1
@@ -41556,7 +41613,7 @@ var render = function() {
                     ],
                     null,
                     false,
-                    3280902772
+                    1910453428
                   )
                 },
                 [
@@ -42911,6 +42968,58 @@ var render = function() {
                           1
                         )
                       ]
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.role == "all" &&
+                  _vm.type == "edit" &&
+                  _vm.form.status == "approved"
+                    ? [
+                        _c(
+                          "v-col",
+                          [
+                            _c(
+                              "v-btn",
+                              {
+                                attrs: {
+                                  dark: "",
+                                  color: "teal darken-3",
+                                  rounded: ""
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.updateStatus("granted")
+                                  }
+                                }
+                              },
+                              [_vm._v("Zatwierdź")]
+                            )
+                          ],
+                          1
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "v-col",
+                          [
+                            _c(
+                              "v-btn",
+                              {
+                                attrs: {
+                                  dark: "",
+                                  color: "teal darken-3",
+                                  rounded: ""
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.updateStatus("rejected")
+                                  }
+                                }
+                              },
+                              [_vm._v("Odrzuć")]
+                            )
+                          ],
+                          1
+                        )
+                      ]
                     : _vm._e()
                 ],
                 2
@@ -43600,9 +43709,9 @@ var render = function() {
                                     attrs: {
                                       items: _vm.depts,
                                       calss: "shrink",
-                                      "item-text": "label",
+                                      "item-text": "name",
                                       placeholder: "Filtruj po dziale",
-                                      "item-value": "id",
+                                      "item-value": "name",
                                       clearable: "",
                                       "single-line": "",
                                       dense: "",
@@ -105365,8 +105474,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     depts: null,
     holidays: null,
     leaveForms: null,
-    deptEmpls: null,
-    categories: null
+    deptEmpls: null
   },
   mutations: {
     getDeptEmpls: function getDeptEmpls(state, dept) {
@@ -105407,15 +105515,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         return groups;
       }, {});
       state.leaveForms = arr;
-      var res = Object.keys(arr);
-      var list = ['granted', 'approved', 'processed', 'draft', 'rejected'].reduce(function (keys, el) {
-        if (res.includes(el)) {
-          keys.push(el);
-        }
-
-        return keys;
-      }, []);
-      state.categories = list;
     }
   },
   actions: {
@@ -105697,8 +105796,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\xampp\htdocs\projekty\kadryApp\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\projekty\kadryApp\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Applications/XAMPP/xamppfiles/htdocs/projekty/kadryApp/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

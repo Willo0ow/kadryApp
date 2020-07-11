@@ -5,7 +5,7 @@
                 <v-card app raised class="gradient" dark>
                     <v-row justify="center" align="center">
                         <v-col v-if="filter">
-                            <v-select :items="depts" calss="shrink" item-text="label" placeholder="Filtruj po dziale" item-value="id" v-if="depts" clearable v-model="filterDept" single-line dense autocomplete="off" dark filled rounded hide-details></v-select>
+                            <v-select :items="depts" calss="shrink" item-text="name" placeholder="Filtruj po dziale" item-value="name" v-if="depts" clearable v-model="filterDept" single-line dense autocomplete="off" dark filled rounded hide-details></v-select>
                         </v-col>
                         <v-col v-if="search">
                             <v-text-field type="search" v-model="searched" placeholder="Szukaj Pracownika" single-line dense autocomplete="off" dark filled rounded hide-details></v-text-field>
@@ -89,15 +89,24 @@ export default {
             empls: state => state.hr.empls,
             holidays: state => state.hr.holidays,
             forms: state => state.hr.leaveForms,
-            categories: state => state.hr.categories
         }),
         empl_id(){
             return this.$route.params.id
         },
         items(){
             let forms = {...this.forms}
+            let res = {}
+            if(this.filterDept){
+                for(let el in forms){
+                    res[el] = forms[el].filter((val)=>{
+                        return val.dept == this.filterDept
+                    })
+                }
+            } else {
+                res = forms
+            }
             //if filter by dept enabled show only forms from the selected dept
-            let res = this.filterDept? forms.filter((el)=>el.dept == this.filterDept) : forms
+            //let res = this.filterDept? forms.filter((el)=>el.dept == this.filterDept) : forms
             //if search enabled show only forms with matching names
             if(this.search){
                 for(let el in res){
@@ -109,6 +118,18 @@ export default {
             }
             return res
         },
+        categories(){
+            let res = Object.keys(this.items)
+            res = res.reduce((av, el)=>{
+                if(this.items[el].length >0){ av.push(el)}
+                return av
+            }, [])
+            let list =  ['granted', 'approved','processed', 'draft', 'rejected'].reduce((keys,el)=>{
+                if(res.includes(el)){keys.push(el)}
+                    return keys
+                },[])
+            return list
+        }
     },
     methods:{
         edit(item){
@@ -118,11 +139,8 @@ export default {
         },
         async remove(id){
             await axios.delete(this.route + '/'+ id)
-            if(this.empl_id){
-                await this.$store.dispatch(this.getList, this.empl_id)
-            } else {
-                await this.$store.dispatch(this.getList)
-            }
+            if(this.$route.params.id) {await this.$store.dispatch('getEmplForms', this.$route.params.id)}
+            else if(this.$route.params.dept) {await this.$store.dispatch('getDeptForms', this.$route.params.dept)}
             alert(this.deleteMsg)
         },
     },

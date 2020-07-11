@@ -38,6 +38,14 @@
                         <v-btn dark color="teal darken-3" rounded @click="updateStatus('rejected')">Odrzuć</v-btn>
                     </v-col>
                 </template>
+                <template v-if="role == 'all' && type=='edit' && form.status=='approved'">
+                    <v-col>
+                        <v-btn dark color="teal darken-3" rounded @click="updateStatus('granted')">Zatwierdź</v-btn>
+                    </v-col>
+                    <v-col>
+                        <v-btn dark color="teal darken-3" rounded @click="updateStatus('rejected')">Odrzuć</v-btn>
+                    </v-col>
+                </template>
             </v-card-actions>
         </v-row>
     </v-card>
@@ -73,6 +81,9 @@ import EventBus from '../../libs/bus';
                 empls : state => state.hr.empls,
                 //deptEmpls: state => state.hr.deptEmpls
             }),
+            dept(){
+                return this.empl.dept
+            },
             role(){
                 let {params, path} = this.$route
                 if(params.id){return 'empl'}
@@ -143,6 +154,9 @@ import EventBus from '../../libs/bus';
                 let form = this.form
                 let [date_start, date_end] = form.dates
                 delete form.dates
+                if(this.$route.path== '/allforms'){
+                    form.dept = this.empl.dept
+                }
                 return form = {...form, date_start:date_start, date_end:date_end}
             },
             async saveForm(){
@@ -163,7 +177,9 @@ import EventBus from '../../libs/bus';
             async sendForm(){
                 let form = this.prepForm()
                 form['date_sent'] = new Date().toISOString().slice(0,10)
-                form.status = this.$route.params.id? 'processed' : 'approved'
+                if(this.$route.params.id){
+                    form.status = 'processed'
+                }
                 if(!form.id){
                     //if new and send
                     await axios.post('/leaveform', form)
@@ -211,10 +227,16 @@ import EventBus from '../../libs/bus';
                     return el.id == this.form.empl_id
                 })
             }
-
             else if (this.$route.path== '/allforms' && this.type == 'edit'){
                 //if employee edits the form
                 this.form = this.pickForm
+                this.empl = this.empls.find((el)=>{
+                    return el.id == this.form.empl_id
+                })
+            }
+            else if (this.$route.path== '/allforms' && this.type == 'new'){
+                //if employee edits the form
+                this.form.status = 'granted'
             }
             //get the staff of teh department
             this.$store.commit('getDeptEmpls',this.form.dept)
