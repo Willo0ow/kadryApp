@@ -1,5 +1,5 @@
 <template>
-    <listformcomp :info="info" name='forms' v-if="pTitle"></listformcomp>
+    <listformcomp :info="info" name='forms' v-if="role && info"></listformcomp>
 </template>
 
 <script>
@@ -16,46 +16,46 @@ import listformcomp from './ListFormComp'
             }
         },
         computed:{
-            pTitle(){
-                let {path} = this.$route
-                if(path == '/allforms'){
-                    return 'Wnioski Urlopowe'
-                } else if(path.includes('deptforms')){
-                    return 'Wnioski Urlopowe Dizału ' + this.$route.params.dept
+            role(){
+                if(this.$route.params.id){
+                    return {role:'empl', data:this.$route.params.id, action: 'getEmplForms'}
+                } else if (this.$route.params.dept){
+                    return {role:'dept', data:this.$route.params.dept, action: 'getDeptForms'}
                 } else {
-                    return 'Moje Wnioski Urlopowe'
+                    return {role:'all', data:'', action:'getAllForms'}
                 }
             },
-            info(){return  {
-                    component: 'formdialog',
-                    pageTitle:this.pTitle,
-                    plusTitle:'Dodaj Wniosek Urlopowy',
-                    searched:'',
-                    search:this.filters().search,
-                    filter:this.filters().filter,
-                    filterDept:null,
-                    dialog: false,
-                    headers: [{title:'Rodzaj urlopu', cols:5}, {title:'Data akceptacji', cols:3}, {title:'Pracownik', cols:3}],
-                    keys: [{title:'type', cols:3},{title:'name', cols:3}, {title:'date_start', cols:2}, {title:'date_end', cols:2}],
-                    editDialog: false,
-                    getList: 'getEmplForms',
-                    pickForm:null,
-                    route:'/leaveform'
-                }},
+            info(){
+                switch (this.role.role){
+                    case 'empl':
+                        return {
+                            pageTitle: 'Moje Wnioski Urlopowe',
+                            search: false,
+                            filter: false,
+                            role: this.role
+                        };
+                        break;
+                    case 'dept':
+                        return {
+                            pageTitle: 'Wnioski Urlopowe Pracowników Działu',
+                            search: true,
+                            filter: false,
+                            role: this.role
+                        };
+                        break;
+                    case 'all':
+                        return {
+                            pageTitle: 'Wnioski Urlopowe Pracowników',
+                            search: true,
+                            filter: true,
+                            role: this.role
+                        };
+                        break;
+                }
+            },
         },
         methods:{
-            filters(){
-                let {path} = this.$route
-                if(path == '/allforms'){
-                    return {search:true, filter:true}
-                } else if (path.includes('deptforms')){
-                    return {search:true, filter:false}
-                }
-                return {search:false, filter:false}
-            },
-        },
-        mounted() {
-            
+
         },
         created(){
             

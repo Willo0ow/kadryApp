@@ -13,10 +13,10 @@
                         <v-col>
                             <v-btn text @click="dialog = !dialog">
                                 <v-icon>mdi-plus</v-icon>
-                               Dodaj Wniosek Urlopowy
+                                {{plusTitle}}
                             </v-btn>
                             <v-dialog v-model="dialog" v-if="dialog">
-                                <formdialog type="new" :role="role"></formdialog>
+                                <formdialog type="new"></formdialog>
                             </v-dialog>
                         </v-col>
                     </v-row>
@@ -29,24 +29,25 @@
                     <v-card-title class="text-h5 justify-center">{{pageTitle}}</v-card-title>
                     <v-container v-for="el of categories" :key="el" id="catList">
                         <v-card-subtitle>{{el}}</v-card-subtitle>
-                        <v-list dense v-for="item of items[el]" :key="item.id" class="transparent">
-                                <v-list-item :key="item.id">
-                                    <v-card width="97%" class="my-1 transparent">
-                                        <v-row align="center" justify="center">
-                                            <v-col :cols="cols" class="py-0" v-for="{title,cols} of keys" :key="title" justify="center"><v-card-subtitle class="font-weight-bold py-2 text-center">{{item[title]}}</v-card-subtitle></v-col>
-                                            <v-col>
-                                                <v-btn @click="edit(item)" text small><v-icon>mdi-pencil</v-icon></v-btn>
-                                                <template v-if="currentEdit == item.id">
-                                                    <v-dialog v-model="editDialog">
-                                                        <formdialog type="edit" :pickForm="pickForm" :role="role"></formdialog>
-                                                    </v-dialog>
-                                                </template>
-                                            </v-col>
-                                            <v-col><v-icon @click="remove(item.id)">mdi-trash-can</v-icon></v-col>
-                                        </v-row>
-                                    </v-card>
-                                </v-list-item>
-                        </v-list>
+
+                    <v-list dense v-for="item of items[el]" :key="item.id" class="transparent">
+                            <v-list-item :key="item.id">
+                                <v-card width="97%" class="my-1 transparent">
+                                    <v-row align="center" justify="center">
+                                        <v-col :cols="cols" class="py-0" v-for="{title,cols} of keys" :key="title" justify="center"><v-card-subtitle class="font-weight-bold py-2 text-center">{{item[title]}}</v-card-subtitle></v-col>
+                                        <v-col>
+                                            <v-btn @click="edit(item)" text small><v-icon>mdi-pencil</v-icon></v-btn>
+                                            <template v-if="currentEdit == item.id">
+                                                <v-dialog v-model="editDialog">
+                                                    <formdialog type="edit" :pickForm="pickForm"></formdialog>
+                                                </v-dialog>
+                                            </template>
+                                        </v-col>
+                                        <v-col><v-icon @click="remove(item.id)">mdi-trash-can</v-icon></v-col>
+                                    </v-row>
+                                </v-card>
+                            </v-list-item>
+                    </v-list>
                     </v-container>
                 </v-card>
             </v-col>
@@ -58,20 +59,29 @@ import formdialog from './FormDialog'
 import {mapState} from 'vuex'
 import EventBus from '../../libs/bus';
 export default {
-    components:{formdialog},
+    components:{
+        formdialog
+    },
     props:{info:Object, name:String},
     data(){
-        return {
-            ...this.info,
-            searched:'',
-            filterDept:null,
-            editDialog: false,
-            dialog: false,
-            headers:[{title:'Typ Urlopu', cols:3},{title:'Imię i Nazwisko', cols:3},{title:'Akcje', cols:3}],
-            keys: [{title:'type', cols:3},{title:'name', cols:3}, {title:'date_start', cols:2}, {title:'date_end', cols:2}],
-            pickForm: null,
-            currentEdit: null,
-        }
+        return {...this.info, currentEdit:null}
+/*         info:{
+                pageTitle://title of the main card
+                plusTitle://name of plus button to add a new record
+                searched://searched phrase, if enabled, set ''
+                search:// true - enables search input in the header
+                filter:// true - enables filter-select
+                filterDept:null,
+                editDialog: //false - dialog to edit a record, hidden at mount
+                dialog: //false - dialog to add a new record hidden at mount
+                headers: //headers for the list [{title:'Imię i Nazwisko', cols:4}],
+                keys: //keys for the values of the list [{title:'name', cols:4}],
+                component: //name of the component that renders in dialog,
+                pickForm: //null - prop will be assigned to and sent to editdialog,
+                route: // route to controller,
+                getList: // dispatch action in vuex to get items for the list,
+                deleteMsg: // message to display when item of the list is deleted
+            } */
     },
     computed:{
         ...mapState({
@@ -80,6 +90,9 @@ export default {
             holidays: state => state.hr.holidays,
             forms: state => state.hr.leaveForms,
         }),
+        empl_id(){
+            return this.$route.params.id
+        },
         items(){
             let forms = {...this.forms}
             let res = {}
@@ -124,9 +137,10 @@ export default {
             this.editDialog = !this.editDialog
         },
         async remove(id){
-            await axios.delete('/leaveform/'+ id)
-            await this.$store.dispatch(this.role.action, this.role.data)
-            alert('Wniosek został usunięty')
+            await axios.delete(this.route + '/'+ id)
+            if(this.$route.params.id) {await this.$store.dispatch('getEmplForms', this.$route.params.id)}
+            else if(this.$route.params.dept) {await this.$store.dispatch('getDeptForms', this.$route.params.dept)}
+            alert(this.deleteMsg)
         },
     },
     async mounted(){
@@ -140,7 +154,13 @@ export default {
         })
     },
     async created(){
-        await this.$store.dispatch(this.role.action, this.role.data)
+        if(this.$route.params.id){
+            await this.$store.dispatch('getEmplForms', this.$route.params.id)
+        } else if (this.$route.params.dept){
+            await this.$store.dispatch('getDeptForms', this.$route.params.dept)
+        } else if (this.$route.path == '/allforms'){
+            await this.$store.dispatch('getAllForms')
+        }
     }
 }
 </script>

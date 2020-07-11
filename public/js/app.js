@@ -3214,12 +3214,27 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     pickForm: Object,
-    type: String
+    type: String,
+    role: Object
   },
   data: function data() {
     return {
@@ -3235,62 +3250,46 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         empl_id: '',
         user_id: this.$store.state.user.user.id
       },
-      empl: null
+      empl: null,
+      rejectForm: false,
+      disabled: null,
+      ifSelectEmpls: false,
+      title: ''
     };
   },
   computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])({
     empls: function empls(state) {
       return state.hr.empls;
-    } //deptEmpls: state => state.hr.deptEmpls
-
+    }
   })), {}, {
-    dept: function dept() {
-      return this.empl.dept;
-    },
-    role: function role() {
-      var _this$$route = this.$route,
-          params = _this$$route.params,
-          path = _this$$route.path;
-
-      if (params.id) {
-        return 'empl';
-      } else if (params.dept) {
-        return 'dept';
-      } else if (path == '/allforms') {
-        return 'all';
-      }
-    },
+    /*             dept(){
+                    return this.empl.dept
+                }, */
     deptEmpls: function deptEmpls() {
       var _this = this;
 
-      if (this.role == 'dept') {
+      var role = this.role.role;
+
+      if (role == 'dept') {
         return this.empls.filter(function (el) {
-          return el.dept == _this.$route.params.dept;
+          return el.dept == _this.form.dept;
         });
-      } else if (this.role == 'empl') {
+      } else if (role == 'empl') {
         return this.$store.state.hr.deptEmpls;
-      } else if (this.role == 'all') {
+      } else if (role == 'all') {
         return this.empls;
       }
-    },
-    temp: function temp() {
-      //title of the component
-      return this.type == 'new' ? {
-        title: 'Dodaj Wniosek Urlopowy'
-      } : {
-        title: 'Wniosek Urlopowy'
-      };
     },
     subs: function subs() {
       var _this2 = this;
 
       //substitutions for the employee
-      if (this.empl && this.role != 'all') {
+      if (this.empl && this.role.role != 'all') {
         var res = this.deptEmpls.filter(function (el) {
-          return el.id != _this2.$route.params.id;
+          return el.id != _this2.empl.id;
         });
         return res;
-      } else if (this.role == 'all' && this.empl) {
+      } else if (this.role.role == 'all' && this.empl) {
         var _res = this.empls.filter(function (el) {
           return el.dept == _this2.empl.dept && el.id != _this2.empl.id;
         });
@@ -3303,30 +3302,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     ifNote: function ifNote() {
       //adds note input if a particular type of leave has been chosen
       return ['inny', 'bezpłatny', 'okolicznościowy'].indexOf(this.form.type) >= 0 ? true : false;
-    },
-    ifReject: function ifReject() {
-      return this.form.status == 'rejected' ? true : false;
-    },
-    ifSelectEmpls: function ifSelectEmpls() {
-      return (this.$route.path == '/allforms' || this.$route.params.dept) && this.deptEmpls;
-    },
-    disabled: function disabled() {
-      //prevents changes in the form if already sent
-      var role = this.role;
-      var status = this.form.status;
-      var empl = status != 'draft' && role == 'empl';
-
-      if (role == 'empl') {
-        return empl;
-      } else if ((role == 'dept' || role == 'all') && this.type == 'new') {
-        return false;
-      }
-
-      return true;
     }
   }),
   methods: {
-    updateStatus: function updateStatus(status) {
+    reject: function reject() {
       var _this3 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
@@ -3334,7 +3313,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _this3.form.status = status;
+                _this3.form.status = 'rejected';
                 _context.next = 3;
                 return _this3.saveForm();
 
@@ -3344,6 +3323,26 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             }
           }
         }, _callee);
+      }))();
+    },
+    updateStatus: function updateStatus(status) {
+      var _this4 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _this4.form.status = status;
+                _context2.next = 3;
+                return _this4.saveForm();
+
+              case 3:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
       }))();
     },
     assignEmpl: function assignEmpl() {
@@ -3366,7 +3365,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       delete form.dates;
 
-      if (this.$route.path == '/allforms') {
+      if (this.role.role == 'all') {
         form.dept = this.empl.dept;
       }
 
@@ -3376,68 +3375,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
     },
     saveForm: function saveForm() {
-      var _this4 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
-        var form;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                form = _this4.prepForm();
-
-                if (!form.id) {
-                  _context2.next = 7;
-                  break;
-                }
-
-                //if edited form and save
-                delete form.name;
-                _context2.next = 5;
-                return axios.patch('/leaveform/' + form.id, form);
-
-              case 5:
-                _context2.next = 9;
-                break;
-
-              case 7:
-                _context2.next = 9;
-                return axios.post('/leaveform', form);
-
-              case 9:
-                if (!_this4.$route.params.id) {
-                  _context2.next = 14;
-                  break;
-                }
-
-                _context2.next = 12;
-                return _this4.$store.dispatch('getEmplForms', _this4.$route.params.id);
-
-              case 12:
-                _context2.next = 17;
-                break;
-
-              case 14:
-                if (!_this4.$route.params.dept) {
-                  _context2.next = 17;
-                  break;
-                }
-
-                _context2.next = 17;
-                return _this4.$store.dispatch('getDeptForms', _this4.$route.params.dept);
-
-              case 17:
-                _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog', form.id);
-
-              case 18:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2);
-      }))();
-    },
-    sendForm: function sendForm() {
       var _this5 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
@@ -3447,128 +3384,172 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             switch (_context3.prev = _context3.next) {
               case 0:
                 form = _this5.prepForm();
-                form['date_sent'] = new Date().toISOString().slice(0, 10);
 
-                if (_this5.$route.params.id) {
-                  form.status = 'processed';
-                }
-
-                if (form.id) {
-                  _context3.next = 8;
+                if (!form.id) {
+                  _context3.next = 7;
                   break;
                 }
 
-                _context3.next = 6;
-                return axios.post('/leaveform', form);
-
-              case 6:
-                _context3.next = 11;
-                break;
-
-              case 8:
-                //if editted form and send
+                //if edited form and save
                 delete form.name;
-                _context3.next = 11;
+                _context3.next = 5;
                 return axios.patch('/leaveform/' + form.id, form);
 
-              case 11:
-                if (!_this5.$route.params.id) {
-                  _context3.next = 16;
-                  break;
-                }
-
-                _context3.next = 14;
-                return _this5.$store.dispatch('getEmplForms', _this5.$route.params.id);
-
-              case 14:
-                _context3.next = 19;
+              case 5:
+                _context3.next = 9;
                 break;
 
-              case 16:
-                if (!_this5.$route.params.dept) {
-                  _context3.next = 19;
-                  break;
-                }
+              case 7:
+                _context3.next = 9;
+                return axios.post('/leaveform', form);
 
-                _context3.next = 19;
-                return _this5.$store.dispatch('getDeptForms', _this5.$route.params.dept);
+              case 9:
+                _context3.next = 11;
+                return _this5.$store.dispatch(_this5.role.action, _this5.role.data);
 
-              case 19:
+              case 11:
                 _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog', form.id);
 
-              case 20:
+              case 12:
               case "end":
                 return _context3.stop();
             }
           }
         }, _callee3);
       }))();
+    },
+    sendForm: function sendForm() {
+      var _this6 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
+        var form;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                form = _this6.prepForm();
+                form['date_sent'] = new Date().toISOString().slice(0, 10);
+
+                if (_this6.$route.params.id) {
+                  form.status = 'processed';
+                }
+
+                if (form.id) {
+                  _context4.next = 8;
+                  break;
+                }
+
+                _context4.next = 6;
+                return axios.post('/leaveform', form);
+
+              case 6:
+                _context4.next = 10;
+                break;
+
+              case 8:
+                _context4.next = 10;
+                return axios.patch('/leaveform/' + form.id, form);
+
+              case 10:
+                _context4.next = 12;
+                return _this6.$store.dispatch(_this6.role.action, _this6.role.data);
+
+              case 12:
+                _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog', form.id);
+
+              case 13:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4);
+      }))();
     }
   },
   mounted: function mounted() {},
   created: function created() {
-    var _this6 = this;
+    var _this7 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
-      var id, res, _id, _res2;
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee5() {
+      var _this7$role, role, data, status;
 
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee5$(_context5) {
         while (1) {
-          switch (_context4.prev = _context4.next) {
+          switch (_context5.prev = _context5.next) {
             case 0:
-              _context4.next = 2;
-              return _this6.$store.dispatch('getEmplsAll');
+              _context5.next = 2;
+              return _this7.$store.dispatch('getEmplsAll');
 
             case 2:
-              if (_this6.type == 'edit' && _this6.$route.params.id) {
-                //if form editted, assign employee
-                id = _this6.$route.params.id;
-                res = _this6.empls ? _this6.empls.find(function (el) {
-                  return el.id == id;
-                }) : {};
-                _this6.empl = res;
-                _this6.form = _this6.pickForm;
+              _this7$role = _this7.role, role = _this7$role.role, data = _this7$role.data;
+
+              if (!(_this7.type == 'edit')) {
+                _context5.next = 19;
+                break;
               }
 
-              if (_this6.type == 'new' && _this6.$route.params.id) {
-                //if new form and created by the employee
-                _id = _this6.$route.params.id;
-                _res2 = _this6.empls ? _this6.empls.find(function (el) {
-                  return el.id == _id;
-                }) : {};
-                _this6.empl = _res2;
-                _this6.form.dept = _this6.empl.dept;
-                _this6.form.empl_id = parseInt(_this6.$route.params.id);
-              } else if (_this6.$route.params.dept && _this6.type == 'new') {
-                //if created by the supervisor
-                _this6.form.status = 'approved';
-                _this6.form.dept = _this6.$route.params.dept;
-              } else if (_this6.$route.params.dept && _this6.type == 'edit') {
-                //if edited by the supervisor
-                _this6.form = _this6.pickForm;
-                _this6.empl = _this6.empls.find(function (el) {
-                  return el.id == _this6.form.empl_id;
-                });
-              } else if (_this6.$route.path == '/allforms' && _this6.type == 'edit') {
-                //if employee edits the form
-                _this6.form = _this6.pickForm;
-                _this6.empl = _this6.empls.find(function (el) {
-                  return el.id == _this6.form.empl_id;
-                });
-              } else if (_this6.$route.path == '/allforms' && _this6.type == 'new') {
-                //if employee edits the form
-                _this6.form.status = 'granted';
-              } //get the staff of teh department
+              _this7.title = 'Wniosek Urlopowy';
+              _this7.form = _this7.pickForm;
+              _this7.empl = _this7.empls.find(function (el) {
+                return el.id == _this7.form.empl_id;
+              });
+              status = _this7.form.status;
+              _context5.t0 = role;
+              _context5.next = _context5.t0 === 'empl' ? 11 : _context5.t0 === 'dept' ? 13 : _context5.t0 === 'all' ? 15 : 17;
+              break;
 
+            case 11:
+              _this7.disabled = status != 'draft' ? true : false;
+              return _context5.abrupt("break", 17);
 
-              _this6.$store.commit('getDeptEmpls', _this6.form.dept);
+            case 13:
+              _this7.disabled = status != 'processed' ? true : false;
+              return _context5.abrupt("break", 17);
 
-            case 5:
+            case 15:
+              _this7.disabled = ['granted', 'rejected'].includes(status) ? true : false;
+              return _context5.abrupt("break", 17);
+
+            case 17:
+              _context5.next = 35;
+              break;
+
+            case 19:
+              _this7.title = 'Nowy Wniosek Urlopowy';
+              _this7.disabled = false;
+              _context5.t1 = role;
+              _context5.next = _context5.t1 === 'empl' ? 24 : _context5.t1 === 'dept' ? 28 : _context5.t1 === 'all' ? 32 : 35;
+              break;
+
+            case 24:
+              _this7.empl = _this7.empls.find(function (el) {
+                return el.id == data;
+              });
+              _this7.form.dept = _this7.empl.dept;
+              _this7.form.empl_id = parseInt(_this7.$route.params.id);
+              return _context5.abrupt("break", 35);
+
+            case 28:
+              _this7.form.status = 'approved';
+              _this7.form.dept = data;
+              _this7.ifSelectEmpls = true;
+              return _context5.abrupt("break", 35);
+
+            case 32:
+              _this7.form.status = 'granted';
+              _this7.ifSelectEmpls = true;
+              return _context5.abrupt("break", 35);
+
+            case 35:
+              //get the staff of teh department
+              _this7.$store.commit('getDeptEmpls', _this7.form.dept);
+
+            case 36:
             case "end":
-              return _context4.stop();
+              return _context5.stop();
           }
         }
-      }, _callee4);
+      }, _callee5);
     }))();
   }
 });
@@ -3602,80 +3583,59 @@ __webpack_require__.r(__webpack_exports__);
     return {};
   },
   computed: {
-    pTitle: function pTitle() {
-      var path = this.$route.path;
-
-      if (path == '/allforms') {
-        return 'Wnioski Urlopowe';
-      } else if (path.includes('deptforms')) {
-        return 'Wnioski Urlopowe Dizału ' + this.$route.params.dept;
+    role: function role() {
+      if (this.$route.params.id) {
+        return {
+          role: 'empl',
+          data: this.$route.params.id,
+          action: 'getEmplForms'
+        };
+      } else if (this.$route.params.dept) {
+        return {
+          role: 'dept',
+          data: this.$route.params.dept,
+          action: 'getDeptForms'
+        };
       } else {
-        return 'Moje Wnioski Urlopowe';
+        return {
+          role: 'all',
+          data: '',
+          action: 'getAllForms'
+        };
       }
     },
     info: function info() {
-      return {
-        component: 'formdialog',
-        pageTitle: this.pTitle,
-        plusTitle: 'Dodaj Wniosek Urlopowy',
-        searched: '',
-        search: this.filters().search,
-        filter: this.filters().filter,
-        filterDept: null,
-        dialog: false,
-        headers: [{
-          title: 'Rodzaj urlopu',
-          cols: 5
-        }, {
-          title: 'Data akceptacji',
-          cols: 3
-        }, {
-          title: 'Pracownik',
-          cols: 3
-        }],
-        keys: [{
-          title: 'type',
-          cols: 3
-        }, {
-          title: 'name',
-          cols: 3
-        }, {
-          title: 'date_start',
-          cols: 2
-        }, {
-          title: 'date_end',
-          cols: 2
-        }],
-        editDialog: false,
-        getList: 'getEmplForms',
-        pickForm: null,
-        route: '/leaveform'
-      };
-    }
-  },
-  methods: {
-    filters: function filters() {
-      var path = this.$route.path;
+      switch (this.role.role) {
+        case 'empl':
+          return {
+            pageTitle: 'Moje Wnioski Urlopowe',
+            search: false,
+            filter: false,
+            role: this.role
+          };
+          break;
 
-      if (path == '/allforms') {
-        return {
-          search: true,
-          filter: true
-        };
-      } else if (path.includes('deptforms')) {
-        return {
-          search: true,
-          filter: false
-        };
+        case 'dept':
+          return {
+            pageTitle: 'Wnioski Urlopowe Pracowników Działu',
+            search: true,
+            filter: false,
+            role: this.role
+          };
+          break;
+
+        case 'all':
+          return {
+            pageTitle: 'Wnioski Urlopowe Pracowników',
+            search: true,
+            filter: true,
+            role: this.role
+          };
+          break;
       }
-
-      return {
-        search: false,
-        filter: false
-      };
     }
   },
-  mounted: function mounted() {},
+  methods: {},
   created: function created() {}
 });
 
@@ -4290,7 +4250,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
 
 
 
@@ -4304,25 +4263,36 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   data: function data() {
     return _objectSpread(_objectSpread({}, this.info), {}, {
+      searched: '',
+      filterDept: null,
+      editDialog: false,
+      dialog: false,
+      headers: [{
+        title: 'Typ Urlopu',
+        cols: 3
+      }, {
+        title: 'Imię i Nazwisko',
+        cols: 3
+      }, {
+        title: 'Akcje',
+        cols: 3
+      }],
+      keys: [{
+        title: 'type',
+        cols: 3
+      }, {
+        title: 'name',
+        cols: 3
+      }, {
+        title: 'date_start',
+        cols: 2
+      }, {
+        title: 'date_end',
+        cols: 2
+      }],
+      pickForm: null,
       currentEdit: null
     });
-    /*         info:{
-                    pageTitle://title of the main card
-                    plusTitle://name of plus button to add a new record
-                    searched://searched phrase, if enabled, set ''
-                    search:// true - enables search input in the header
-                    filter:// true - enables filter-select
-                    filterDept:null,
-                    editDialog: //false - dialog to edit a record, hidden at mount
-                    dialog: //false - dialog to add a new record hidden at mount
-                    headers: //headers for the list [{title:'Imię i Nazwisko', cols:4}],
-                    keys: //keys for the values of the list [{title:'name', cols:4}],
-                    component: //name of the component that renders in dialog,
-                    pickForm: //null - prop will be assigned to and sent to editdialog,
-                    route: // route to controller,
-                    getList: // dispatch action in vuex to get items for the list,
-                    deleteMsg: // message to display when item of the list is deleted
-                } */
   },
   computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapState"])({
     depts: function depts(state) {
@@ -4338,15 +4308,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       return state.hr.leaveForms;
     }
   })), {}, {
-    empl_id: function empl_id() {
-      return this.$route.params.id;
-    },
     items: function items() {
       var _this = this;
 
       var forms = _objectSpread({}, this.forms);
 
-      var res = {};
+      var res = {}; //if filter by dept enabled show only forms from the selected dept
 
       if (this.filterDept) {
         for (var el in forms) {
@@ -4356,9 +4323,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }
       } else {
         res = forms;
-      } //if filter by dept enabled show only forms from the selected dept
-      //let res = this.filterDept? forms.filter((el)=>el.dept == this.filterDept) : forms
-      //if search enabled show only forms with matching names
+      } //if search enabled show only forms with matching names
 
 
       if (this.search) {
@@ -4408,34 +4373,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             switch (_context.prev = _context.next) {
               case 0:
                 _context.next = 2;
-                return axios["delete"](_this3.route + '/' + id);
+                return axios["delete"]('/leaveform/' + id);
 
               case 2:
-                if (!_this3.$route.params.id) {
-                  _context.next = 7;
-                  break;
-                }
+                _context.next = 4;
+                return _this3.$store.dispatch(_this3.role.action, _this3.role.data);
 
-                _context.next = 5;
-                return _this3.$store.dispatch('getEmplForms', _this3.$route.params.id);
+              case 4:
+                alert('Wniosek został usunięty');
 
               case 5:
-                _context.next = 10;
-                break;
-
-              case 7:
-                if (!_this3.$route.params.dept) {
-                  _context.next = 10;
-                  break;
-                }
-
-                _context.next = 10;
-                return _this3.$store.dispatch('getDeptForms', _this3.$route.params.dept);
-
-              case 10:
-                alert(_this3.deleteMsg);
-
-              case 11:
               case "end":
                 return _context.stop();
             }
@@ -4489,41 +4436,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         while (1) {
           switch (_context3.prev = _context3.next) {
             case 0:
-              if (!_this5.$route.params.id) {
-                _context3.next = 5;
-                break;
-              }
+              _context3.next = 2;
+              return _this5.$store.dispatch(_this5.role.action, _this5.role.data);
 
-              _context3.next = 3;
-              return _this5.$store.dispatch('getEmplForms', _this5.$route.params.id);
-
-            case 3:
-              _context3.next = 13;
-              break;
-
-            case 5:
-              if (!_this5.$route.params.dept) {
-                _context3.next = 10;
-                break;
-              }
-
-              _context3.next = 8;
-              return _this5.$store.dispatch('getDeptForms', _this5.$route.params.dept);
-
-            case 8:
-              _context3.next = 13;
-              break;
-
-            case 10:
-              if (!(_this5.$route.path == '/allforms')) {
-                _context3.next = 13;
-                break;
-              }
-
-              _context3.next = 13;
-              return _this5.$store.dispatch('getAllForms');
-
-            case 13:
+            case 2:
             case "end":
               return _context3.stop();
           }
@@ -42678,7 +42594,7 @@ var render = function() {
           _c(
             "v-card-title",
             { staticClass: "headline white--text justify-center" },
-            [_vm._v(_vm._s(_vm.temp.title))]
+            [_vm._v(_vm._s(_vm.title))]
           ),
           _vm._v(" "),
           _c(
@@ -42693,7 +42609,7 @@ var render = function() {
                       _c(
                         "v-col",
                         [
-                          _vm.ifSelectEmpls
+                          _vm.ifSelectEmpls && _vm.deptEmpls
                             ? _c("v-select", {
                                 attrs: {
                                   items: _vm.deptEmpls,
@@ -42789,7 +42705,7 @@ var render = function() {
                               })
                             : _vm._e(),
                           _vm._v(" "),
-                          _vm.ifReject
+                          _vm.form.status == "rejected"
                             ? _c("v-text-field", {
                                 attrs: {
                                   hint: "Powód odrzucenia",
@@ -42918,7 +42834,7 @@ var render = function() {
                       ]
                     : _vm._e(),
                   _vm._v(" "),
-                  _vm.role == "dept" &&
+                  _vm.role.role == "dept" &&
                   _vm.type == "edit" &&
                   _vm.form.status == "processed"
                     ? [
@@ -42958,11 +42874,66 @@ var render = function() {
                                 },
                                 on: {
                                   click: function($event) {
-                                    return _vm.updateStatus("rejected")
+                                    _vm.rejectForm = true
                                   }
                                 }
                               },
                               [_vm._v("Odrzuć")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-dialog",
+                              {
+                                model: {
+                                  value: _vm.rejectForm,
+                                  callback: function($$v) {
+                                    _vm.rejectForm = $$v
+                                  },
+                                  expression: "rejectForm"
+                                }
+                              },
+                              [
+                                _c(
+                                  "v-card",
+                                  [
+                                    _c("v-text-field", {
+                                      model: {
+                                        value: _vm.form.reject_msg,
+                                        callback: function($$v) {
+                                          _vm.$set(_vm.form, "reject_msg", $$v)
+                                        },
+                                        expression: "form.reject_msg"
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c(
+                                      "v-btn",
+                                      {
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.reject()
+                                          }
+                                        }
+                                      },
+                                      [_vm._v("Reject")]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "v-btn",
+                                      {
+                                        on: {
+                                          click: function($event) {
+                                            _vm.reject = false
+                                          }
+                                        }
+                                      },
+                                      [_vm._v("Cancel")]
+                                    )
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
                             )
                           ],
                           1
@@ -42970,7 +42941,7 @@ var render = function() {
                       ]
                     : _vm._e(),
                   _vm._v(" "),
-                  _vm.role == "all" &&
+                  _vm.role.role == "all" &&
                   _vm.type == "edit" &&
                   _vm.form.status == "approved"
                     ? [
@@ -43010,11 +42981,66 @@ var render = function() {
                                 },
                                 on: {
                                   click: function($event) {
-                                    return _vm.updateStatus("rejected")
+                                    _vm.rejectForm = true
                                   }
                                 }
                               },
                               [_vm._v("Odrzuć")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-dialog",
+                              {
+                                model: {
+                                  value: _vm.rejectForm,
+                                  callback: function($$v) {
+                                    _vm.rejectForm = $$v
+                                  },
+                                  expression: "rejectForm"
+                                }
+                              },
+                              [
+                                _c(
+                                  "v-card",
+                                  [
+                                    _c("v-text-field", {
+                                      model: {
+                                        value: _vm.form.reject_msg,
+                                        callback: function($$v) {
+                                          _vm.$set(_vm.form, "reject_msg", $$v)
+                                        },
+                                        expression: "form.reject_msg"
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c(
+                                      "v-btn",
+                                      {
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.reject()
+                                          }
+                                        }
+                                      },
+                                      [_vm._v("Reject")]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "v-btn",
+                                      {
+                                        on: {
+                                          click: function($event) {
+                                            _vm.reject = false
+                                          }
+                                        }
+                                      },
+                                      [_vm._v("Cancel")]
+                                    )
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
                             )
                           ],
                           1
@@ -43054,7 +43080,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm.pTitle
+  return _vm.role && _vm.info
     ? _c("listformcomp", { attrs: { info: _vm.info, name: "forms" } })
     : _vm._e()
 }
@@ -43780,9 +43806,7 @@ var render = function() {
                             [
                               _c("v-icon", [_vm._v("mdi-plus")]),
                               _vm._v(
-                                "\n                            " +
-                                  _vm._s(_vm.plusTitle) +
-                                  "\n                        "
+                                "\n                           Dodaj Wniosek Urlopowy\n                        "
                               )
                             ],
                             1
@@ -43800,7 +43824,11 @@ var render = function() {
                                     expression: "dialog"
                                   }
                                 },
-                                [_c("formdialog", { attrs: { type: "new" } })],
+                                [
+                                  _c("formdialog", {
+                                    attrs: { type: "new", role: _vm.role }
+                                  })
+                                ],
                                 1
                               )
                             : _vm._e()
@@ -43949,7 +43977,8 @@ var render = function() {
                                                           attrs: {
                                                             type: "edit",
                                                             pickForm:
-                                                              _vm.pickForm
+                                                              _vm.pickForm,
+                                                            role: _vm.role
                                                           }
                                                         })
                                                       ],
@@ -105633,7 +105662,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }, _callee5);
       }))();
     },
-    getAllForms: function getAllForms(_ref6) {
+    getAllForms: function getAllForms(_ref6, data) {
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee6() {
         var commit, res;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee6$(_context6) {

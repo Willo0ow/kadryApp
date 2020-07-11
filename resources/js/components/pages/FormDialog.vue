@@ -1,15 +1,15 @@
 <template>
     <v-card class="gradient" v-if="form.dates">
-        <v-card-title class="headline white--text justify-center">{{temp.title}}</v-card-title>
+        <v-card-title class="headline white--text justify-center">{{title}}</v-card-title>
         <v-card-text>
             <v-container>
                 <v-row>
                     <v-col>
-                        <v-select :items="deptEmpls" hint="Wybierz pracownika" v-model="empl" @input="assignEmpl" item-text="name" return-object persistent-hint single-line dense autocomplete="off" dark filled rounded :readonly="disabled" v-if="ifSelectEmpls"></v-select>
+                        <v-select :items="deptEmpls" hint="Wybierz pracownika" v-model="empl" @input="assignEmpl" item-text="name" return-object persistent-hint single-line dense autocomplete="off" dark filled rounded :readonly="disabled" v-if="ifSelectEmpls && deptEmpls"></v-select>
                         <v-select :items="types" hint="Wybierz typ urlopu" v-model="form.type" persistent-hint single-line dense autocomplete="off" dark filled rounded :readonly="disabled"></v-select>
                         <v-select :items="subs" item-text="name" item-value="id" hint="Wybierz zastępcę" v-model="form.sub" persistent-hint single-line dense autocomplete="off" dark filled rounded :readonly="disabled"></v-select>
                         <v-text-field hint="Powód urlopu" v-model="form.note" persistent-hint single-line dense autocomplete="off" dark filled rounded v-if="ifNote" :readonly="disabled"></v-text-field>
-                        <v-text-field hint="Powód odrzucenia" v-model="form.reject_msg" persistent-hint single-line dense autocomplete="off" dark filled rounded v-if="ifReject" readonly></v-text-field>
+                        <v-text-field hint="Powód odrzucenia" v-model="form.reject_msg" persistent-hint single-line dense autocomplete="off" dark filled rounded v-if="form.status == 'rejected'" readonly></v-text-field>
                     </v-col>
                     <v-col>
                         <v-date-picker class="grey" v-model="form.dates" range no-title locale="pl" first-day-of-week="1" :readonly="disabled"></v-date-picker>
@@ -30,20 +30,34 @@
                         <v-btn dark color="teal darken-3" rounded @click="sendForm">Wyślij</v-btn>
                     </v-col>
                 </template>
-                <template v-if="role == 'dept' && type=='edit' && form.status=='processed'">
+                <template v-if="role.role == 'dept' && type=='edit' && form.status=='processed'">
                     <v-col>
                         <v-btn dark color="teal darken-3" rounded @click="updateStatus('approved')">Zatwierdź</v-btn>
                     </v-col>
                     <v-col>
-                        <v-btn dark color="teal darken-3" rounded @click="updateStatus('rejected')">Odrzuć</v-btn>
+                        <v-btn dark color="teal darken-3" rounded @click="rejectForm = true">Odrzuć</v-btn>
+                        <v-dialog v-model="rejectForm">
+                            <v-card>
+                                <v-text-field v-model="form.reject_msg"></v-text-field>
+                                <v-btn @click="reject()">Reject</v-btn>
+                                <v-btn @click="reject = false">Cancel</v-btn>
+                            </v-card>
+                        </v-dialog>
                     </v-col>
                 </template>
-                <template v-if="role == 'all' && type=='edit' && form.status=='approved'">
+                <template v-if="role.role == 'all' && type=='edit' && form.status=='approved'">
                     <v-col>
                         <v-btn dark color="teal darken-3" rounded @click="updateStatus('granted')">Zatwierdź</v-btn>
                     </v-col>
                     <v-col>
-                        <v-btn dark color="teal darken-3" rounded @click="updateStatus('rejected')">Odrzuć</v-btn>
+                        <v-btn dark color="teal darken-3" rounded @click="rejectForm = true">Odrzuć</v-btn>
+                        <v-dialog v-model="rejectForm">
+                            <v-card>
+                                <v-text-field v-model="form.reject_msg"></v-text-field>
+                                <v-btn @click="reject()">Reject</v-btn>
+                                <v-btn @click="reject = false">Cancel</v-btn>
+                            </v-card>
+                        </v-dialog>
                     </v-col>
                 </template>
             </v-card-actions>
@@ -57,7 +71,8 @@ import EventBus from '../../libs/bus';
     export default {
         props:{
             pickForm:Object,
-            type:String
+            type:String,
+            role: Object
         },
         data(){
             return {
@@ -73,42 +88,36 @@ import EventBus from '../../libs/bus';
                     empl_id: '',
                     user_id: this.$store.state.user.user.id
                 },
-                empl:null
+                empl:null,
+                rejectForm: false,
+                disabled:null,
+                ifSelectEmpls: false,
+                title: ''
             }
         },
         computed:{
             ...mapState({
                 empls : state => state.hr.empls,
-                //deptEmpls: state => state.hr.deptEmpls
             }),
-            dept(){
+/*             dept(){
                 return this.empl.dept
-            },
-            role(){
-                let {params, path} = this.$route
-                if(params.id){return 'empl'}
-                else if(params.dept){return 'dept'}
-                else if(path=='/allforms'){return 'all'}
-            },
+            }, */
             deptEmpls(){
-                if(this.role== 'dept'){
-                    return this.empls.filter((el)=>{return el.dept == this.$route.params.dept})
-                } else if (this.role == 'empl'){
+                let role = this.role.role
+                if(role== 'dept'){
+                    return this.empls.filter((el)=>{return el.dept == this.form.dept})
+                } else if (role == 'empl'){
                     return this.$store.state.hr.deptEmpls
-                } else if(this.role == 'all'){
+                } else if(role == 'all'){
                     return this.empls
                 }
             },
-            temp(){
-                //title of the component
-                return this.type == 'new'? {title:'Dodaj Wniosek Urlopowy'} :{ title:'Wniosek Urlopowy'}
-            },
             subs(){
                 //substitutions for the employee
-                if(this.empl && this.role != 'all'){
-                    let res = this.deptEmpls.filter((el)=>el.id != this.$route.params.id)
+                if(this.empl && this.role.role != 'all'){
+                    let res = this.deptEmpls.filter((el)=>el.id != this.empl.id)
                     return res
-                } else if(this.role == 'all'&& this.empl){
+                } else if(this.role.role == 'all' && this.empl){
                     let res = this.empls.filter((el)=>{return el.dept == this.empl.dept && el.id != this.empl.id})
                     return res
                 }
@@ -118,23 +127,12 @@ import EventBus from '../../libs/bus';
                 //adds note input if a particular type of leave has been chosen
                 return ['inny', 'bezpłatny', 'okolicznościowy'].indexOf(this.form.type)>=0 ? true : false
             },
-            ifReject(){
-                return this.form.status == 'rejected' ? true : false
-            },
-            ifSelectEmpls(){
-                return (this.$route.path == '/allforms' || this.$route.params.dept) && this.deptEmpls
-            },
-            disabled(){
-                //prevents changes in the form if already sent
-                let role = this.role
-                let status = this.form.status
-                let empl = status != 'draft' && role == 'empl'
-                if(role == 'empl'){return empl}
-                else if((role == 'dept' || role == 'all' )&& this.type == 'new'){return false}
-                return true
-            },
         },
         methods:{
+            async reject(){
+                this.form.status = 'rejected'
+                await this.saveForm()
+            },
             async updateStatus(status){
                 this.form.status = status
                 await this.saveForm()
@@ -154,7 +152,7 @@ import EventBus from '../../libs/bus';
                 let form = this.form
                 let [date_start, date_end] = form.dates
                 delete form.dates
-                if(this.$route.path== '/allforms'){
+                if(this.role.role == 'all'){
                     form.dept = this.empl.dept
                 }
                 return form = {...form, date_start:date_start, date_end:date_end}
@@ -170,8 +168,7 @@ import EventBus from '../../libs/bus';
                     await axios.post('/leaveform', form)
                 }
                 //gets updaetd list of employee's forms
-                if(this.$route.params.id) {await this.$store.dispatch('getEmplForms', this.$route.params.id)}
-                else if(this.$route.params.dept) {await this.$store.dispatch('getDeptForms', this.$route.params.dept)}
+                await this.$store.dispatch(this.role.action, this.role.data)
                 EventBus.$emit('closeDialog', form.id)
             },
             async sendForm(){
@@ -185,12 +182,11 @@ import EventBus from '../../libs/bus';
                     await axios.post('/leaveform', form)
                 } else {
                     //if editted form and send
-                    delete form.name
+                    //delete form.name
                     await axios.patch('/leaveform/'+form.id, form)
                 }
                 //get updated list of employee's forms
-                if(this.$route.params.id) {await this.$store.dispatch('getEmplForms', this.$route.params.id)}
-                else if(this.$route.params.dept) {await this.$store.dispatch('getDeptForms', this.$route.params.dept)}
+                await this.$store.dispatch(this.role.action, this.role.data)
                 EventBus.$emit('closeDialog', form.id)
             }
         },
@@ -200,43 +196,45 @@ import EventBus from '../../libs/bus';
         async created(){
             //get the list of all employees
             await this.$store.dispatch('getEmplsAll')
-            if(this.type == 'edit' && this.$route.params.id){
-                //if form editted, assign employee
-                let {id} = this.$route.params
-                let res = this.empls? this.empls.find((el)=>el.id == id) : {}
-                this.empl = res
-                this.form = this.pickForm
-            }
-            if (this.type=='new'&& this.$route.params.id){
-                //if new form and created by the employee
-                let {id} = this.$route.params
-                let res = this.empls? this.empls.find((el)=>el.id == id) : {}
-                this.empl = res
-                this.form.dept = this.empl.dept
-                this.form.empl_id = parseInt(this.$route.params.id)
-            }
-            else if (this.$route.params.dept && this.type == 'new'){
-                //if created by the supervisor
-                this.form.status = 'approved'
-                this.form.dept = this.$route.params.dept
-            }
-            else if (this.$route.params.dept && this.type == 'edit'){
-                //if edited by the supervisor
+            let {role,data} = this.role
+            
+            if(this.type=='edit'){
+                this.title = 'Wniosek Urlopowy'
                 this.form = this.pickForm
                 this.empl = this.empls.find((el)=>{
                     return el.id == this.form.empl_id
                 })
-            }
-            else if (this.$route.path== '/allforms' && this.type == 'edit'){
-                //if employee edits the form
-                this.form = this.pickForm
-                this.empl = this.empls.find((el)=>{
-                    return el.id == this.form.empl_id
-                })
-            }
-            else if (this.$route.path== '/allforms' && this.type == 'new'){
-                //if employee edits the form
-                this.form.status = 'granted'
+                let {status} = this.form
+                switch(role){
+                    case 'empl':
+                        this.disabled = status != 'draft'? true : false
+                    break;
+                    case 'dept':
+                        this.disabled = status != 'processed'? true : false
+                    break;
+                    case 'all':
+                        this.disabled = ['granted', 'rejected'].includes(status)? true : false
+                    break;
+                }
+            } else {
+                this.title = 'Nowy Wniosek Urlopowy'
+                this.disabled = false
+                switch(role){
+                case 'empl':
+                    this.empl = this.empls.find((el)=>el.id == data)
+                    this.form.dept = this.empl.dept
+                    this.form.empl_id = parseInt(this.$route.params.id);
+                    break;
+                case 'dept':
+                    this.form.status = 'approved'
+                    this.form.dept = data;
+                    this.ifSelectEmpls = true
+                    break;
+                case 'all':
+                    this.form.status = 'granted';
+                    this.ifSelectEmpls = true
+                    break;
+                }
             }
             //get the staff of teh department
             this.$store.commit('getDeptEmpls',this.form.dept)
