@@ -14,6 +14,19 @@ export default{
             let res = state.empls.filter((el)=>el.dept == dept)
             state.deptEmpls = res
         },
+        assignAddLeave(state){
+            let added = state.empls.map((el) => {
+                let start = new Date(el.date_start)
+                let add = state.holidays.reduce((res, val)=>{
+                    let date = new Date(val.date)
+                    val.weekend && start <= date? res +=1 : res
+                    return res
+                }, 0)
+                el.leave_avbl += add
+                return el
+            });
+            state.empls = added
+        },
         assignEmpls(state, payload){
             let calc = payload.map((val)=>{
                 
@@ -33,7 +46,6 @@ export default{
                     
                     mpl = mpl<0? 0 : mpl
                     all = Math.ceil(mpl*leave_base/12) - old_rest.rest
-                    
                 } else {
                     all = leave_base - old_rest.rest
                 }
@@ -41,6 +53,7 @@ export default{
                 val.leave_old_rest = old_rest.old
                 return val
             })
+
             
             state.empls = calc
             let res = calc.filter((el)=>el.supervisor==true)
@@ -71,9 +84,11 @@ export default{
         }
     },
     actions:{
-        async getEmplsAll({commit}){
+        async getEmplsAll({commit, dispatch}){
+            await dispatch('getHolidays')
             let res = await Axios.get('/empls')
             commit('assignEmpls', res.data)
+            commit('assignAddLeave')
         },
         async getDepts({commit}){
             let res = await Axios.get('/depts')

@@ -25,7 +25,6 @@ Route::resource('/empls', 'EmployeeController');
 Route::resource('/users', 'UserController');
 Route::resource('/depts', 'DepartmentController');
 Route::resource('/holis', 'HolidayController');
-Route::post('/updateLeaveAdd', 'EmployeeController@updateLeaveAdd');
 Route::resource('/leaveform', 'LeaveFormController');
 
 //Route::get('/home', 'HomeController@index')->name('home');

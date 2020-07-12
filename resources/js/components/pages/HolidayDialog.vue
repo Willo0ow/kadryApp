@@ -53,24 +53,6 @@ import EventBus from '../../libs/bus'
             },
         },
         methods:{
-            async checkHoliday(){
-                let currMonth = new Date().getMonth()
-                let holiMonth = new Date(this.form.date).getMonth()
-                if(this.form.weekend && currMonth == holiMonth){
-                    await axios.post('/updateLeaveAdd?newDate='+ this.form.date+'&oldDate=&num=1&change=false')
-                }
-            },
-            async checkEditHoliday(){
-                let now = new Date().getMonth()
-                let form = new Date(this.form.date).getMonth()
-                if(this.pickForm.weekend==1 && this.form.weekend==0){
-                    await axios.post('/updateLeaveAdd?newDate='+ this.form.date+'&oldDate='+this.pickForm.date +'&num=-1&change=false')
-                } else if (this.pickForm.weekend == 0 && this.form.weekend == 1 && form<=now){
-                    await axios.post('/updateLeaveAdd?newDate='+ this.form.date+'&oldDate='+this.pickForm.date +'&num=1&change=false')
-                } else if (this.pickForm.weekend == 1 && this.form.weekend == 1 && form<=now){
-                    await axios.post('/updateLeaveAdd?newDate='+ this.form.date+'&oldDate='+this.pickForm.date +'&num=1&change=true')
-                }
-            },
             resetForm(){
                 EventBus.$emit('closeDialog')
             },
@@ -79,10 +61,8 @@ import EventBus from '../../libs/bus'
                 let weekend = [6, 0].includes(date.getDay())? true : false
                 this.form.weekend = weekend
                 if(this.type == 'new'){
-                    this.checkHoliday()
                     await axios.post('/holis', this.form)
                 } else if (this.type == 'edit'){
-                    await this.checkEditHoliday()
                     await axios.patch('/holis/'+ this.form.id, this.form)
                 }
                 await this.$store.dispatch('getHolidays')

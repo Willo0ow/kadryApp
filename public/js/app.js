@@ -3249,11 +3249,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])({
     empls: function empls(state) {
       return state.hr.empls;
+    },
+    holidays: function holidays(state) {
+      return state.hr.holidays;
     }
   })), {}, {
-    /*             dept(){
-                    return this.empl.dept
-                }, */
     deptEmpls: function deptEmpls() {
       var _this = this;
 
@@ -3313,6 +3313,23 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   }),
   methods: {
+    allowed: function allowed(val) {
+      var date = new Date(val);
+      var today = new Date();
+      var day = date.getDay();
+      var weekend = day == 0 || day == 6;
+      var holis = this.holidays.map(function (el) {
+        return el.date;
+      });
+      var holiday = holis.includes(date.toISOString().slice(0, 10));
+      var status = this.type == 'new' || this.status == 'draft';
+
+      if (status && this.role.role == 'empl') {
+        return !weekend && !holiday && today < date;
+      }
+
+      return !weekend && !holiday;
+    },
     reject: function reject() {
       var _this3 = this;
 
@@ -3736,144 +3753,56 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   }),
   methods: {
-    checkHoliday: function checkHoliday() {
+    resetForm: function resetForm() {
+      _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog');
+    },
+    saveForm: function saveForm() {
       var _this = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-        var currMonth, holiMonth;
+        var date, weekend;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                currMonth = new Date().getMonth();
-                holiMonth = new Date(_this.form.date).getMonth();
+                date = new Date(_this.form.date);
+                weekend = [6, 0].includes(date.getDay()) ? true : false;
+                _this.form.weekend = weekend;
 
-                if (!(_this.form.weekend && currMonth == holiMonth)) {
-                  _context.next = 5;
+                if (!(_this.type == 'new')) {
+                  _context.next = 8;
                   break;
                 }
 
-                _context.next = 5;
-                return axios.post('/updateLeaveAdd?newDate=' + _this.form.date + '&oldDate=&num=1&change=false');
+                _context.next = 6;
+                return axios.post('/holis', _this.form);
 
-              case 5:
+              case 6:
+                _context.next = 11;
+                break;
+
+              case 8:
+                if (!(_this.type == 'edit')) {
+                  _context.next = 11;
+                  break;
+                }
+
+                _context.next = 11;
+                return axios.patch('/holis/' + _this.form.id, _this.form);
+
+              case 11:
+                _context.next = 13;
+                return _this.$store.dispatch('getHolidays');
+
+              case 13:
+                _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog');
+
+              case 14:
               case "end":
                 return _context.stop();
             }
           }
         }, _callee);
-      }))();
-    },
-    checkEditHoliday: function checkEditHoliday() {
-      var _this2 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
-        var now, form;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                now = new Date().getMonth();
-                form = new Date(_this2.form.date).getMonth();
-
-                if (!(_this2.pickForm.weekend == 1 && _this2.form.weekend == 0)) {
-                  _context2.next = 7;
-                  break;
-                }
-
-                _context2.next = 5;
-                return axios.post('/updateLeaveAdd?newDate=' + _this2.form.date + '&oldDate=' + _this2.pickForm.date + '&num=-1&change=false');
-
-              case 5:
-                _context2.next = 15;
-                break;
-
-              case 7:
-                if (!(_this2.pickForm.weekend == 0 && _this2.form.weekend == 1 && form <= now)) {
-                  _context2.next = 12;
-                  break;
-                }
-
-                _context2.next = 10;
-                return axios.post('/updateLeaveAdd?newDate=' + _this2.form.date + '&oldDate=' + _this2.pickForm.date + '&num=1&change=false');
-
-              case 10:
-                _context2.next = 15;
-                break;
-
-              case 12:
-                if (!(_this2.pickForm.weekend == 1 && _this2.form.weekend == 1 && form <= now)) {
-                  _context2.next = 15;
-                  break;
-                }
-
-                _context2.next = 15;
-                return axios.post('/updateLeaveAdd?newDate=' + _this2.form.date + '&oldDate=' + _this2.pickForm.date + '&num=1&change=true');
-
-              case 15:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2);
-      }))();
-    },
-    resetForm: function resetForm() {
-      _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog');
-    },
-    saveForm: function saveForm() {
-      var _this3 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
-        var date, weekend;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                date = new Date(_this3.form.date);
-                weekend = [6, 0].includes(date.getDay()) ? true : false;
-                _this3.form.weekend = weekend;
-
-                if (!(_this3.type == 'new')) {
-                  _context3.next = 9;
-                  break;
-                }
-
-                _this3.checkHoliday();
-
-                _context3.next = 7;
-                return axios.post('/holis', _this3.form);
-
-              case 7:
-                _context3.next = 14;
-                break;
-
-              case 9:
-                if (!(_this3.type == 'edit')) {
-                  _context3.next = 14;
-                  break;
-                }
-
-                _context3.next = 12;
-                return _this3.checkEditHoliday();
-
-              case 12:
-                _context3.next = 14;
-                return axios.patch('/holis/' + _this3.form.id, _this3.form);
-
-              case 14:
-                _context3.next = 16;
-                return _this3.$store.dispatch('getHolidays');
-
-              case 16:
-                _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog');
-
-              case 17:
-              case "end":
-                return _context3.stop();
-            }
-          }
-        }, _callee3);
       }))();
     }
   },
@@ -42805,8 +42734,12 @@ var render = function() {
                         "v-col",
                         [
                           _c("v-date-picker", {
+                            ref: "datePicker",
                             staticClass: "grey",
                             attrs: {
+                              "allowed-dates": _vm.allowed,
+                              "selected-items-text":
+                                "$vuetify.datePicker.selected",
                               range: "",
                               "no-title": "",
                               locale: "pl",
@@ -105515,6 +105448,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
       state.deptEmpls = res;
     },
+    assignAddLeave: function assignAddLeave(state) {
+      var added = state.empls.map(function (el) {
+        var start = new Date(el.date_start);
+        var add = state.holidays.reduce(function (res, val) {
+          var date = new Date(val.date);
+          val.weekend && start <= date ? res += 1 : res;
+          return res;
+        }, 0);
+        el.leave_avbl += add;
+        return el;
+      });
+      state.empls = added;
+    },
     assignEmpls: function assignEmpls(state, payload) {
       var calc = payload.map(function (val) {
         var leave_base = val.leave_base,
@@ -105587,20 +105533,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   actions: {
     getEmplsAll: function getEmplsAll(_ref) {
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-        var commit, res;
+        var commit, dispatch, res;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                commit = _ref.commit;
+                commit = _ref.commit, dispatch = _ref.dispatch;
                 _context.next = 3;
-                return axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/empls');
+                return dispatch('getHolidays');
 
               case 3:
-                res = _context.sent;
-                commit('assignEmpls', res.data);
+                _context.next = 5;
+                return axios__WEBPACK_IMPORTED_MODULE_1___default.a.get('/empls');
 
               case 5:
+                res = _context.sent;
+                commit('assignEmpls', res.data);
+                commit('assignAddLeave');
+
+              case 8:
               case "end":
                 return _context.stop();
             }

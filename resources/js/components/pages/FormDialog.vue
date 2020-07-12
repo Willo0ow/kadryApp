@@ -12,7 +12,7 @@
                         <v-text-field hint="Powód odrzucenia" v-model="form.reject_msg" persistent-hint single-line dense autocomplete="off" dark filled rounded v-if="form.status == 'rejected'" readonly></v-text-field>
                     </v-col>
                     <v-col>
-                        <v-date-picker class="grey" v-model="form.dates" range no-title locale="pl" first-day-of-week="1" :readonly="disabled"></v-date-picker>
+                        <v-date-picker  ref="datePicker" :allowed-dates="allowed" selected-items-text="$vuetify.datePicker.selected" class="grey" v-model="form.dates" range no-title locale="pl" first-day-of-week="1" :readonly="disabled"></v-date-picker>
                     </v-col>
                 </v-row>
             </v-container>
@@ -75,16 +75,14 @@ import EventBus from '../../libs/bus';
                 rejectForm: false,
                 disabled:null,
                 ifSelectEmpls: false,
-                title: ''
+                title: '',
             }
         },
         computed:{
             ...mapState({
                 empls : state => state.hr.empls,
+                holidays: state => state.hr.holidays
             }),
-/*             dept(){
-                return this.empl.dept
-            }, */
             deptEmpls(){
                 let role = this.role.role
                 if(role== 'dept'){
@@ -129,6 +127,21 @@ import EventBus from '../../libs/bus';
             }
         },
         methods:{
+            allowed(val){
+                let date = new Date(val)
+                let today = new Date()
+                let day = date.getDay()
+                let weekend = day == 0 || day == 6
+                let holis = this.holidays.map((el)=>{
+                    return el.date
+                })
+                let holiday = holis.includes(date.toISOString().slice(0,10))
+                let status = this.type == 'new' || this.status == 'draft'
+                if(status && this.role.role == 'empl'){
+                    return !weekend && !holiday && (today<date)
+                }
+                return !weekend && !holiday
+            },
             async reject(){
                 this.form.status = 'rejected'
                 await this.saveForm()
