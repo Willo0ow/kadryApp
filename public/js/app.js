@@ -2011,11 +2011,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     list: function list() {
       if (this.user) {
         var role = this.user.role;
-        var tiles = [{
-          title: 'Moje wnioski',
-          icon: 'mdi-file-document',
-          link: '/forms/' + this.emplId
-        }];
+        var tiles = [];
+
+        if (this.emplId != 0) {
+          tiles.push({
+            title: 'Moje wnioski',
+            icon: 'mdi-file-document',
+            link: this.emplId ? '/forms/' + this.emplId : '/home'
+          });
+        }
 
         if (role == 5) {
           return tiles;
@@ -2066,9 +2070,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     emplId: function emplId() {
       var _this = this;
 
-      return this.$store.state.hr.empls.find(function (el) {
+      var res = this.$store.state.hr.empls.find(function (el) {
         return el.user_id == _this.user.id;
-      }).id;
+      });
+      res = res ? res.id : 0;
+      return res;
     }
   },
   methods: {
@@ -3211,23 +3217,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3302,6 +3291,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     ifNote: function ifNote() {
       //adds note input if a particular type of leave has been chosen
       return ['inny', 'bezpłatny', 'okolicznościowy'].indexOf(this.form.type) >= 0 ? true : false;
+    },
+    sendBtn: function sendBtn() {
+      var role = this.role.role;
+      var status = this.form.status;
+      var empl = role == 'empl' && status == 'draft';
+      var dept = role == 'dept' && this.type == 'new' && status == 'approved';
+      var all = role == 'all' && this.type == 'new' && status == 'granted';
+      return empl || dept || all;
+    },
+    approveBtn: function approveBtn() {
+      var status = this.form.status;
+
+      if (this.type == 'edit' && this.role.role == 'all') {
+        return status == 'approved' || status == 'processed';
+      } else if (this.type == 'edit' && this.role.role == 'dept') {
+        return status == 'processed';
+      }
+
+      return false;
     }
   }),
   methods: {
@@ -3325,19 +3333,21 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }, _callee);
       }))();
     },
-    updateStatus: function updateStatus(status) {
+    updateStatus: function updateStatus() {
       var _this4 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+        var status;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
+                status = _this4.role.role == 'all' ? 'granted' : 'approved';
                 _this4.form.status = status;
-                _context2.next = 3;
+                _context2.next = 4;
                 return _this4.saveForm();
 
-              case 3:
+              case 4:
               case "end":
                 return _context2.stop();
             }
@@ -3369,6 +3379,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         form.dept = this.empl.dept;
       }
 
+      if (form.name) {
+        delete form.name;
+      }
+
       return form = _objectSpread(_objectSpread({}, form), {}, {
         date_start: date_start,
         date_end: date_end
@@ -3386,31 +3400,29 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 form = _this5.prepForm();
 
                 if (!form.id) {
-                  _context3.next = 7;
+                  _context3.next = 6;
                   break;
                 }
 
-                //if edited form and save
-                delete form.name;
-                _context3.next = 5;
+                _context3.next = 4;
                 return axios.patch('/leaveform/' + form.id, form);
 
-              case 5:
-                _context3.next = 9;
+              case 4:
+                _context3.next = 8;
                 break;
 
-              case 7:
-                _context3.next = 9;
+              case 6:
+                _context3.next = 8;
                 return axios.post('/leaveform', form);
 
-              case 9:
-                _context3.next = 11;
+              case 8:
+                _context3.next = 10;
                 return _this5.$store.dispatch(_this5.role.action, _this5.role.data);
 
-              case 11:
+              case 10:
                 _libs_bus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('closeDialog', form.id);
 
-              case 12:
+              case 11:
               case "end":
                 return _context3.stop();
             }
@@ -3434,13 +3446,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                   form.status = 'processed';
                 }
 
-                if (form.id) {
+                if (!form.id) {
                   _context4.next = 8;
                   break;
                 }
 
                 _context4.next = 6;
-                return axios.post('/leaveform', form);
+                return axios.patch('/leaveform/' + form.id, form);
 
               case 6:
                 _context4.next = 10;
@@ -3448,7 +3460,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
               case 8:
                 _context4.next = 10;
-                return axios.patch('/leaveform/' + form.id, form);
+                return axios.post('/leaveform', form);
 
               case 10:
                 _context4.next = 12;
@@ -4250,6 +4262,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -4306,31 +4329,78 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     forms: function forms(state) {
       return state.hr.leaveForms;
+    },
+    user: function user(state) {
+      return state.user.user;
     }
   })), {}, {
-    items: function items() {
+    navInfo: function navInfo() {
       var _this = this;
+
+      var user;
+
+      if (this.empls) {
+        var _user = this.empls.find(function (el) {
+          return el.user_id == _this.user.id;
+        });
+
+        return [{
+          id: 0,
+          tooltip: 'Imię i nazwisko',
+          icon: '',
+          text: _user.name,
+          cols: 3
+        }, {
+          id: 1,
+          tooltip: 'Dział - stanowisko',
+          icon: 'mdi-apps',
+          text: _user.dept + " - " + _user.position,
+          cols: 3
+        }, {
+          id: 2,
+          tooltip: 'Urlop wykorzystany',
+          icon: 'mdi-calendar-check',
+          text: _user.leave_used,
+          cols: 1
+        }, {
+          id: 4,
+          tooltip: 'Urlop tegoroczny',
+          icon: 'mdi-plus-box-outline',
+          text: _user.leave_avbl,
+          cols: 1
+        }, {
+          id: 5,
+          tooltip: 'Urlop zaległy',
+          icon: 'mdi-timeline-clock-outline',
+          text: _user.leave_old_rest,
+          cols: 1
+        }];
+      }
+
+      console.log(user);
+    },
+    items: function items() {
+      var _this2 = this;
 
       var forms = _objectSpread({}, this.forms);
 
-      var res = {}; //if filter by dept enabled show only forms from the selected dept
+      var res = {};
 
       if (this.filterDept) {
         for (var el in forms) {
           res[el] = forms[el].filter(function (val) {
-            return val.dept == _this.filterDept;
+            return val.dept == _this2.filterDept;
           });
         }
       } else {
         res = forms;
-      } //if search enabled show only forms with matching names
-
+      }
 
       if (this.search) {
         for (var _el in res) {
           res[_el] = res[_el].filter(function (val) {
             var str = val.name.toLowerCase();
-            return str.includes(_this.searched.toLowerCase());
+            return str.includes(_this2.searched.toLowerCase());
           });
         }
       }
@@ -4338,11 +4408,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       return res;
     },
     categories: function categories() {
-      var _this2 = this;
+      var _this3 = this;
 
       var res = Object.keys(this.items);
       res = res.reduce(function (av, el) {
-        if (_this2.items[el].length > 0) {
+        if (_this3.items[el].length > 0) {
           av.push(el);
         }
 
@@ -4365,7 +4435,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.editDialog = !this.editDialog;
     },
     remove: function remove(id) {
-      var _this3 = this;
+      var _this4 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
@@ -4377,7 +4447,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
               case 2:
                 _context.next = 4;
-                return _this3.$store.dispatch(_this3.role.action, _this3.role.data);
+                return _this4.$store.dispatch(_this4.role.action, _this4.role.data);
 
               case 4:
                 alert('Wniosek został usunięty');
@@ -4392,7 +4462,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   },
   mounted: function mounted() {
-    var _this4 = this;
+    var _this5 = this;
 
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
@@ -4400,24 +4470,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           switch (_context2.prev = _context2.next) {
             case 0:
               _context2.next = 2;
-              return _this4.$store.dispatch('getUsers');
+              return _this5.$store.dispatch('getUsers');
 
             case 2:
               _context2.next = 4;
-              return _this4.$store.dispatch('getEmplsAll');
+              return _this5.$store.dispatch('getEmplsAll');
 
             case 4:
               _context2.next = 6;
-              return _this4.$store.dispatch('getDepts');
+              return _this5.$store.dispatch('getDepts');
 
             case 6:
               _context2.next = 8;
-              return _this4.$store.dispatch('getHolidays');
+              return _this5.$store.dispatch('getHolidays');
 
             case 8:
               _libs_bus__WEBPACK_IMPORTED_MODULE_3__["default"].$on('closeDialog', function () {
-                _this4.dialog = false;
-                _this4.editDialog = false;
+                _this5.dialog = false;
+                _this5.editDialog = false;
               });
 
             case 9:
@@ -4429,7 +4499,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }))();
   },
   created: function created() {
-    var _this5 = this;
+    var _this6 = this;
 
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
@@ -4437,7 +4507,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           switch (_context3.prev = _context3.next) {
             case 0:
               _context3.next = 2;
-              return _this5.$store.dispatch(_this5.role.action, _this5.role.data);
+              return _this6.$store.dispatch(_this6.role.action, _this6.role.data);
 
             case 2:
             case "end":
@@ -42790,160 +42860,49 @@ var render = function() {
                     1
                   ),
                   _vm._v(" "),
-                  !_vm.disabled
-                    ? [
-                        _vm.role != "dept"
-                          ? _c(
-                              "v-col",
-                              [
-                                _c(
-                                  "v-btn",
-                                  {
-                                    attrs: {
-                                      dark: "",
-                                      color: "teal darken-3",
-                                      rounded: ""
-                                    },
-                                    on: { click: _vm.saveForm }
-                                  },
-                                  [_vm._v("Zapisz")]
-                                )
-                              ],
-                              1
-                            )
-                          : _vm._e(),
-                        _vm._v(" "),
-                        _c(
-                          "v-col",
-                          [
-                            _c(
-                              "v-btn",
-                              {
-                                attrs: {
-                                  dark: "",
-                                  color: "teal darken-3",
-                                  rounded: ""
-                                },
-                                on: { click: _vm.sendForm }
+                  _vm.role.role == "empl" && !_vm.disabled
+                    ? _c(
+                        "v-col",
+                        [
+                          _c(
+                            "v-btn",
+                            {
+                              attrs: {
+                                dark: "",
+                                color: "teal darken-3",
+                                rounded: ""
                               },
-                              [_vm._v("Wyślij")]
-                            )
-                          ],
-                          1
-                        )
-                      ]
+                              on: { click: _vm.saveForm }
+                            },
+                            [_vm._v("Zapisz")]
+                          )
+                        ],
+                        1
+                      )
                     : _vm._e(),
                   _vm._v(" "),
-                  _vm.role.role == "dept" &&
-                  _vm.type == "edit" &&
-                  _vm.form.status == "processed"
-                    ? [
-                        _c(
-                          "v-col",
-                          [
-                            _c(
-                              "v-btn",
-                              {
-                                attrs: {
-                                  dark: "",
-                                  color: "teal darken-3",
-                                  rounded: ""
-                                },
-                                on: {
-                                  click: function($event) {
-                                    return _vm.updateStatus("approved")
-                                  }
-                                }
+                  _vm.sendBtn
+                    ? _c(
+                        "v-col",
+                        [
+                          _c(
+                            "v-btn",
+                            {
+                              attrs: {
+                                dark: "",
+                                color: "teal darken-3",
+                                rounded: ""
                               },
-                              [_vm._v("Zatwierdź")]
-                            )
-                          ],
-                          1
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "v-col",
-                          [
-                            _c(
-                              "v-btn",
-                              {
-                                attrs: {
-                                  dark: "",
-                                  color: "teal darken-3",
-                                  rounded: ""
-                                },
-                                on: {
-                                  click: function($event) {
-                                    _vm.rejectForm = true
-                                  }
-                                }
-                              },
-                              [_vm._v("Odrzuć")]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "v-dialog",
-                              {
-                                model: {
-                                  value: _vm.rejectForm,
-                                  callback: function($$v) {
-                                    _vm.rejectForm = $$v
-                                  },
-                                  expression: "rejectForm"
-                                }
-                              },
-                              [
-                                _c(
-                                  "v-card",
-                                  [
-                                    _c("v-text-field", {
-                                      model: {
-                                        value: _vm.form.reject_msg,
-                                        callback: function($$v) {
-                                          _vm.$set(_vm.form, "reject_msg", $$v)
-                                        },
-                                        expression: "form.reject_msg"
-                                      }
-                                    }),
-                                    _vm._v(" "),
-                                    _c(
-                                      "v-btn",
-                                      {
-                                        on: {
-                                          click: function($event) {
-                                            return _vm.reject()
-                                          }
-                                        }
-                                      },
-                                      [_vm._v("Reject")]
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "v-btn",
-                                      {
-                                        on: {
-                                          click: function($event) {
-                                            _vm.reject = false
-                                          }
-                                        }
-                                      },
-                                      [_vm._v("Cancel")]
-                                    )
-                                  ],
-                                  1
-                                )
-                              ],
-                              1
-                            )
-                          ],
-                          1
-                        )
-                      ]
+                              on: { click: _vm.sendForm }
+                            },
+                            [_vm._v("Wyślij")]
+                          )
+                        ],
+                        1
+                      )
                     : _vm._e(),
                   _vm._v(" "),
-                  _vm.role.role == "all" &&
-                  _vm.type == "edit" &&
-                  _vm.form.status == "approved"
+                  _vm.approveBtn
                     ? [
                         _c(
                           "v-col",
@@ -42958,7 +42917,7 @@ var render = function() {
                                 },
                                 on: {
                                   click: function($event) {
-                                    return _vm.updateStatus("granted")
+                                    return _vm.updateStatus()
                                   }
                                 }
                               },
@@ -43726,117 +43685,155 @@ var render = function() {
                     "v-row",
                     { attrs: { justify: "center", align: "center" } },
                     [
-                      _vm.filter
-                        ? _c(
-                            "v-col",
-                            [
-                              _vm.depts
-                                ? _c("v-select", {
-                                    attrs: {
-                                      items: _vm.depts,
-                                      calss: "shrink",
-                                      "item-text": "name",
-                                      placeholder: "Filtruj po dziale",
-                                      "item-value": "name",
-                                      clearable: "",
-                                      "single-line": "",
-                                      dense: "",
-                                      autocomplete: "off",
-                                      dark: "",
-                                      filled: "",
-                                      rounded: "",
-                                      "hide-details": ""
-                                    },
-                                    model: {
-                                      value: _vm.filterDept,
-                                      callback: function($$v) {
-                                        _vm.filterDept = $$v
-                                      },
-                                      expression: "filterDept"
-                                    }
-                                  })
-                                : _vm._e()
-                            ],
-                            1
-                          )
+                      _vm.filter && _vm.depts
+                        ? _c("v-select", {
+                            attrs: {
+                              items: _vm.depts,
+                              calss: "shrink",
+                              "item-text": "name",
+                              placeholder: "Filtruj po dziale",
+                              "item-value": "name",
+                              clearable: "",
+                              "single-line": "",
+                              dense: "",
+                              autocomplete: "off",
+                              dark: "",
+                              filled: "",
+                              rounded: "",
+                              "hide-details": ""
+                            },
+                            model: {
+                              value: _vm.filterDept,
+                              callback: function($$v) {
+                                _vm.filterDept = $$v
+                              },
+                              expression: "filterDept"
+                            }
+                          })
                         : _vm._e(),
                       _vm._v(" "),
                       _vm.search
+                        ? _c("v-text-field", {
+                            attrs: {
+                              type: "search",
+                              placeholder: "Szukaj Pracownika",
+                              "single-line": "",
+                              dense: "",
+                              autocomplete: "off",
+                              dark: "",
+                              filled: "",
+                              rounded: "",
+                              "hide-details": ""
+                            },
+                            model: {
+                              value: _vm.searched,
+                              callback: function($$v) {
+                                _vm.searched = $$v
+                              },
+                              expression: "searched"
+                            }
+                          })
+                        : _vm._e(),
+                      _vm._v(" "),
+                      this.role.role == "empl"
+                        ? _vm._l(_vm.navInfo, function(el) {
+                            return _c(
+                              "v-tooltip",
+                              {
+                                key: el.id,
+                                attrs: { top: "" },
+                                scopedSlots: _vm._u(
+                                  [
+                                    {
+                                      key: "activator",
+                                      fn: function(ref) {
+                                        var on = ref.on
+                                        var attrs = ref.attrs
+                                        return [
+                                          _c(
+                                            "v-btn",
+                                            _vm._g(
+                                              _vm._b(
+                                                {
+                                                  attrs: { text: "", small: "" }
+                                                },
+                                                "v-btn",
+                                                attrs,
+                                                false
+                                              ),
+                                              on
+                                            ),
+                                            [
+                                              _c(
+                                                "v-icon",
+                                                { staticClass: "pr-2" },
+                                                [_vm._v(_vm._s(el.icon))]
+                                              ),
+                                              _vm._v(
+                                                "\n                                        " +
+                                                  _vm._s(el.text) +
+                                                  "\n                                    "
+                                              )
+                                            ],
+                                            1
+                                          )
+                                        ]
+                                      }
+                                    }
+                                  ],
+                                  null,
+                                  true
+                                )
+                              },
+                              [
+                                _vm._v(" "),
+                                _c("span", [_vm._v(_vm._s(el.tooltip))])
+                              ]
+                            )
+                          })
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        {
+                          attrs: { text: "" },
+                          on: {
+                            click: function($event) {
+                              _vm.dialog = !_vm.dialog
+                            }
+                          }
+                        },
+                        [
+                          _c("v-icon", [_vm._v("mdi-plus")]),
+                          _vm._v(
+                            "\n                           Dodaj Wniosek Urlopowy\n                        "
+                          )
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _vm.dialog
                         ? _c(
-                            "v-col",
-                            [
-                              _c("v-text-field", {
-                                attrs: {
-                                  type: "search",
-                                  placeholder: "Szukaj Pracownika",
-                                  "single-line": "",
-                                  dense: "",
-                                  autocomplete: "off",
-                                  dark: "",
-                                  filled: "",
-                                  rounded: "",
-                                  "hide-details": ""
+                            "v-dialog",
+                            {
+                              model: {
+                                value: _vm.dialog,
+                                callback: function($$v) {
+                                  _vm.dialog = $$v
                                 },
-                                model: {
-                                  value: _vm.searched,
-                                  callback: function($$v) {
-                                    _vm.searched = $$v
-                                  },
-                                  expression: "searched"
-                                }
+                                expression: "dialog"
+                              }
+                            },
+                            [
+                              _c("formdialog", {
+                                attrs: { type: "new", role: _vm.role }
                               })
                             ],
                             1
                           )
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _c(
-                        "v-col",
-                        [
-                          _c(
-                            "v-btn",
-                            {
-                              attrs: { text: "" },
-                              on: {
-                                click: function($event) {
-                                  _vm.dialog = !_vm.dialog
-                                }
-                              }
-                            },
-                            [
-                              _c("v-icon", [_vm._v("mdi-plus")]),
-                              _vm._v(
-                                "\n                           Dodaj Wniosek Urlopowy\n                        "
-                              )
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _vm.dialog
-                            ? _c(
-                                "v-dialog",
-                                {
-                                  model: {
-                                    value: _vm.dialog,
-                                    callback: function($$v) {
-                                      _vm.dialog = $$v
-                                    },
-                                    expression: "dialog"
-                                  }
-                                },
-                                [
-                                  _c("formdialog", {
-                                    attrs: { type: "new", role: _vm.role }
-                                  })
-                                ],
-                                1
-                              )
-                            : _vm._e()
-                        ],
-                        1
-                      )
+                        : _vm._e()
                     ],
-                    1
+                    2
                   )
                 ],
                 1
@@ -43990,23 +43987,29 @@ var render = function() {
                                             2
                                           ),
                                           _vm._v(" "),
-                                          _c(
-                                            "v-col",
-                                            [
-                                              _c(
-                                                "v-icon",
-                                                {
-                                                  on: {
-                                                    click: function($event) {
-                                                      return _vm.remove(item.id)
-                                                    }
-                                                  }
-                                                },
-                                                [_vm._v("mdi-trash-can")]
+                                          item.status == "draft"
+                                            ? _c(
+                                                "v-col",
+                                                [
+                                                  _c(
+                                                    "v-icon",
+                                                    {
+                                                      on: {
+                                                        click: function(
+                                                          $event
+                                                        ) {
+                                                          return _vm.remove(
+                                                            item.id
+                                                          )
+                                                        }
+                                                      }
+                                                    },
+                                                    [_vm._v("mdi-trash-can")]
+                                                  )
+                                                ],
+                                                1
                                               )
-                                            ],
-                                            1
-                                          )
+                                            : _vm._e()
                                         ],
                                         2
                                       )
@@ -105513,8 +105516,43 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       state.deptEmpls = res;
     },
     assignEmpls: function assignEmpls(state, payload) {
-      state.empls = payload;
-      var res = payload.filter(function (el) {
+      var calc = payload.map(function (val) {
+        var leave_base = val.leave_base,
+            leave_used = val.leave_used,
+            leave_old = val.leave_old,
+            leave_emerg = val.leave_emerg,
+            date_start = val.date_start,
+            leave_accum = val.leave_accum;
+        var used = leave_used + leave_emerg;
+        var old_rest = leave_old < used ? {
+          old: 0,
+          rest: used - leave_old
+        } : {
+          old: leave_old - used,
+          rest: 0
+        };
+        var all;
+        var sDate = new Date(date_start);
+        var now = new Date();
+
+        if (leave_accum == 1 && sDate.getFullYear() == now.getFullYear()) {
+          var sDay = sDate.getDate();
+          var sMonth = sDate.getMonth();
+          var day = now.getDate();
+          var month = now.getMonth();
+          var mpl = day - 1 >= sDay ? month - sMonth : month - sMonth - 1;
+          mpl = mpl < 0 ? 0 : mpl;
+          all = Math.ceil(mpl * leave_base / 12) - old_rest.rest;
+        } else {
+          all = leave_base - old_rest.rest;
+        }
+
+        val.leave_avbl = all;
+        val.leave_old_rest = old_rest.old;
+        return val;
+      });
+      state.empls = calc;
+      var res = calc.filter(function (el) {
         return el.supervisor == true;
       });
       state.supervisors = res;

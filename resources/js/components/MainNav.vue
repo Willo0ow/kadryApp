@@ -57,9 +57,10 @@
             list(){
                 if(this.user){
                     let {role} = this.user
-                    let tiles =  [
-                        {title: 'Moje wnioski', icon:'mdi-file-document', link:'/forms/'+this.emplId},
-                    ]
+                    let tiles = []
+                    if(this.emplId != 0){
+                        tiles.push({title: 'Moje wnioski', icon:'mdi-file-document', link: this.emplId? '/forms/'+this.emplId : '/home'})
+                    }
                     if(role == 5){return tiles}
                     if(role !=2 && role !=1){
                         tiles.push({title: 'Wnioski pracowników działu', icon:'mdi-clipboard-list', link:'/deptforms/HR'})
@@ -81,7 +82,9 @@
                 return this.mini? 'mdi-chevron-right':'mdi-chevron-left'
             },
             emplId(){
-                return this.$store.state.hr.empls.find((el)=>el.user_id == this.user.id).id
+                let res = this.$store.state.hr.empls.find((el)=>el.user_id == this.user.id)
+                res = res? res.id : 0
+                return res
             }
         },
         methods:{

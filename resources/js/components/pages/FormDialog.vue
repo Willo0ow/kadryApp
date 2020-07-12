@@ -22,32 +22,15 @@
                 <v-col>
                     <v-btn dark color="teal darken-3" rounded @click="resetForm">Anuluj</v-btn>
                 </v-col>
-                <template v-if="!disabled">
-                    <v-col v-if="role!='dept'">
+                    <v-col v-if="role.role=='empl' && !disabled">
                         <v-btn dark color="teal darken-3" rounded @click="saveForm">Zapisz</v-btn>
                     </v-col>
-                    <v-col>
+                    <v-col v-if="sendBtn">
                         <v-btn dark color="teal darken-3" rounded @click="sendForm">Wyślij</v-btn>
                     </v-col>
-                </template>
-                <template v-if="role.role == 'dept' && type=='edit' && form.status=='processed'">
+                <template v-if="approveBtn">
                     <v-col>
-                        <v-btn dark color="teal darken-3" rounded @click="updateStatus('approved')">Zatwierdź</v-btn>
-                    </v-col>
-                    <v-col>
-                        <v-btn dark color="teal darken-3" rounded @click="rejectForm = true">Odrzuć</v-btn>
-                        <v-dialog v-model="rejectForm">
-                            <v-card>
-                                <v-text-field v-model="form.reject_msg"></v-text-field>
-                                <v-btn @click="reject()">Reject</v-btn>
-                                <v-btn @click="reject = false">Cancel</v-btn>
-                            </v-card>
-                        </v-dialog>
-                    </v-col>
-                </template>
-                <template v-if="role.role == 'all' && type=='edit' && form.status=='approved'">
-                    <v-col>
-                        <v-btn dark color="teal darken-3" rounded @click="updateStatus('granted')">Zatwierdź</v-btn>
+                        <v-btn dark color="teal darken-3" rounded @click="updateStatus()">Zatwierdź</v-btn>
                     </v-col>
                     <v-col>
                         <v-btn dark color="teal darken-3" rounded @click="rejectForm = true">Odrzuć</v-btn>
@@ -127,13 +110,31 @@ import EventBus from '../../libs/bus';
                 //adds note input if a particular type of leave has been chosen
                 return ['inny', 'bezpłatny', 'okolicznościowy'].indexOf(this.form.type)>=0 ? true : false
             },
+            sendBtn(){
+                let role = this.role.role
+                let status = this.form.status
+                let empl = role == 'empl' && status == 'draft'
+                let dept = role == 'dept' && this.type == 'new' && status == 'approved'
+                let all = role == 'all' && this.type == 'new' && status == 'granted'
+                return empl || dept || all
+            },
+            approveBtn(){
+                let status = this.form.status
+                if (this.type == 'edit' && this.role.role == 'all'){
+                    return status == 'approved' || status == 'processed'
+                } else if (this.type == 'edit' && this.role.role == 'dept'){
+                    return status == 'processed'
+                }
+                return false
+            }
         },
         methods:{
             async reject(){
                 this.form.status = 'rejected'
                 await this.saveForm()
             },
-            async updateStatus(status){
+            async updateStatus(){
+                let status = this.role.role == 'all'? 'granted' : 'approved'
                 this.form.status = status
                 await this.saveForm()
             },
@@ -155,16 +156,14 @@ import EventBus from '../../libs/bus';
                 if(this.role.role == 'all'){
                     form.dept = this.empl.dept
                 }
+                if(form.name){delete form.name}
                 return form = {...form, date_start:date_start, date_end:date_end}
             },
             async saveForm(){
                 let form = this.prepForm()
                 if(form.id){
-                    //if edited form and save
-                    delete form.name
                     await axios.patch('/leaveform/'+form.id, form)
                 } else {
-                    //if new form and save
                     await axios.post('/leaveform', form)
                 }
                 //gets updaetd list of employee's forms
@@ -177,13 +176,10 @@ import EventBus from '../../libs/bus';
                 if(this.$route.params.id){
                     form.status = 'processed'
                 }
-                if(!form.id){
-                    //if new and send
-                    await axios.post('/leaveform', form)
-                } else {
-                    //if editted form and send
-                    //delete form.name
+                if(form.id){
                     await axios.patch('/leaveform/'+form.id, form)
+                } else {
+                    await axios.post('/leaveform', form)
                 }
                 //get updated list of employee's forms
                 await this.$store.dispatch(this.role.action, this.role.data)

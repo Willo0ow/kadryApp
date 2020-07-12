@@ -15,8 +15,35 @@ export default{
             state.deptEmpls = res
         },
         assignEmpls(state, payload){
-            state.empls = payload
-            let res = payload.filter((el)=>el.supervisor==true)
+            let calc = payload.map((val)=>{
+                
+                let {leave_base, leave_used, leave_old, leave_emerg, date_start, leave_accum} = val
+                let used = leave_used + leave_emerg
+                let old_rest = leave_old < used? {old:0, rest: used - leave_old} : {old: leave_old - used, rest:0}
+                let all
+                let sDate = new Date(date_start)
+                let now = new Date()
+                
+                if(leave_accum == 1 && sDate.getFullYear() == now.getFullYear()){
+                    let sDay = sDate.getDate()
+                    let sMonth = sDate.getMonth()
+                    let day = now.getDate()
+                    let month = now.getMonth()
+                    let mpl = (day-1)>= sDay? month - sMonth : month-sMonth-1
+                    
+                    mpl = mpl<0? 0 : mpl
+                    all = Math.ceil(mpl*leave_base/12) - old_rest.rest
+                    
+                } else {
+                    all = leave_base - old_rest.rest
+                }
+                val.leave_avbl = all
+                val.leave_old_rest = old_rest.old
+                return val
+            })
+            
+            state.empls = calc
+            let res = calc.filter((el)=>el.supervisor==true)
             state.supervisors = res
         },
         assignDepts(state, payload){
